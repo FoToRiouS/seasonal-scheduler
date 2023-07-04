@@ -5,7 +5,7 @@ interface ICardAnimeProps {
     image: string,
     jpnName: string,
     engName: string
-    children: ReactNode
+    children?: ReactNode
 }
 export const CardAnime: React.FC<ICardAnimeProps> = ({image, jpnName, engName, children}) => {
     return (
