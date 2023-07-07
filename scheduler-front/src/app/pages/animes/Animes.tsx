@@ -1,10 +1,10 @@
-import { useNavigate } from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import {CardAnime} from "./components/CardAnime.tsx";
-import {Button, Col, Container, Row} from "react-bootstrap";
 import {useUsuarioLogado} from "../../shared/hooks/UseUsuarioLogado.ts";
 import {useEffect, useState} from "react";
 import {AnimesService, IAnime} from "../../shared/services/api/animes/AnimesService.ts";
 import {ApiException} from "../../shared/services/api/ApiException.ts";
+import {Container, Grid, GridItem, Heading} from "@chakra-ui/react";
 
 export const Animes = () => {
     const navigate = useNavigate();
@@ -30,26 +30,21 @@ export const Animes = () => {
 
     return (
         <>
-            <Container>
-                <Row className="mb-5">
-                    <Col sm={12} className="fs-1 text-center">
-                        <span>{nome}</span>
-                    </Col>
-                    <Col sm={12} className={"d-flex justify-content-center"}>
-                        <Button variant={"primary"} onClick={exibirNome}>Exibir Nome</Button>
-                    </Col>
-                </Row>
-                <Row sm={3} className={"g-2"}>
+            <Container bg="tomato" minW={"full"} mb={16} centerContent>
+                <Heading>Animes da Temporada</Heading>
+            </Container>
+            <Container maxW={"90%"} centerContent>
+                <Grid templateColumns={["repeat(1, 1fr)", "repeat(4, 1fr)"]} gap={10}>
                     {
                         listAnimes.map(anime => {
-                            return <CardAnime key={anime.title} image={anime.mainPicture.large} jpnName={anime.title} engName={anime.alternativeTitles.en}/>
+                            return (
+                                <GridItem>
+                                    <CardAnime key={anime.title} image={anime.mainPicture.large} jpnName={anime.title} engName={anime.alternativeTitles.en}/>
+                                </GridItem>
+                            )
                         })
                     }
-                    <div className={"w-100"}/>
-                    <Col sm={12} className={"d-flex justify-content-center"}>
-                        <Button variant={"success"} onClick={redirectToLogin}>Voltar</Button>
-                    </Col>
-                </Row>
+                </Grid>
             </Container>
         </>
     )
