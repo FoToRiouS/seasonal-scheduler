@@ -4,7 +4,7 @@ import {IAnime} from "../../../interfaces/IAnime.ts";
 export type AnimeSeasons = "winter" | "spring" | "summer" | "fall";
 
 export function getCurrentSeason() {
-    let month = new Date().getMonth();
+    const month = new Date().getMonth();
     if(month === 12 || (month >= 1  && month <= 2)) {
         return "winter";
     } else if(month >= 3  && month <= 5){
@@ -17,7 +17,7 @@ export function getCurrentSeason() {
 }
 
 export function getDayOfExhibition(day: string, hour: string) {
-    let days = new Map<string, string>();
+    const days = new Map<string, string>();
     days.set("monday", "segunda");
     days.set("tuesday", "terça");
     days.set("wednesday", "quarta");
@@ -26,18 +26,18 @@ export function getDayOfExhibition(day: string, hour: string) {
     days.set("saturday", "sábado");
     days.set("sunday", "domingo");
 
-    let daysIndex = ["monday", "tuesday", "wednesday", "thursday","friday","saturday", "sunday"];
+    const daysIndex = ["monday", "tuesday", "wednesday", "thursday","friday","saturday", "sunday"];
     let dayIndex = daysIndex.indexOf(day);
 
     let newHour = hour;
 
-    let hourSplit = hour.split(":");
+    const hourSplit = hour.split(":");
 
-    let oldDate = new Date();
+    const oldDate = new Date();
     oldDate.setHours(+hourSplit[0], +hourSplit[1])
     console.log("Old Date: " + oldDate.toString());
 
-    let newDate = new Date(oldDate);
+    const newDate = new Date(oldDate);
     newDate.setTime(oldDate.getTime() - (12 * 60 * 60 * 1000));
     console.log("New Date: " + newDate.toString());
 
@@ -57,6 +57,7 @@ export const mapJsonAnime = (node: any) => {
         title: node.node.title,
         alternativeTitles: node.node.alternative_titles,
         mainPicture: node.node.main_picture,
+        mean: node.node.mean,
         broadcast: node.node.broadcast,
         mediaType: node.node.media_type,
         startSeason: node.node.start_season
@@ -64,7 +65,7 @@ export const mapJsonAnime = (node: any) => {
 }
 
 const getBySeason = async (year: number, season: AnimeSeasons): Promise<IAnime[]>  => {
-    const { data } = await MyAnimeListApi().get(`/anime/season/${year}/${season}?limit=500&fields=alternative_titles,broadcast,media_type,start_season`, {
+    const { data } = await MyAnimeListApi().get(`/anime/season/${year}/${season}?limit=500&fields=alternative_titles,broadcast,media_type,start_season,mean`, {
         headers: animeApiHeaders
     });
 

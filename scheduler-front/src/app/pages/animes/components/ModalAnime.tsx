@@ -1,5 +1,6 @@
 import {
-    Box, Button,
+    Box,
+    Button,
     HStack,
     Image,
     Modal,
@@ -8,12 +9,15 @@ import {
     ModalContent,
     ModalHeader,
     ModalOverlay,
-    SimpleGrid, Spacer,
+    SimpleGrid,
+    Spacer,
     Stack,
     Text
 } from "@chakra-ui/react";
-import React, {useState} from "react";
-import {getDayOfExhibition, IAnime} from "../../../shared/services/api/animes/AnimesService.ts";
+import React, {useContext, useState} from "react";
+import {getDayOfExhibition} from "../../../shared/services/api/animes/AnimesService.ts";
+import {IAnime} from "../../../shared/interfaces/IAnime.ts";
+import {SeasonContext} from "../Animes.tsx";
 
 
 interface IModalAnimeProps {
@@ -23,9 +27,11 @@ interface IModalAnimeProps {
 }
 
 export const ModalAnime : React.FC<IModalAnimeProps> = ({isOpen, onClose,  anime}) => {
-    const {alternativeTitles, title, mainPicture, broadcast} = anime;
+    const {alternativeTitles, title, mainPicture, broadcast, mean} = anime;
 
     const [colorScheme, setColorScheme] = useState("outline")
+
+    const {season, year} = useContext(SeasonContext);
 
     return (
         <>
@@ -47,6 +53,15 @@ export const ModalAnime : React.FC<IModalAnimeProps> = ({isOpen, onClose,  anime
                                         {alternativeTitles.en ? " ("+alternativeTitles.en+")" : undefined}
                                     </Text>
                                 </HStack>
+                                {
+                                    mean ?
+                                    <HStack spacing={3}>
+                                        <Text as={"b"}>Score:</Text>
+                                        <Text>{mean}</Text>
+                                    </HStack>
+                                    : undefined
+                                }
+
                                 {
                                     broadcast ? (
                                         <HStack spacing={3}>

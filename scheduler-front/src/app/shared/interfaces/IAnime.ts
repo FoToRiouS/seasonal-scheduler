@@ -4,6 +4,7 @@ export interface IAnime {
     id: number,
     title: string,
     alternativeTitles: IAlternativeTitles,
+    mean: number,
     mainPicture: IMainPicture,
     broadcast: IBroadcast,
     startSeason: IStartSeason,
@@ -24,7 +25,7 @@ interface IBroadcast {
     start_time: string
 }
 
-interface IStartSeason {
+export interface IStartSeason {
     year: number,
     season: AnimeSeasons
 }

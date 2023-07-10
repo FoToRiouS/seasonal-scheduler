@@ -1,6 +1,7 @@
 import React from "react";
 import {Button, Card, CardBody, CardFooter, Flex, Heading, Image, Spacer} from "@chakra-ui/react";
-import {ViewIcon} from "@chakra-ui/icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faEye} from "@fortawesome/free-solid-svg-icons";
 
 interface ICardAnimeProps {
     image: string,
@@ -26,7 +27,7 @@ export const CardAnime: React.FC<ICardAnimeProps> = ({image, jpnName, engName, o
                     </Flex>
                 </CardBody>
                 <CardFooter display={"flex"} justify={"end"}>
-                    <Button leftIcon={<ViewIcon/>} onClick={onOpen}>Info</Button>
+                    <Button leftIcon={<FontAwesomeIcon icon={faEye}/>} onClick={onOpen}>Info</Button>
                 </CardFooter>
             </Card>
         </>
