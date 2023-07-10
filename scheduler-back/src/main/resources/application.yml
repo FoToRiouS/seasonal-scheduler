@@ -1,0 +1,39 @@
+spring:
+  datasource:
+    url: jdbc:sqlserver://localhost:1433;databaseName=scheduler;encrypt=false
+    username: scheduler
+    password: scheduler!@#
+  jpa:
+    open-in-view: 'false'
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus
+    enabled-by-default: 'false'
+  endpoint:
+    health:
+      enabled: 'true'
+      show-details: always
+    prometheus:
+      enabled: 'true'
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+#  datasource:
+#    url: jdbc:sqlserver://localhost:1433;databaseName=UniEVENTOS;encrypt=false
+
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+    hibernate:
+      ddl-auto: update

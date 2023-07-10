@@ -1,38 +1,57 @@
 import {MyAnimeListApi} from "../MyAnimeListApi.ts";
-import {ApiException} from "../ApiException.ts";
+import {IAnime} from "../../../interfaces/IAnime.ts";
 
-export interface IAnime {
-    id: number,
-    title: string,
-    alternativeTitles: IAlternativeTitles,
-    mainPicture: IMainPicture,
-    broadcast: IBroadcast,
-    startSeason: IStartSeason,
-    mediaType: "tv" | "ona" | "ova" | "movie" | "special"
+export type AnimeSeasons = "winter" | "spring" | "summer" | "fall";
+
+export function getCurrentSeason() {
+    let month = new Date().getMonth();
+    if(month === 12 || (month >= 1  && month <= 2)) {
+        return "winter";
+    } else if(month >= 3  && month <= 5){
+        return "spring";
+    } else if(month >= 6  && month <= 8){
+        return "summer";
+    } else {
+        return "fall";
+    }
 }
 
-interface IAlternativeTitles {
-    en: string,
-    ja: string
-}
-interface IMainPicture {
-    medium: string,
-    large: string
+export function getDayOfExhibition(day: string, hour: string) {
+    let days = new Map<string, string>();
+    days.set("monday", "segunda");
+    days.set("tuesday", "terça");
+    days.set("wednesday", "quarta");
+    days.set("thursday", "quinta");
+    days.set("friday", "sexta");
+    days.set("saturday", "sábado");
+    days.set("sunday", "domingo");
+
+    let daysIndex = ["monday", "tuesday", "wednesday", "thursday","friday","saturday", "sunday"];
+    let dayIndex = daysIndex.indexOf(day);
+
+    let newHour = hour;
+
+    let hourSplit = hour.split(":");
+
+    let oldDate = new Date();
+    oldDate.setHours(+hourSplit[0], +hourSplit[1])
+    console.log("Old Date: " + oldDate.toString());
+
+    let newDate = new Date(oldDate);
+    newDate.setTime(oldDate.getTime() - (12 * 60 * 60 * 1000));
+    console.log("New Date: " + newDate.toString());
+
+    if(oldDate.getDay() != newDate.getDay()){
+        dayIndex = dayIndex == 0 ? 6 : dayIndex-1
+        newHour = newDate.getHours() + ":" + ("0" + newDate.getMinutes()).slice(-2);
+    }
+
+    return days.get(daysIndex[dayIndex]) + " as " + newHour;
 }
 
-interface IBroadcast {
-    day_of_the_week: "sunday",
-    start_time: string
-}
+const animeApiHeaders = {"X-MAL-CLIENT-ID": "eb6aa17ec9b6961f8812f79c38318240"}
 
-interface IStartSeason {
-    year: number,
-    season: "winter" | "spring" | "summer" | "fall"
-}
-
-const headers = {"X-MAL-CLIENT-ID": "eb6aa17ec9b6961f8812f79c38318240"}
-
-const mapJsonAnime = (node: any) => {
+export const mapJsonAnime = (node: any) => {
     return <IAnime> {
         id: node.node.id,
         title: node.node.title,
@@ -44,32 +63,24 @@ const mapJsonAnime = (node: any) => {
     }
 }
 
-const getBySeason = async (year: number, season: "winter" | "spring" | "summer" | "fall") : Promise<IAnime[] | ApiException> => {
-    try{
-        const { data } = await MyAnimeListApi().get(`/anime/season/${year}/${season}?limit=500&fields=alternative_titles,broadcast,media_type,start_season`, {
-            headers: headers
-        });
+const getBySeason = async (year: number, season: AnimeSeasons): Promise<IAnime[]>  => {
+    const { data } = await MyAnimeListApi().get(`/anime/season/${year}/${season}?limit=500&fields=alternative_titles,broadcast,media_type,start_season`, {
+        headers: animeApiHeaders
+    });
 
-        return data.data.map(mapJsonAnime)
-            .filter((a:IAnime) => a.mediaType === "tv" || a.mediaType === "ona" || a.mediaType === "ova")
-            .filter((a:IAnime) => a.startSeason.year === year && a.startSeason.season === season)
-            .sort((a1:IAnime, a2:IAnime) => {
-                return a1.title.localeCompare(a2.title);
-            });
-    } catch (e: any) {
-        return new ApiException(e.message || "Erro ao consultar API!")
-    }
+    return data.data.map(mapJsonAnime)
+        .filter((a:IAnime) => a.mediaType === "tv" || a.mediaType === "ona" || a.mediaType === "ova")
+        .filter((a:IAnime) => a.startSeason.year === year && a.startSeason.season === season)
+        .sort((a1:IAnime, a2:IAnime) => {
+            return a1.title.localeCompare(a2.title);
+        });
 }
 
-const getById = async (id: number) : Promise<IAnime | ApiException> => {
-    try{
-        const { data } = await MyAnimeListApi().get(`/anime/${id}`, {
-            headers: headers
-        });
-        return data.data.map(mapJsonAnime);
-    } catch (e: any) {
-        return new ApiException(e.message || "Erro ao consultar API!")
-    }
+const getById = async (id: number) : Promise<IAnime> => {
+    const { data } = await MyAnimeListApi().get(`/anime/${id}?fields=alternative_titles,broadcast,media_type,start_season`, {
+        headers: animeApiHeaders
+    });
+    return data;
 }
 
 export const AnimesService = {

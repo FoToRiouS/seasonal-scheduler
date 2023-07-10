@@ -10,9 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@chakra-ui/icons": "^2.0.19",
     "@chakra-ui/react": "^2.7.1",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "@tanstack/react-query": "^4.29.19",
     "axios": "^1.4.0",
     "framer-motion": "^10.12.18",
     "react": "^18.2.0",
@@ -20,6 +22,7 @@
     "react-router-dom": "^6.14.1"
   },
   "devDependencies": {
+    "@tanstack/eslint-plugin-query": "^4.29.9",
     "@types/react": "^18.0.37",
     "@types/react-dom": "^18.0.11",
     "@types/react-router-dom": "^5.3.3",
