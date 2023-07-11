@@ -4,7 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public class GenericService<ENTITY, PK, RESPOSITORY extends JpaRepository<ENTITY, PK>>{
 
-    private final RESPOSITORY repository;
+    protected final RESPOSITORY repository;
 
     public GenericService(RESPOSITORY repository) {
         this.repository = repository;

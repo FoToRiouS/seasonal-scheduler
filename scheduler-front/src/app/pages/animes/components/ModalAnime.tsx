@@ -14,10 +14,11 @@ import {
     Stack,
     Text
 } from "@chakra-ui/react";
-import React, {useContext, useState} from "react";
-import {getDayOfExhibition} from "../../../shared/services/api/animes/AnimesService.ts";
+import React, {useContext, useEffect, useState} from "react";
+import {getDayOfExhibition} from "../../../shared/services/AnimesService.ts";
 import {IAnime} from "../../../shared/interfaces/IAnime.ts";
 import {SeasonContext} from "../Animes.tsx";
+import {getAnimeSeasonByParameters} from "../../../shared/hooks/backend/getAnimeSeasonByParameters.ts";
 
 
 interface IModalAnimeProps {
@@ -27,11 +28,16 @@ interface IModalAnimeProps {
 }
 
 export const ModalAnime : React.FC<IModalAnimeProps> = ({isOpen, onClose,  anime}) => {
-    const {alternativeTitles, title, mainPicture, broadcast, mean} = anime;
-
-    const [colorScheme, setColorScheme] = useState("outline")
+    const {id, alternativeTitles, title, mainPicture, broadcast, mean} = anime;
 
     const {season, year} = useContext(SeasonContext);
+    const [colorScheme, setColorScheme] = useState("outline")
+
+    const animeSeason = getAnimeSeasonByParameters(id, year, season);
+
+    useEffect(() => {
+        console.log(animeSeason.data)
+    }, [])
 
     return (
         <>
@@ -71,6 +77,11 @@ export const ModalAnime : React.FC<IModalAnimeProps> = ({isOpen, onClose,  anime
                                     ) : undefined
                                 }
                                 <Spacer/>
+                                {
+                                    animeSeason.data ?
+                                    <Text>Cadastrado</Text> :
+                                    <Text>Não Cadastrado</Text>
+                                }
                                 <Button variant={colorScheme} colorScheme={"green"}
                                         onMouseEnter={() => setColorScheme("solid")}
                                         onMouseLeave={() => setColorScheme("outline")}>

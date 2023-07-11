@@ -1,5 +1,5 @@
-import {MyAnimeListApi} from "../MyAnimeListApi.ts";
-import {IAnime} from "../../../interfaces/IAnime.ts";
+import {MyAnimeListApi} from "./api/MyAnimeListApi.ts";
+import {IAnime} from "../interfaces/IAnime.ts";
 
 export type AnimeSeasons = "winter" | "spring" | "summer" | "fall";
 
@@ -35,11 +35,9 @@ export function getDayOfExhibition(day: string, hour: string) {
 
     const oldDate = new Date();
     oldDate.setHours(+hourSplit[0], +hourSplit[1])
-    console.log("Old Date: " + oldDate.toString());
 
     const newDate = new Date(oldDate);
     newDate.setTime(oldDate.getTime() - (12 * 60 * 60 * 1000));
-    console.log("New Date: " + newDate.toString());
 
     if(oldDate.getDay() != newDate.getDay()){
         dayIndex = dayIndex == 0 ? 6 : dayIndex-1

@@ -1,4 +1,4 @@
-import {AnimeSeasons} from "../services/api/animes/AnimesService.ts";
+import {AnimeSeasons} from "../services/AnimesService.ts";
 
 export interface IAnime {
     id: number,

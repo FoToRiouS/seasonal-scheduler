@@ -2,6 +2,7 @@ package apps.schedulerback.controller;
 
 import apps.schedulerback.model.Season;
 import apps.schedulerback.model.WatchService;
+import apps.schedulerback.model.record.WatchServiceResponse;
 import apps.schedulerback.service.AnimeSeasonService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -23,8 +24,8 @@ public class WatchServiceController {
 
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping(value = "/list", produces = "application/json")
-    public ResponseEntity<Collection<WatchService>> listAll(){
-        return ResponseEntity.ok(animeSeasonService.listAllWatchServices());
+    public ResponseEntity<Collection<WatchServiceResponse>> listAll(){
+        return ResponseEntity.ok(animeSeasonService.listAllWatchServices().stream().map(WatchServiceResponse::new).toList());
     }
 
 }

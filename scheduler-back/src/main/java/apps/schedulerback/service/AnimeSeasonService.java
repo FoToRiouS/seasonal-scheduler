@@ -3,6 +3,7 @@ package apps.schedulerback.service;
 import apps.schedulerback.model.AnimeSeason;
 import apps.schedulerback.model.Season;
 import apps.schedulerback.model.WatchService;
+import apps.schedulerback.model.enums.Seasons;
 import apps.schedulerback.repository.AnimeSeasonRepository;
 import apps.schedulerback.repository.SeasonRepository;
 import apps.schedulerback.repository.WatchServiceRepository;
@@ -22,6 +23,10 @@ public class AnimeSeasonService extends GenericService<AnimeSeason, UUID, AnimeS
         super(repository);
         this.seasonRepository = seasonRepository;
         this.watchServiceRepository = watchServiceRepository;
+    }
+
+    public AnimeSeason getAnimeSeasonByIdAnimeAndSeason(Long idAnime, Long year, String seasonName){
+        return repository.findByIdAnimeAndSeason_YearAndSeason_SeasonName(idAnime, year, Seasons.valueOf(seasonName)).orElse(null);
     }
 
     public Collection<Season> listAllSeasons(){

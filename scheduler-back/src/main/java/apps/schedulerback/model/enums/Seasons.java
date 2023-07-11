@@ -2,10 +2,10 @@ package apps.schedulerback.model.enums;
 
 public enum Seasons {
 
-    WINTER("winter", "Inverno"),
-    SPRING("spring", "Primavera"),
-    SUMMER("summer", "Verão"),
-    FALL("fall", "Outono");
+    winter("winter", "Inverno"),
+    spring("spring", "Primavera"),
+    summer("summer", "Verão"),
+    fall("fall", "Outono");
 
     private final String id;
 

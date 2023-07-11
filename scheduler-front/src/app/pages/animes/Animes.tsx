@@ -1,5 +1,5 @@
 import {createContext, useCallback, useEffect, useState} from "react";
-import {AnimeSeasons, getCurrentSeason} from "../../shared/services/api/animes/AnimesService.ts";
+import {AnimeSeasons, getCurrentSeason} from "../../shared/services/AnimesService.ts";
 import {
     Container,
     Heading,
@@ -17,9 +17,9 @@ import {
     Text
 } from "@chakra-ui/react";
 import {AnimeItem} from "./components/AnimeItem.tsx";
-import {useAnimesBySeason} from "../../shared/hooks/animes/useAnimesBySeason.ts";
+import {getAnimesBySeason} from "../../shared/hooks/animes/getAnimesBySeason.ts";
 import {IAnime, IStartSeason} from "../../shared/interfaces/IAnime.ts";
-import {useWatchServiceList} from "../../shared/hooks/backend/useWatchServiceList.ts";
+import {getWatchServiceList} from "../../shared/hooks/backend/getWatchServiceList.ts";
 
 export const SeasonContext = createContext<IStartSeason>({} as IStartSeason);
 
@@ -32,8 +32,8 @@ export const Animes = () => {
     const [year, setYear] = useState(currentYear);
     const [season, setSeason] = useState<AnimeSeasons>(currentSeason);
 
-    const { data, isLoading } = useAnimesBySeason(year, season);
-    const result = useWatchServiceList();
+    const { data, isLoading } = getAnimesBySeason(year, season);
+    const result = getWatchServiceList();
 
     const filterList = useCallback((searchValue: string) => {
         if (data) {
