@@ -2,7 +2,7 @@ import React from "react";
 import {useDisclosure} from "@chakra-ui/react";
 import {ModalAnime} from "./ModalAnime.tsx";
 import {CardAnime} from "./CardAnime.tsx";
-import {IAnime} from "../../../shared/services/AnimesService.ts";
+import {IAnime} from "../../../shared/interfaces/IAnime.ts";
 
 interface IAnimeItemProps {
     anime: IAnime

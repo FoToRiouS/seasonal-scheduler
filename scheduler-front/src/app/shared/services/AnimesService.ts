@@ -69,7 +69,7 @@ const getBySeason = async (year: number, season: AnimeSeasons): Promise<IAnime[]
 
     return data.data.map(mapJsonAnime)
         .filter((a:IAnime) => a.mediaType === "tv" || a.mediaType === "ona" || a.mediaType === "ova")
-        .filter((a:IAnime) => a.startSeason.year === year && a.startSeason.season === season)
+        .filter((a:IAnime) => a.startSeason && a.startSeason.year === year && a.startSeason.season === season)
         .sort((a1:IAnime, a2:IAnime) => {
             return a1.title.localeCompare(a2.title);
         });
