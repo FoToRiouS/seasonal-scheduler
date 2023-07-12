@@ -19,6 +19,8 @@ import {getDayOfExhibition} from "../../../shared/services/AnimesService.ts";
 import {IAnime} from "../../../shared/interfaces/IAnime.ts";
 import {SeasonContext} from "../Animes.tsx";
 import {getAnimeSeasonByParameters} from "../../../shared/hooks/backend/getAnimeSeasonByParameters.ts";
+import {saveAnimeSeason} from "../../../shared/hooks/backend/saveAnimeSeason.ts";
+import {IAnimeSeason} from "../../../shared/interfaces/IAnimeSeason.ts";
 
 
 interface IModalAnimeProps {
@@ -33,10 +35,25 @@ export const ModalAnime : React.FC<IModalAnimeProps> = ({isOpen, onClose,  anime
     const {season, year} = useContext(SeasonContext);
     const [colorScheme, setColorScheme] = useState("outline")
 
-    const animeSeason = getAnimeSeasonByParameters(id, year, season);
+    const {data: initAnimeSeason} = getAnimeSeasonByParameters(id, year, season)
+    const {mutate, } = saveAnimeSeason();
+
+    const [animeSeason, setAnimeSeason] = useState(initAnimeSeason);
+
+    const handleSaveAnimeSeason = () => {
+        const animeSeason: IAnimeSeason = {
+            id: anime.id.toString(),
+            season: {
+                season: season,
+                year: year
+            }
+        }
+        setAnimeSeason(animeSeason), //SO PARA NAO FICAR DANDO ERRO
+        mutate(animeSeason);
+    }
 
     useEffect(() => {
-        console.log(animeSeason.data)
+        console.log(initAnimeSeason)
     }, [])
 
     return (
@@ -78,13 +95,14 @@ export const ModalAnime : React.FC<IModalAnimeProps> = ({isOpen, onClose,  anime
                                 }
                                 <Spacer/>
                                 {
-                                    animeSeason.data ?
+                                    animeSeason ?
                                     <Text>Cadastrado</Text> :
                                     <Text>Não Cadastrado</Text>
                                 }
                                 <Button variant={colorScheme} colorScheme={"green"}
                                         onMouseEnter={() => setColorScheme("solid")}
-                                        onMouseLeave={() => setColorScheme("outline")}>
+                                        onMouseLeave={() => setColorScheme("outline")}
+                                        onClick={handleSaveAnimeSeason}>
                                     Adicionar a Temporada
                                 </Button>
                             </Stack>

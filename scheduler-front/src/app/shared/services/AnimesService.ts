@@ -31,7 +31,7 @@ export function getDayOfExhibition(day: string, hour: string) {
 
     let newHour = hour;
 
-    const hourSplit = hour.split(":");
+    const hourSplit = hour ? hour.split(":") : ["00","00"];
 
     const oldDate = new Date();
     oldDate.setHours(+hourSplit[0], +hourSplit[1])

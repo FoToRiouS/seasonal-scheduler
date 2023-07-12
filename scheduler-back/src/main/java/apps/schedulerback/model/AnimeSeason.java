@@ -33,6 +33,11 @@ public class AnimeSeason {
             inverseJoinColumns = @JoinColumn(name = "service_id"))
     private Set<WatchService> watchServices;
 
+    public AnimeSeason(long idAnime, Season season) {
+        this.idAnime = idAnime;
+        this.season = season;
+    }
+
     public UUID getId() {
         return id;
     }

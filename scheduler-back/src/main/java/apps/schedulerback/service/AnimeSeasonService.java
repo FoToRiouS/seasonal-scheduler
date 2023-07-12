@@ -29,6 +29,15 @@ public class AnimeSeasonService extends GenericService<AnimeSeason, UUID, AnimeS
         return repository.findByIdAnimeAndSeason_YearAndSeason_SeasonName(idAnime, year, Seasons.valueOf(seasonName)).orElse(null);
     }
 
+    public AnimeSeason saveAnimeSeasonByIdAnimeAndSeason(Long idAnime, Long year, String seasonName){
+        Season season = seasonRepository.findBySeasonNameAndYear(Seasons.valueOf(seasonName), year).orElse(null);
+        if(season == null){
+            season = new Season(seasonName, year);
+            season = seasonRepository.save(season);
+        }
+        return repository.save(new AnimeSeason(idAnime, season));
+    }
+
     public Collection<Season> listAllSeasons(){
         return seasonRepository.findAll();
     }
