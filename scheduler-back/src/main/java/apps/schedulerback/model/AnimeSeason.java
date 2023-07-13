@@ -13,7 +13,7 @@ public class AnimeSeason {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "season_name")
+    @Column(name = "id_anime")
     private long idAnime;
 
     @ManyToOne
@@ -32,6 +32,8 @@ public class AnimeSeason {
             joinColumns = @JoinColumn(name = "anime_id"),
             inverseJoinColumns = @JoinColumn(name = "service_id"))
     private Set<WatchService> watchServices;
+
+    public AnimeSeason() {}
 
     public AnimeSeason(long idAnime, Season season) {
         this.idAnime = idAnime;

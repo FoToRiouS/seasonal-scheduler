@@ -20,6 +20,8 @@ public class Season {
     @Column(name = "year")
     private long year;
 
+    public Season() {  }
+
     public Season(Seasons seasonName, long year) {
         this.seasonName = seasonName;
         this.year = year;
@@ -28,7 +30,9 @@ public class Season {
     public Season(String name, long year) {
         this.seasonName = Seasons.valueOf(name);
         this.year = year;
-    }    public UUID getId() {
+    }
+
+    public UUID getId() {
         return id;
     }
 

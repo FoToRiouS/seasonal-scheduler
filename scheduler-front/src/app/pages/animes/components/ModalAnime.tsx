@@ -1,6 +1,9 @@
 import {
     Box,
     Button,
+    Divider,
+    FormControl,
+    FormLabel,
     HStack,
     Image,
     Modal,
@@ -12,7 +15,8 @@ import {
     SimpleGrid,
     Spacer,
     Stack,
-    Text
+    Text,
+    Textarea
 } from "@chakra-ui/react";
 import React, {useContext, useEffect, useState} from "react";
 import {getDayOfExhibition} from "../../../shared/services/AnimesService.ts";
@@ -35,25 +39,22 @@ export const ModalAnime : React.FC<IModalAnimeProps> = ({isOpen, onClose,  anime
     const {season, year} = useContext(SeasonContext);
     const [colorScheme, setColorScheme] = useState("outline")
 
-    const {data: initAnimeSeason} = getAnimeSeasonByParameters(id, year, season)
-    const {mutate, } = saveAnimeSeason();
-
-    const [animeSeason, setAnimeSeason] = useState(initAnimeSeason);
+    const {data: animeSeason} = getAnimeSeasonByParameters(id, year, season)
+    const {mutate, } = saveAnimeSeason(anime.id, year, season);
 
     const handleSaveAnimeSeason = () => {
         const animeSeason: IAnimeSeason = {
-            id: anime.id.toString(),
+            idAnime: anime.id.toString(),
             season: {
                 season: season,
                 year: year
             }
         }
-        setAnimeSeason(animeSeason), //SO PARA NAO FICAR DANDO ERRO
         mutate(animeSeason);
     }
 
     useEffect(() => {
-        console.log(initAnimeSeason)
+        console.log(animeSeason)
     }, [])
 
     return (
@@ -93,18 +94,39 @@ export const ModalAnime : React.FC<IModalAnimeProps> = ({isOpen, onClose,  anime
                                         </HStack>
                                     ) : undefined
                                 }
-                                <Spacer/>
+
                                 {
-                                    animeSeason ?
-                                    <Text>Cadastrado</Text> :
-                                    <Text>Não Cadastrado</Text>
+                                    animeSeason && <>
+                                        <Divider my={5}/>
+                                        <FormControl>
+                                            <FormLabel>Preview</FormLabel>
+                                            <Textarea resize="none"/>
+                                        </FormControl>
+                                        <FormControl>
+                                            <FormLabel>Review</FormLabel>
+                                            <Textarea resize="none"/>
+                                        </FormControl>
+                                        <Spacer/>
+                                        <Button variant={colorScheme} colorScheme={"blue"}
+                                                onMouseEnter={() => setColorScheme("solid")}
+                                                onMouseLeave={() => setColorScheme("outline")}
+                                                onClick={handleSaveAnimeSeason}>
+                                            Salvar
+                                        </Button>
+                                    </>
                                 }
-                                <Button variant={colorScheme} colorScheme={"green"}
-                                        onMouseEnter={() => setColorScheme("solid")}
-                                        onMouseLeave={() => setColorScheme("outline")}
-                                        onClick={handleSaveAnimeSeason}>
-                                    Adicionar a Temporada
-                                </Button>
+                                {
+                                    !animeSeason && <>
+                                        <Spacer/>
+                                        <Button variant={colorScheme} colorScheme={"green"}
+                                                onMouseEnter={() => setColorScheme("solid")}
+                                                onMouseLeave={() => setColorScheme("outline")}
+                                                onClick={handleSaveAnimeSeason}>
+                                            Adicionar a Temporada
+                                        </Button>
+                                    </>
+                                }
+
                             </Stack>
                         </SimpleGrid>
                     </ModalBody>
