@@ -18,7 +18,7 @@ import {
     Text,
     Textarea
 } from "@chakra-ui/react";
-import React, {useContext, useEffect, useState} from "react";
+import React, {useContext, useState} from "react";
 import {getDayOfExhibition} from "../../../shared/services/AnimesService.ts";
 import {IAnime} from "../../../shared/interfaces/IAnime.ts";
 import {SeasonContext} from "../Animes.tsx";
@@ -52,10 +52,6 @@ export const ModalAnime : React.FC<IModalAnimeProps> = ({isOpen, onClose,  anime
         }
         mutate(animeSeason);
     }
-
-    useEffect(() => {
-        console.log(animeSeason)
-    }, [])
 
     return (
         <>
