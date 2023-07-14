@@ -1,7 +1,7 @@
 import React, {ReactNode} from "react";
-import {Flex, Heading, HStack} from "@chakra-ui/react";
 import {MobileMenu} from "./MobileMenu.tsx";
 import {DesktopMenu} from "./DesktopMenu.tsx";
+import {Group, Title} from "@mantine/core";
 
 interface TemplateProps {
     children: ReactNode
@@ -26,13 +26,11 @@ export const Template: React.FC<TemplateProps> = ({children}) => {
     ]
 
     return(<>
-        <HStack bg="blackAlpha.200" boxShadow="xl" minW={"full"} minH={"100px"} mb={16} px={10}>
+        <Group bg="gray.2"  miw="100%" mih={100} mb={16} px={50}>
             <MobileMenu menuItems={items}/>
-            <Flex flex="1">
-                <Heading mx={{base: "auto", lg: "0"}}>Menu</Heading>
-            </Flex>
+            <Title mx={{base: "auto", md: "0"}}>Menu</Title>
             <DesktopMenu menuItems={items}/>
-        </HStack>
+        </Group>
         {children}
     </>)
 

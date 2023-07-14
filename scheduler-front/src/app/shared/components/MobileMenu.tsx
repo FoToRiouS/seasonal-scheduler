@@ -1,49 +1,34 @@
-import {
-    Box,
-    Drawer,
-    DrawerBody,
-    DrawerContent,
-    DrawerHeader,
-    DrawerOverlay,
-    IconButton,
-    useDisclosure,
-    VStack
-} from "@chakra-ui/react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faBars} from "@fortawesome/free-solid-svg-icons";
 import React from "react";
 import {MenuItemInfo} from "./Template.tsx";
 import {MobileNavbarItem} from "./MobileNavbarItem.tsx";
+import {ActionIcon, Box, Drawer} from "@mantine/core";
+import {useDisclosure} from "@mantine/hooks";
 
 interface MobileMenuProps {
     menuItems: MenuItemInfo[]
 }
 
 export const MobileMenu: React.FC<MobileMenuProps> = ({menuItems}) => {
-    const {isOpen, onOpen, onClose} = useDisclosure();
+    const [opened, { open, close }] = useDisclosure();
 
     return(<>
         <Box display={{base: "block", lg: "none"}} pos="absolute">
-            <IconButton variant="outline" borderColor={"black"} icon={<FontAwesomeIcon icon={faBars} />} aria-label="Toogle Menu" onClick={onOpen}/>
+            <ActionIcon><FontAwesomeIcon icon={faBars} onClick={open} size="2x"/></ActionIcon>
             <Drawer
-                isOpen={isOpen}
-                placement='left'
-                onClose={onClose}
+                opened={opened}
+                position='left'
+                onClose={close}
+                title="Menu"
             >
-                <DrawerOverlay />
-                <DrawerContent>
-                    <DrawerHeader>Menu</DrawerHeader>
-
-                    <DrawerBody>
-                        <VStack align="start" spacing={5}>
-                            {
-                                menuItems.map((item) => {
-                                    return <MobileNavbarItem item={item}/>
-                                })
-                            }
-                        </VStack>
-                    </DrawerBody>
-                </DrawerContent>
+                <Drawer.Body px={0}>
+                    {
+                        menuItems.map((item) => {
+                            return <MobileNavbarItem item={item}/>
+                        })
+                    }
+                </Drawer.Body>
             </Drawer>
         </Box>
     </>)

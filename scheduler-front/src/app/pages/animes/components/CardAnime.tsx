@@ -1,7 +1,7 @@
 import React from "react";
-import {Button, Card, CardBody, CardFooter, Flex, Heading, Image, Spacer} from "@chakra-ui/react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEye} from "@fortawesome/free-solid-svg-icons";
+import {Button, Card, Group, Image, Stack, Title} from "@mantine/core";
 
 interface ICardAnimeProps {
     image: string,
@@ -15,20 +15,17 @@ const fontSize = "md"
 export const CardAnime: React.FC<ICardAnimeProps> = ({image, jpnName, engName, onOpen}) => {
     return (
         <>
-            <Card bg={"blackAlpha.800"} maxW={"sm"} minW={"sm"} minH={"full"}>
-                <CardBody>
-                    <Flex minW={"full"} maxH={450} mb={3} overflow={"hidden"} justify={"center"} align={"center"} borderRadius={"lg"} border={"1px"} borderColor={"white"} >
-                        <Image src={image} alt={jpnName} borderRadius={"lg"}/>
-                    </Flex>
-                    <Spacer/>
-                    <Flex direction={"column"} align={"center"}>
-                        <Heading color={"white"} fontSize={fontSize} textAlign={"center"} mb={2}>{jpnName}</Heading>
-                        <Heading color={"white"} fontSize={fontSize} textAlign={"center"}>{engName}</Heading>
-                    </Flex>
-                </CardBody>
-                <CardFooter display={"flex"} justify={"end"}>
+            <Card bg="black" radius="lg" withBorder>
+                <Card.Section>
+                    <Image src={image} alt={jpnName}/>
+                </Card.Section>
+                <Stack spacing="xs">
+                    <Title order={3} c={"white"} fs={fontSize} ta={"center"} mb={2}>{jpnName}</Title>
+                    <Title order={3} c={"white"} fs={fontSize} ta={"center"}>{engName}</Title>
+                </Stack>
+                <Group position="right">
                     <Button leftIcon={<FontAwesomeIcon icon={faEye}/>} onClick={onOpen}>Info</Button>
-                </CardFooter>
+                </Group>
             </Card>
         </>
     )

@@ -1,7 +1,7 @@
 import React from "react";
 import {MenuItemInfo} from "./Template.tsx";
 import {DesktopNavbarItem} from "./DesktopNavbarItem.tsx";
-import {HStack} from "@chakra-ui/react";
+import {Group} from "@mantine/core";
 
 interface DesktopMenuProps {
     menuItems: MenuItemInfo[]
@@ -9,12 +9,12 @@ interface DesktopMenuProps {
 
 export const DesktopMenu: React.FC<DesktopMenuProps> = ({menuItems}) => {
     return (<>
-        <HStack spacing={5} display={{base: "none", lg: "flex"}}>
+        <Group ml="auto" display={{base: "none", lg: "flex"}}>
         {
             menuItems.map((item) => {
                 return <DesktopNavbarItem item={item}/>
             })
         }
-        </HStack>
+        </Group>
     </>)
 }
