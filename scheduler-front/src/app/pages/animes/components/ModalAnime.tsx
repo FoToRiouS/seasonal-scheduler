@@ -1,8 +1,6 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {getDayOfExhibition} from "../../../shared/services/AnimesService.ts";
 import {IAnime} from "../../../shared/interfaces/IAnime.ts";
-import {SeasonContext} from "../Animes.tsx";
-import {useAnimeSeasonByParameters} from "../../../shared/hooks/backend/useAnimeSeasonByParameters.ts";
 import {useSaveAnimeSeason} from "../../../shared/hooks/backend/useSaveAnimeSeason.ts";
 import {Button, Chip, Divider, Grid, Group, Image, Modal, SimpleGrid, Stack, Text, Textarea} from "@mantine/core";
 import {useToggle} from "@mantine/hooks";
@@ -10,25 +8,28 @@ import {useWatchServiceList} from "../../../shared/hooks/backend/useWatchService
 import {useUpdateAnimeSeason} from "../../../shared/hooks/backend/useUpdateAnimeSeason.ts";
 import {IAnimeSeasonUpdateDTO} from "../../../shared/interfaces/IAnimeSeasonUpdateDTO.ts";
 import {IAnimeSeasonSaveDTO} from "../../../shared/interfaces/IAnimeSeasonSaveDTO.ts";
+import {useSeasonContext} from "../../../shared/hooks/context/useSeasonContext.ts";
+import {IAnimeSeason} from "../../../shared/interfaces/IAnimeSeason.ts";
 
 interface IModalAnimeProps {
     isOpen: boolean
     onClose: () => void
     anime: IAnime
+    animeSeason: IAnimeSeason | undefined
 }
 
-export const ModalAnime : React.FC<IModalAnimeProps> = ({isOpen, onClose,  anime}) => {
+export const ModalAnime : React.FC<IModalAnimeProps> = ({isOpen, onClose,  anime, animeSeason}) => {
     const {id, alternativeTitles, title, mainPicture, broadcast, mean} = anime;
 
     const [value, toggle] = useToggle(["outline", "filled"])
-    const {season, year} = useContext(SeasonContext);
+    const {season, year} = useSeasonContext();
 
     const [services, setServices] = useState([] as string[]);
     const [preview, setPreview] = useState("");
     const [review, setReview] = useState("");
 
     const {data: watchServices} = useWatchServiceList();
-    const {data: animeSeason} = useAnimeSeasonByParameters(id, year, season)
+
     const {mutate: save, isLoading: isSaving } = useSaveAnimeSeason(id, year, season);
     const {mutate: update, isLoading: isUpdating } = useUpdateAnimeSeason(id, year, season);
 

@@ -17,11 +17,9 @@ export const Template: React.FC<TemplateProps> = ({children}) => {
 
     const items: MenuItemInfo[] = [
         {nome: "Animes", subItems: [
-                {nome: "Animes da Temporada", link: "/animes"},
-                {nome: "Calendário", link: ""}
+                {nome: "Animes da Temporada", link: "/animes/list"},
+                {nome: "Calendário", link: "/animes/schedule"}
             ]},
-        // {nome: "Animes da Temporada", link: "/animes"},
-        // {nome: "Calendário", link: ""},
         {nome: "Login", link: "/login"}
     ]
 

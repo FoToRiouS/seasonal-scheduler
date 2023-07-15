@@ -5,6 +5,7 @@ import apps.schedulerback.model.record.AnimeSeasonResponse;
 import apps.schedulerback.model.record.AnimeSeasonSaveDTO;
 import apps.schedulerback.model.record.AnimeSeasonUpdateDTO;
 import apps.schedulerback.service.AnimeSeasonService;
+import jakarta.validation.constraints.NotEmpty;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -44,6 +45,12 @@ public class AnimeSeasonController {
     public ResponseEntity<Boolean> updateAnimeSeason(@PathVariable String uuid, @RequestBody AnimeSeasonUpdateDTO saveRequest){
         animeSeasonService.updateAnimeAndSeason(UUID.fromString(uuid), saveRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @DeleteMapping ("/{uuid}")
+    public ResponseEntity<Boolean> deleteAnimeSeason(@PathVariable @NotEmpty String uuid){
+        animeSeasonService.deleteById(UUID.fromString(uuid));
+        return ResponseEntity.ok().build();
     }
 
 }

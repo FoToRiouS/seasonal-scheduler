@@ -1,14 +1,15 @@
 import {createContext, useCallback, useEffect, useState} from "react";
 import {AnimeSeasons, getCurrentSeason} from "../../shared/services/AnimesService.ts";
 import {AnimeItem} from "./components/AnimeItem.tsx";
-import {getAnimesBySeason} from "../../shared/hooks/animes/getAnimesBySeason.ts";
+import {getAnimesBySeason} from "../../shared/hooks/myanimelist/getAnimesBySeason.ts";
 import {IAnime, IStartSeason} from "../../shared/interfaces/IAnime.ts";
 import {Template} from "../../shared/components/Template.tsx";
-import {Box, Container, Grid, Loader, NumberInput, Select, SimpleGrid, TextInput} from "@mantine/core";
+import {Box, Center, Container, Loader, SimpleGrid} from "@mantine/core";
+import {SearchHeaderAnime} from "./components/SearchHeaderAnime.tsx";
 
 export const SeasonContext = createContext<IStartSeason>({} as IStartSeason);
 
-export const Animes = () => {
+export const ListAnimes = () => {
     const currentYear = new Date().getFullYear();
     const currentSeason = getCurrentSeason();
 
@@ -47,25 +48,18 @@ export const Animes = () => {
                 <Template>
                     <Box>
                     <Container maw={{xs: "100%", lg: "80%"}} mb={16}>
-                        <Grid gutter="xs" mb={40}>
-                            <Grid.Col span={8}>
-                                <TextInput placeholder={"Nome..."} value={searchValue} onChange={e => setSearchValue(e.currentTarget.value)} styles={{root: {flexGrow: 1} }}/>
-                            </Grid.Col>
-                            <Grid.Col span={2}>
-                                <Select value={season} onChange={(e) => setSeason(e as AnimeSeasons)} data={[
-                                    {value: "winter", label: "Inverno"},
-                                    {value: "spring", label: "Primavera"},
-                                    {value: "summer", label: "Verão"},
-                                    {value: "fall", label: "Outono"}
-                                ]}/>
-                            </Grid.Col>
-                            <Grid.Col span={2}>
-                                <NumberInput defaultValue={year} onChange={setYear} min={1900} max={currentYear}/>
-                            </Grid.Col>
-                        </Grid>
+                        <SearchHeaderAnime  searchValue={searchValue}
+                                            setSearchValue={setSearchValue}
+                                            season={season}
+                                            setSeason={setSeason}
+                                            year={year}
+                                            setYear={setYear}
+                                            currentYear={currentYear} />
                         {
                             isLoading &&
-                            <Loader size="xl"/>
+                            <Center>
+                                <Loader size="xl" color="grape.9"/>
+                            </Center>
                         }
                         {
                             !isLoading &&
