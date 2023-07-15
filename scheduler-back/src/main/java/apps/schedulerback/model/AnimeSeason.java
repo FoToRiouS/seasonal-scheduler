@@ -2,7 +2,8 @@ package apps.schedulerback.model;
 
 import jakarta.persistence.*;
 
-import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.UUID;
 
 @Entity
@@ -16,7 +17,7 @@ public class AnimeSeason {
     @Column(name = "id_anime")
     private long idAnime;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "season_id")
     private Season season;
 
@@ -26,12 +27,12 @@ public class AnimeSeason {
     @Column(name = "review_text")
     private String reviewText;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "anime_service",
             joinColumns = @JoinColumn(name = "anime_id"),
             inverseJoinColumns = @JoinColumn(name = "service_id"))
-    private Set<WatchService> watchServices;
+    private SortedSet<WatchService> watchServices;
 
     public AnimeSeason() {}
 
@@ -80,11 +81,14 @@ public class AnimeSeason {
         this.reviewText = reviewText;
     }
 
-    public Set<WatchService> getWatchServices() {
+    public SortedSet<WatchService> getWatchServices() {
+        if(watchServices == null){
+            watchServices = new TreeSet<>();
+        }
         return watchServices;
     }
 
-    public void setWatchServices(Set<WatchService> watchServices) {
+    public void setWatchServices(SortedSet<WatchService> watchServices) {
         this.watchServices = watchServices;
     }
 }

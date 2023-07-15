@@ -1,16 +1,17 @@
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {IAnimeSeason} from "../../interfaces/IAnimeSeason.ts";
 import {SchedulerBackApi} from "../../services/api/SchedulerBackApi.ts";
+import {IAnimeSeasonSaveDTO} from "../../interfaces/IAnimeSeasonSaveDTO.ts";
 import {AnimeSeasons} from "../../services/AnimesService.ts";
 
-const saveAnimeSeasonq = async (animeSeason: IAnimeSeason) : Promise<IAnimeSeason> => {
-    return SchedulerBackApi().post("/animeseason/", {idAnime: animeSeason.idAnime, season: animeSeason.season.season, year: animeSeason.season.year});
+const saveAnimeSeason = async (animeSeason: IAnimeSeasonSaveDTO) : Promise<IAnimeSeason> => {
+    return SchedulerBackApi().post("/animeseason/", animeSeason);
 
 }
-export function saveAnimeSeason(idAnime: number, year: number, season: AnimeSeasons) {
+export function useSaveAnimeSeason(idAnime: number, year: number, season: AnimeSeasons) {
     const queryClient = useQueryClient()
     return useMutation({
-        mutationFn: saveAnimeSeasonq,
+        mutationFn: saveAnimeSeason,
         retry: 2,
         onSuccess: () => {
             queryClient.invalidateQueries(["anime-season", idAnime, year, season])

@@ -1,8 +1,10 @@
 import {IStartSeason} from "./IAnime.ts";
 
 export interface IAnimeSeason {
-    idAnime: string,
-    season: IStartSeason,
+    id?: string,
+    idAnime?: string,
+    season?: IStartSeason,
     previewText?: string,
-    reviewText?: string
+    reviewText?: string,
+    services?: string[]
 }

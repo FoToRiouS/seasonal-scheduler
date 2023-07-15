@@ -2,12 +2,14 @@ import React, {useContext, useEffect, useState} from "react";
 import {getDayOfExhibition} from "../../../shared/services/AnimesService.ts";
 import {IAnime} from "../../../shared/interfaces/IAnime.ts";
 import {SeasonContext} from "../Animes.tsx";
-import {getAnimeSeasonByParameters} from "../../../shared/hooks/backend/getAnimeSeasonByParameters.ts";
-import {saveAnimeSeason} from "../../../shared/hooks/backend/saveAnimeSeason.ts";
-import {IAnimeSeason} from "../../../shared/interfaces/IAnimeSeason.ts";
-import {Button, Grid, Group, Image, Menu, Modal, Stack, Text, Textarea} from "@mantine/core";
-import Divider = Menu.Divider;
-
+import {useAnimeSeasonByParameters} from "../../../shared/hooks/backend/useAnimeSeasonByParameters.ts";
+import {useSaveAnimeSeason} from "../../../shared/hooks/backend/useSaveAnimeSeason.ts";
+import {Button, Chip, Divider, Grid, Group, Image, Modal, SimpleGrid, Stack, Text, Textarea} from "@mantine/core";
+import {useToggle} from "@mantine/hooks";
+import {useWatchServiceList} from "../../../shared/hooks/backend/useWatchServiceList.ts";
+import {useUpdateAnimeSeason} from "../../../shared/hooks/backend/useUpdateAnimeSeason.ts";
+import {IAnimeSeasonUpdateDTO} from "../../../shared/interfaces/IAnimeSeasonUpdateDTO.ts";
+import {IAnimeSeasonSaveDTO} from "../../../shared/interfaces/IAnimeSeasonSaveDTO.ts";
 
 interface IModalAnimeProps {
     isOpen: boolean
@@ -15,44 +17,58 @@ interface IModalAnimeProps {
     anime: IAnime
 }
 
-function Spacer() {
-    return null;
-}
-
 export const ModalAnime : React.FC<IModalAnimeProps> = ({isOpen, onClose,  anime}) => {
     const {id, alternativeTitles, title, mainPicture, broadcast, mean} = anime;
 
+    const [value, toggle] = useToggle(["outline", "filled"])
     const {season, year} = useContext(SeasonContext);
-    const [colorScheme, setColorScheme] = useState("outline")
 
-    const {data: animeSeason} = getAnimeSeasonByParameters(id, year, season)
-    const {mutate, } = saveAnimeSeason(anime.id, year, season);
+    const [services, setServices] = useState([] as string[]);
+    const [preview, setPreview] = useState("");
+    const [review, setReview] = useState("");
+
+    const {data: watchServices} = useWatchServiceList();
+    const {data: animeSeason} = useAnimeSeasonByParameters(id, year, season)
+    const {mutate: save, isLoading: isSaving } = useSaveAnimeSeason(id, year, season);
+    const {mutate: update, isLoading: isUpdating } = useUpdateAnimeSeason(id, year, season);
 
     const handleSaveAnimeSeason = () => {
-        const animeSeason: IAnimeSeason = {
+        const animeSeason: IAnimeSeasonSaveDTO = {
             idAnime: anime.id.toString(),
-            season: {
-                season: season,
-                year: year
-            }
+            year: year,
+            season: season
         }
-        mutate(animeSeason);
+        save(animeSeason);
+    }
+
+    const handleUpdateAnimeSeason = () => {
+        const animeSeasonUpdate: IAnimeSeasonUpdateDTO = {
+            id: animeSeason?.id as string,
+            previewText: preview,
+            reviewText: review,
+            services: services
+        }
+        update(animeSeasonUpdate);
     }
 
     useEffect(() => {
-        console.log(animeSeason)
-    }, [])
+        if(animeSeason?.idAnime){
+            setPreview(animeSeason.previewText ? animeSeason.previewText : "");
+            setReview(animeSeason.reviewText ? animeSeason.reviewText : "");
+            setServices(animeSeason.services  ? animeSeason.services : [])
+        }
+    }, [animeSeason])
 
     return (
         <>
-            <Modal opened={isOpen} onClose={onClose} title={title}  centered size="xl">
-                <Grid>
-                    <Grid.Col span={6}>
+            <Modal opened={isOpen} onClose={onClose} title={title}  centered size="xl" radius="lg" closeOnClickOutside={false}>
+                <Grid columns={2}>
+                    <Grid.Col xs={2} lg={1}>
                         <Image src={mainPicture.large} w="100%" radius="md"/>
                     </Grid.Col>
-                    <Grid.Col span={6}>
-                        <Stack>
-                            <Group spacing={3}>
+                    <Grid.Col xs={2} lg={1}>
+                        <Stack h="100%">
+                            <Group spacing="xs">
                                 <Text fw="bold">Nome:</Text>
                                 <Text>
                                     {title}
@@ -61,7 +77,7 @@ export const ModalAnime : React.FC<IModalAnimeProps> = ({isOpen, onClose,  anime
                             </Group>
                             {
                                 mean ?
-                                    <Group spacing={3}>
+                                    <Group spacing="xs">
                                         <Text fw="bold">Score:</Text>
                                         <Text>{mean}</Text>
                                     </Group>
@@ -70,7 +86,7 @@ export const ModalAnime : React.FC<IModalAnimeProps> = ({isOpen, onClose,  anime
 
                             {
                                 broadcast ? (
-                                    <Group spacing={3}>
+                                    <Group spacing="xs">
                                         <Text fw="bold">Exibição:</Text>
                                         <Text tt={"capitalize"}>{getDayOfExhibition(broadcast.day_of_the_week, broadcast.start_time)}</Text>
                                     </Group>
@@ -80,24 +96,44 @@ export const ModalAnime : React.FC<IModalAnimeProps> = ({isOpen, onClose,  anime
                             {
                                 animeSeason && <>
                                     <Divider my={5}/>
-                                    <Textarea label="Preview"/>
-                                    <Textarea label="review"/>
-                                    <Button variant={colorScheme} color={"blue"}
-                                            onMouseEnter={() => setColorScheme("solid")}
-                                            onMouseLeave={() => setColorScheme("outline")}
-                                            onClick={handleSaveAnimeSeason}>
-                                        Salvar
+                                    <Textarea label="Preview" value={preview} onChange={e => setPreview(e.currentTarget.value)}/>
+                                    <Textarea label="Review" value={review} onChange={e => setReview(e.currentTarget.value)}/>
+                                    <Chip.Group multiple value={services} onChange={setServices}>
+                                        <SimpleGrid cols={2}>
+                                        {
+                                            watchServices?.sort((w1, w2) => {
+                                                if ( w1.name < w2.name ){
+                                                    return -1;
+                                                }
+                                                if ( w1.name > w2.name ){
+                                                    return 1;
+                                                }
+                                                return 0;
+                                            }).map(w => {
+                                                return <Chip key={w.id}
+                                                             value={w.id}
+                                                             color={w.color}
+                                                             variant="filled"
+                                                             styles={{label: {width: "100%", justifyContent: "center"}}}>{w.name}</Chip>
+                                            })
+                                        }
+                                        </SimpleGrid>
+                                    </Chip.Group>
+                                    <Button variant={value} color={"grape.9"} mt="auto" loading={isUpdating}
+                                            onMouseEnter={() => toggle()}
+                                            onMouseLeave={() => toggle()}
+                                            onClick={handleUpdateAnimeSeason}>
+                                        {isUpdating ? "Salvando..." : "Salvar"}
                                     </Button>
                                 </>
                             }
                             {
                                 !animeSeason && <>
-                                    <Spacer/>
-                                    <Button variant={colorScheme} color={"green"}
-                                            onMouseEnter={() => setColorScheme("solid")}
-                                            onMouseLeave={() => setColorScheme("outline")}
+                                    <Button variant={value} color={"green.9"} mt="auto" loading={isSaving}
+                                            onMouseEnter={() => toggle()}
+                                            onMouseLeave={() => toggle()}
                                             onClick={handleSaveAnimeSeason}>
-                                        Adicionar a Temporada
+                                        {isUpdating ? "Adicionando..." : "Adicionar a Temporada"}
                                     </Button>
                                 </>
                             }

@@ -12,7 +12,7 @@ export const DesktopMenu: React.FC<DesktopMenuProps> = ({menuItems}) => {
         <Group ml="auto" display={{base: "none", lg: "flex"}}>
         {
             menuItems.map((item) => {
-                return <DesktopNavbarItem item={item}/>
+                return <DesktopNavbarItem key={item.nome} item={item}/>
             })
         }
         </Group>

@@ -27,7 +27,7 @@ export const DesktopNavbarItem: React.FC<DesktopNavbarItemProps> = ({item}) => {
                 <Menu.Dropdown>
                     {
                         item.subItems?.map(si => {
-                            return <Menu.Item onClick={() => navigate(si.link as string)}>{si.nome}</Menu.Item>
+                            return <Menu.Item key={si.nome} onClick={() => navigate(si.link as string)}>{si.nome}</Menu.Item>
                         })
                     }
                 </Menu.Dropdown>

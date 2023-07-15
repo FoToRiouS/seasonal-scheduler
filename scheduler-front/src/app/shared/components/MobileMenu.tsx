@@ -25,7 +25,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({menuItems}) => {
                 <Drawer.Body px={0}>
                     {
                         menuItems.map((item) => {
-                            return <MobileNavbarItem item={item}/>
+                            return <MobileNavbarItem key={item.nome} item={item}/>
                         })
                     }
                 </Drawer.Body>
