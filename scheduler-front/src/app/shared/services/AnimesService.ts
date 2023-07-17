@@ -49,7 +49,7 @@ export function getDayOfExhibition(day: string, hour: string) {
 
 const animeApiHeaders = {"X-MAL-CLIENT-ID": "eb6aa17ec9b6961f8812f79c38318240"}
 
-export const mapJsonAnime = (node: any) => {
+const mapJsonAnimeFromList = (node: any) => {
     return <IAnime> {
         id: node.node.id,
         title: node.node.title,
@@ -62,12 +62,25 @@ export const mapJsonAnime = (node: any) => {
     }
 }
 
+export const mapJsonAnimeFromId = (node: any) => {
+    return <IAnime> {
+        id: node.id,
+        title: node.title,
+        alternativeTitles: node.alternative_titles,
+        mainPicture: node.main_picture,
+        mean: node.mean,
+        broadcast: node.broadcast,
+        mediaType: node.media_type,
+        startSeason: node.start_season
+    }
+}
+
 const getBySeason = async (year: number, season: AnimeSeasons): Promise<IAnime[]>  => {
     const { data } = await MyAnimeListApi().get(`/anime/season/${year}/${season}?limit=500&fields=alternative_titles,broadcast,media_type,start_season,mean`, {
         headers: animeApiHeaders
     });
-
-    return data.data.map(mapJsonAnime)
+    console.log(data)
+    return data.data.map(mapJsonAnimeFromList)
         .filter((a:IAnime) => a.mediaType === "tv" || a.mediaType === "ona" || a.mediaType === "ova")
         .filter((a:IAnime) => a.startSeason && a.startSeason.year === year && a.startSeason.season === season)
         .sort((a1:IAnime, a2:IAnime) => {
@@ -76,10 +89,10 @@ const getBySeason = async (year: number, season: AnimeSeasons): Promise<IAnime[]
 }
 
 const getById = async (id: number) : Promise<IAnime> => {
-    const { data } = await MyAnimeListApi().get(`/anime/${id}?fields=alternative_titles,broadcast,media_type,start_season`, {
+    const { data } = await MyAnimeListApi().get(`/anime/${id}?fields=alternative_titles,broadcast,media_type,start_season,mean`, {
         headers: animeApiHeaders
     });
-    return data;
+    return mapJsonAnimeFromId(data);
 }
 
 export const AnimesService = {

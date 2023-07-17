@@ -5,6 +5,7 @@ import {BackendService} from "../../services/BackendService.ts";
 export function useAnimeSeasonByParameters(idAnime: number, year: number, season: AnimeSeasons) {
     return useQuery({
         queryFn: () => BackendService.getAnimeSeason(idAnime, year, season),
-        queryKey: ["anime-season", idAnime, year, season]
+        queryKey: ["anime-season", idAnime, year, season],
+        staleTime: 5 * 60 * 1000
     });
 }

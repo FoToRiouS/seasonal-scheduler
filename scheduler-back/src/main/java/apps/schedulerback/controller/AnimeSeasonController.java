@@ -1,7 +1,7 @@
 package apps.schedulerback.controller;
 
 import apps.schedulerback.model.AnimeSeason;
-import apps.schedulerback.model.record.AnimeSeasonResponse;
+import apps.schedulerback.model.record.AnimeSeasonDTO;
 import apps.schedulerback.model.record.AnimeSeasonSaveDTO;
 import apps.schedulerback.model.record.AnimeSeasonUpdateDTO;
 import apps.schedulerback.service.AnimeSeasonService;
@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -24,21 +25,27 @@ public class AnimeSeasonController {
     }
 
     @GetMapping("/{idAnime}/{year}/{season}")
-    public ResponseEntity<AnimeSeasonResponse> getByIdAndSeason(@PathVariable long idAnime, @PathVariable String season, @PathVariable long year){
+    public ResponseEntity<AnimeSeasonDTO> getByIdAndSeason(@PathVariable long idAnime, @PathVariable String season, @PathVariable long year){
         AnimeSeason animeSeason = animeSeasonService.getAnimeSeasonByIdAnimeAndSeason(idAnime, year, season);
         if(animeSeason == null) {
             return ResponseEntity.ok().build();
         }
-        return ResponseEntity.ok(new AnimeSeasonResponse(animeSeason));
+        return ResponseEntity.ok(new AnimeSeasonDTO(animeSeason));
+    }
+
+    @GetMapping("/{year}/{season}")
+    public ResponseEntity<List<AnimeSeasonDTO>> getByIdAndSeason(@PathVariable String season, @PathVariable long year){
+        List<AnimeSeason> list = animeSeasonService.getAnimeSeasonBySeason(year, season);
+        return ResponseEntity.ok(list.stream().map(a -> new AnimeSeasonDTO(a)).toList());
     }
 
     @PostMapping ("/")
-    public ResponseEntity<AnimeSeasonResponse> saveByIdAndSeason(@RequestBody AnimeSeasonSaveDTO saveRequest){
+    public ResponseEntity<AnimeSeasonDTO> saveByIdAndSeason(@RequestBody AnimeSeasonSaveDTO saveRequest){
         AnimeSeason animeSeason = animeSeasonService.saveAnimeSeasonByIdAnimeAndSeason(saveRequest);
         if(animeSeason == null) {
             return ResponseEntity.badRequest().body(null);
         }
-        return ResponseEntity.ok(new AnimeSeasonResponse(animeSeason));
+        return ResponseEntity.ok(new AnimeSeasonDTO(animeSeason));
     }
 
     @PutMapping ("/{uuid}")

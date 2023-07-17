@@ -18,7 +18,7 @@ interface IModalAnimeProps {
     animeSeason: IAnimeSeason | undefined
 }
 
-export const ModalAnime : React.FC<IModalAnimeProps> = ({isOpen, onClose,  anime, animeSeason}) => {
+export const DrawerAnime : React.FC<IModalAnimeProps> = ({isOpen, onClose,  anime, animeSeason}) => {
 
     const [value, toggle] = useToggle(["outline", "filled"])
     const {season, year} = useSeasonContext();

@@ -8,9 +8,9 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public record AnimeSeasonResponse(UUID id, long idAnime, Season season, String previewText, String reviewText, Set<UUID> services) {
+public record AnimeSeasonDTO(UUID id, long idAnime, Season season, String previewText, String reviewText, Set<UUID> services) {
 
-    public AnimeSeasonResponse(AnimeSeason animeSeason) {
+    public AnimeSeasonDTO(AnimeSeason animeSeason) {
         this(animeSeason.getId(),
                 animeSeason.getIdAnime(),
                 animeSeason.getSeason(),

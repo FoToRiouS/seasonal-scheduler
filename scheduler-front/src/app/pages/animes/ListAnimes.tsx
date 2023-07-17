@@ -1,7 +1,7 @@
 import {createContext, useCallback, useEffect, useState} from "react";
 import {AnimeSeasons, getCurrentSeason} from "../../shared/services/AnimesService.ts";
 import {AnimeItem} from "./components/AnimeItem.tsx";
-import {getAnimesBySeason} from "../../shared/hooks/myanimelist/getAnimesBySeason.ts";
+import {useAnimesBySeason} from "../../shared/hooks/myanimelist/useAnimesBySeason.ts";
 import {IAnime, IStartSeason} from "../../shared/interfaces/IAnime.ts";
 import {Template} from "../../shared/components/Template.tsx";
 import {Box, Center, Container, Loader, SimpleGrid} from "@mantine/core";
@@ -18,7 +18,7 @@ export const ListAnimes = () => {
     const [year, setYear] = useState<number | ''>(currentYear);
     const [season, setSeason] = useState<AnimeSeasons | null>(currentSeason);
 
-    const { data, isLoading } = getAnimesBySeason(+year, season as AnimeSeasons);
+    const { data, isLoading } = useAnimesBySeason(+year, season as AnimeSeasons);
 
     const filterList = useCallback((searchValue: string) => {
         if (data) {
