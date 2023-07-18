@@ -1,7 +1,7 @@
-import React, {useEffect} from "react";
+import React from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCalendarXmark, faEye, faPlus, faStar} from "@fortawesome/free-solid-svg-icons";
-import {ActionIcon, Button, Card, Flex, Group, Image, Stack, Text, Title} from "@mantine/core";
+import {faCalendarXmark, faEye, faPlus} from "@fortawesome/free-solid-svg-icons";
+import {ActionIcon, Box, Button, Card, Group, Image, Stack, Text, Title} from "@mantine/core";
 import {IAnimeSeason} from "../../../shared/interfaces/IAnimeSeason.ts";
 import {useDeleteAnimeSeason} from "../../../shared/hooks/backend/useDeleteAnimeSeason.ts";
 import {useSeasonContext} from "../../../shared/hooks/context/useSeasonContext.ts";
@@ -9,6 +9,7 @@ import {modals} from "@mantine/modals";
 import {IAnime} from "../../../shared/interfaces/IAnime.ts";
 import {useSaveAnimeSeason} from "../../../shared/hooks/backend/useSaveAnimeSeason.ts";
 import {IAnimeSeasonSaveDTO} from "../../../shared/interfaces/IAnimeSeasonSaveDTO.ts";
+import {RatingAnime} from "./RatingAnime.tsx";
 
 interface ICardAnimeProps {
     anime: IAnime,
@@ -21,11 +22,6 @@ export const CardAnime: React.FC<ICardAnimeProps> = ({anime, onOpen, animeSeason
 
     const {mutate: saveAnimeSeason } = useSaveAnimeSeason(anime.id, year, season);
     const {mutate: deleteAnimeSeason} = useDeleteAnimeSeason(anime.id, year, season)
-
-    useEffect(() => {
-        console.log("CARD ANIME")
-        console.log(anime)
-    }, [])
 
     const openDeleteModal = () => {
         modals.openConfirmModal({
@@ -77,10 +73,13 @@ export const CardAnime: React.FC<ICardAnimeProps> = ({anime, onOpen, animeSeason
                 <Group mt="auto" position="right">
                     {
                         anime.mean &&
-                        <Flex h="100%" mr="auto" justify="center" align="center" bg="gray" px="sm" sx={{borderRadius: "2rem", background: "rgba(169, 169, 169, 0.5)"}}>
-                            <Text color="yellow" mr="xs"><FontAwesomeIcon icon={faStar}/></Text>
-                            <Text color="gray.0"> {anime.mean} </Text>
-                        </Flex>
+                        <Box mr="auto" h="100%">
+                            <RatingAnime rating={anime.mean}/>
+                        </Box>
+                        // <Flex h="100%" mr="auto" justify="center" align="center" bg="gray" px="sm" sx={{borderRadius: "2rem", background: "rgba(169, 169, 169, 0.5)"}}>
+                        //     <Text color="yellow" mr="xs"><FontAwesomeIcon icon={faStar}/></Text>
+                        //     <Text color="gray.0"> {anime.mean} </Text>
+                        // </Flex>
                     }
                     {
                         animeSeason ?

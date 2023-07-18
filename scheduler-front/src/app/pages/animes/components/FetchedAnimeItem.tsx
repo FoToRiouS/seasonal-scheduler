@@ -1,9 +1,9 @@
 import React from "react";
-import {ModalAnime} from "./ModalAnime.tsx";
 import {CardAnime} from "./CardAnime.tsx";
 import {IAnime} from "../../../shared/interfaces/IAnime.ts";
 import {useDisclosure} from "@mantine/hooks";
 import {IAnimeSeason} from "../../../shared/interfaces/IAnimeSeason.ts";
+import {ModalAnime} from "./ModalAnime.tsx";
 
 interface IAnimeItemProps {
     anime: IAnime,

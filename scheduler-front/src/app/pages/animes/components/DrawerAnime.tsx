@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import {getDayOfExhibition} from "../../../shared/services/AnimesService.ts";
 import {IAnime} from "../../../shared/interfaces/IAnime.ts";
 import {useSaveAnimeSeason} from "../../../shared/hooks/backend/useSaveAnimeSeason.ts";
-import {Button, Chip, Divider, Grid, Group, Image, Modal, SimpleGrid, Stack, Text, Textarea} from "@mantine/core";
+import {Button, Chip, Divider, Drawer, Grid, Group, Image, SimpleGrid, Stack, Text, Textarea} from "@mantine/core";
 import {useToggle} from "@mantine/hooks";
 import {useWatchServiceList} from "../../../shared/hooks/backend/useWatchServiceList.ts";
 import {useUpdateAnimeSeason} from "../../../shared/hooks/backend/useUpdateAnimeSeason.ts";
@@ -61,13 +61,11 @@ export const DrawerAnime : React.FC<IModalAnimeProps> = ({isOpen, onClose,  anim
 
     return (
         <>
-            <Modal opened={isOpen} onClose={onClose} title={anime!.title}  centered size="xl" radius="lg" closeOnClickOutside={false}>
-                <Grid columns={2}>
-                    <Grid.Col xs={2} lg={1}>
-                        <Image src={anime!.mainPicture.large} w="100%" radius="md"/>
-                    </Grid.Col>
-                    <Grid.Col xs={2} lg={1}>
+            <Drawer opened={isOpen} onClose={onClose} title={anime!.title} position="right">
+                <Grid columns={1}>
+                    <Grid.Col span={1}>
                         <Stack h="100%">
+                            <Image src={anime!.mainPicture.large} h="50%" radius="md"/>
                             <Group spacing="xs">
                                 <Text fw="bold">Nome:</Text>
                                 <Text>
@@ -143,7 +141,7 @@ export const DrawerAnime : React.FC<IModalAnimeProps> = ({isOpen, onClose,  anim
                         </Stack>
                     </Grid.Col>
                 </Grid>
-            </Modal>
+            </Drawer>
         </>
     )
 

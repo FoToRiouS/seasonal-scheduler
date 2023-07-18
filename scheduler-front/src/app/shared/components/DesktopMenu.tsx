@@ -9,7 +9,7 @@ interface DesktopMenuProps {
 
 export const DesktopMenu: React.FC<DesktopMenuProps> = ({menuItems}) => {
     return (<>
-        <Group ml="auto" display={{base: "none", lg: "flex"}}>
+        <Group ml="auto" h="100%" display={{base: "none", lg: "flex"}}>
         {
             menuItems.map((item) => {
                 return <DesktopNavbarItem key={item.nome} item={item}/>

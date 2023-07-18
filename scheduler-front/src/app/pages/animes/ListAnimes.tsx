@@ -1,13 +1,12 @@
-import {createContext, useCallback, useEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import {AnimeSeasons, getCurrentSeason} from "../../shared/services/AnimesService.ts";
 import {AnimeItem} from "./components/AnimeItem.tsx";
 import {useAnimesBySeason} from "../../shared/hooks/myanimelist/useAnimesBySeason.ts";
-import {IAnime, IStartSeason} from "../../shared/interfaces/IAnime.ts";
+import {IAnime} from "../../shared/interfaces/IAnime.ts";
 import {Template} from "../../shared/components/Template.tsx";
 import {Box, Center, Container, Loader, SimpleGrid} from "@mantine/core";
 import {SearchHeaderAnime} from "./components/SearchHeaderAnime.tsx";
-
-export const SeasonContext = createContext<IStartSeason>({} as IStartSeason);
+import {SeasonContextProvider} from "../../shared/contexts/SeasonContextProvider.tsx";
 
 export const ListAnimes = () => {
     const currentYear = new Date().getFullYear();
@@ -44,7 +43,7 @@ export const ListAnimes = () => {
 
     return (
         <>
-            <SeasonContext.Provider value={{year: +year, season: season as AnimeSeasons}}>
+            <SeasonContextProvider year={+year} season={season as AnimeSeasons} >
                 <Template>
                     <Box>
                     <Container maw={{xs: "100%", lg: "80%"}} mb={16}>
@@ -80,7 +79,7 @@ export const ListAnimes = () => {
                     </Container>
                     </Box>
                 </Template>
-            </SeasonContext.Provider>
+            </SeasonContextProvider>
         </>
     )
 }

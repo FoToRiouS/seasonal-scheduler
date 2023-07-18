@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import {getDayOfExhibition} from "../../../shared/services/AnimesService.ts";
 import {IAnime} from "../../../shared/interfaces/IAnime.ts";
 import {useSaveAnimeSeason} from "../../../shared/hooks/backend/useSaveAnimeSeason.ts";
-import {Button, Chip, Divider, Grid, Group, Image, Modal, SimpleGrid, Stack, Text, Textarea} from "@mantine/core";
+import {Box, Button, Chip, Divider, Grid, Group, Image, Modal, SimpleGrid, Stack, Text, Textarea} from "@mantine/core";
 import {useToggle} from "@mantine/hooks";
 import {useWatchServiceList} from "../../../shared/hooks/backend/useWatchServiceList.ts";
 import {useUpdateAnimeSeason} from "../../../shared/hooks/backend/useUpdateAnimeSeason.ts";
@@ -10,6 +10,7 @@ import {IAnimeSeasonUpdateDTO} from "../../../shared/interfaces/IAnimeSeasonUpda
 import {IAnimeSeasonSaveDTO} from "../../../shared/interfaces/IAnimeSeasonSaveDTO.ts";
 import {useSeasonContext} from "../../../shared/hooks/context/useSeasonContext.ts";
 import {IAnimeSeason} from "../../../shared/interfaces/IAnimeSeason.ts";
+import {RatingAnime} from "./RatingAnime.tsx";
 
 interface IModalAnimeProps {
     isOpen: boolean
@@ -64,28 +65,27 @@ export const ModalAnime : React.FC<IModalAnimeProps> = ({isOpen, onClose,  anime
             <Modal opened={isOpen} onClose={onClose} title={anime!.title}  centered size="xl" radius="lg" closeOnClickOutside={false}>
                 <Grid columns={2}>
                     <Grid.Col xs={2} lg={1}>
-                        <Image src={anime!.mainPicture.large} w="100%" radius="md"/>
+                        <Box pos="relative">
+                            <Image src={anime!.mainPicture.large} w="100%" radius="md"/>
+                            {
+                                anime?.mean &&
+                                <Box pos="absolute" bottom={15} right={15}>
+                                    <RatingAnime rating={anime.mean}/>
+                                </Box>
+                            }
+                        </Box>
                     </Grid.Col>
                     <Grid.Col xs={2} lg={1}>
                         <Stack h="100%">
-                            <Group spacing="xs">
+                            <Group spacing="xs" noWrap>
                                 <Text fw="bold">Nome:</Text>
                                 <Text>
-                                    {anime!.title}
+                                    {anime!.title}q
                                     {
                                         anime!.alternativeTitles.en ? " ("+anime!.alternativeTitles.en+")" : undefined
                                     }
                                 </Text>
                             </Group>
-                            {
-                                anime!.mean ?
-                                    <Group spacing="xs">
-                                        <Text fw="bold">Score:</Text>
-                                        <Text>{anime!.mean}</Text>
-                                    </Group>
-                                    : undefined
-                            }
-
                             {
                                 anime!.broadcast ? (
                                     <Group spacing="xs">

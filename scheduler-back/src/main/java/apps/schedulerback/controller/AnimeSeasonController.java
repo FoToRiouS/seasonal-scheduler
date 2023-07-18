@@ -34,9 +34,9 @@ public class AnimeSeasonController {
     }
 
     @GetMapping("/{year}/{season}")
-    public ResponseEntity<List<AnimeSeasonDTO>> getByIdAndSeason(@PathVariable String season, @PathVariable long year){
+    public ResponseEntity<List<Long>> getByIdAndSeason(@PathVariable String season, @PathVariable long year){
         List<AnimeSeason> list = animeSeasonService.getAnimeSeasonBySeason(year, season);
-        return ResponseEntity.ok(list.stream().map(a -> new AnimeSeasonDTO(a)).toList());
+        return ResponseEntity.ok(list.stream().map(AnimeSeason::getIdAnime).toList());
     }
 
     @PostMapping ("/")
