@@ -17,11 +17,24 @@ export const ScheduleAnimes = () => {
     const [searchValue, setSearchValue] = useState("");
     const [year, setYear] = useState<number | ''>(currentYear);
     const [season, setSeason] = useState<AnimeSeasons | null>(currentSeason);
+    const [orderStrategy, setOrderStrategy] = useState<"rating" | "name">("rating")
 
     const {data} = useGetAnimeSeasonBySeason(+year, season!)
     const {data: animes, isLoading} = useAnimesBySeason(+year, season!)
 
-    const filterAndOrderList = useCallback((searchValue: string) => {
+    const orderByRating = (a: IAnime, b: IAnime) => {
+        const ratingA = a.mean ? a.mean : 0;
+        const ratingB = b.mean ? b.mean : 0;
+        if(ratingA === ratingB) return 0
+        else if(ratingB > ratingA) return 1
+        return -1;
+    }
+
+    const orderByName = (a: IAnime, b: IAnime) => {
+        return a.title.localeCompare(b.title);
+    }
+
+    const filterAndOrderList = useCallback((searchValue: string, orderStrategy: (a: IAnime, b: IAnime) => number) => {
         if (data) {
             let filtered = animes?.filter(a => {
                 return data.includes(a.id)
@@ -34,18 +47,16 @@ export const ScheduleAnimes = () => {
             }
 
             if(filtered){
-                filtered = [...filtered].sort((a,b) => {
-                    return b.mean - a.mean;
-                })
+                filtered = [...filtered].sort(orderStrategy)
             }
-
             setFilteredList(filtered);
         }
     }, [data, animes])
 
     useEffect(() => {
-        filterAndOrderList(searchValue);
-    }, [searchValue, animes, data]);
+        const strategy = orderStrategy === "rating" ? orderByRating : orderByName;
+        filterAndOrderList(searchValue, strategy);
+    }, [searchValue, orderStrategy, animes, data]);
 
     useEffect(() => {
         setSearchValue("");
@@ -61,7 +72,9 @@ export const ScheduleAnimes = () => {
                                         setSeason={setSeason}
                                         year={year}
                                         setYear={setYear}
-                                        currentYear={currentYear} />
+                                        currentYear={currentYear}
+                                        orderStrategy={orderStrategy}
+                                        setOrderStrategy={setOrderStrategy}/>
                     {
                         isLoading &&
                         <Center>

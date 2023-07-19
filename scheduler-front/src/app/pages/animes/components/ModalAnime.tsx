@@ -80,7 +80,7 @@ export const ModalAnime : React.FC<IModalAnimeProps> = ({isOpen, onClose,  anime
                             <Group spacing="xs" noWrap>
                                 <Text fw="bold">Nome:</Text>
                                 <Text>
-                                    {anime!.title}q
+                                    {anime!.title}
                                     {
                                         anime!.alternativeTitles.en ? " ("+anime!.alternativeTitles.en+")" : undefined
                                     }
