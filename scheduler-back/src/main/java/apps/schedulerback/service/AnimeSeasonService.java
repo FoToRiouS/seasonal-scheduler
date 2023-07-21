@@ -1,12 +1,14 @@
 package apps.schedulerback.service;
 
 import apps.schedulerback.model.AnimeSeason;
+import apps.schedulerback.model.Group;
 import apps.schedulerback.model.Season;
 import apps.schedulerback.model.WatchService;
 import apps.schedulerback.model.enums.Seasons;
 import apps.schedulerback.model.record.AnimeSeasonSaveDTO;
 import apps.schedulerback.model.record.AnimeSeasonUpdateDTO;
 import apps.schedulerback.repository.AnimeSeasonRepository;
+import apps.schedulerback.repository.GroupRepository;
 import apps.schedulerback.repository.SeasonRepository;
 import apps.schedulerback.repository.WatchServiceRepository;
 import org.springframework.stereotype.Service;
@@ -23,10 +25,13 @@ public class AnimeSeasonService extends GenericService<AnimeSeason, UUID, AnimeS
 
     private final WatchServiceRepository watchServiceRepository;
 
-    public AnimeSeasonService(AnimeSeasonRepository repository, SeasonRepository seasonRepository, WatchServiceRepository watchServiceRepository) {
+    private final GroupRepository groupRepository;
+
+    public AnimeSeasonService(AnimeSeasonRepository repository, SeasonRepository seasonRepository, WatchServiceRepository watchServiceRepository, GroupRepository groupRepository) {
         super(repository);
         this.seasonRepository = seasonRepository;
         this.watchServiceRepository = watchServiceRepository;
+        this.groupRepository = groupRepository;
     }
 
     public AnimeSeason getAnimeSeasonByIdAnimeAndSeason(Long idAnime, Long year, String seasonName){
@@ -63,5 +68,9 @@ public class AnimeSeasonService extends GenericService<AnimeSeason, UUID, AnimeS
 
     public Collection<WatchService> listAllWatchServices(){
         return watchServiceRepository.findAll();
+    }
+
+    public Collection<Group> listAllGroups(){
+        return groupRepository.findAll();
     }
 }

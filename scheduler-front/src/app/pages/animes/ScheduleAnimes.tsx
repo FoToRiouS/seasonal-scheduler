@@ -1,5 +1,5 @@
 import {Template} from "../../shared/components/Template.tsx";
-import {Center, Container, Loader, SimpleGrid} from "@mantine/core";
+import {Button, Center, Container, Loader, SimpleGrid} from "@mantine/core";
 import {AnimeSeasons, getCurrentSeason} from "../../shared/services/AnimesService.ts";
 import {useCallback, useEffect, useState} from "react";
 import {SearchHeaderAnime} from "./components/SearchHeaderAnime.tsx";
@@ -8,6 +8,7 @@ import {useAnimesBySeason} from "../../shared/hooks/myanimelist/useAnimesBySeaso
 import {IAnime} from "../../shared/interfaces/IAnime.ts";
 import {AnimeItem} from "./components/AnimeItem.tsx";
 import {SeasonContextProvider} from "../../shared/contexts/SeasonContextProvider.tsx";
+import {useSendListTelegram} from "../../shared/hooks/telegram/useSendListTelegram.ts";
 
 export const ScheduleAnimes = () => {
     const currentYear = new Date().getFullYear();
@@ -21,6 +22,7 @@ export const ScheduleAnimes = () => {
 
     const {data} = useGetAnimeSeasonBySeason(+year, season!)
     const {data: animes, isLoading} = useAnimesBySeason(+year, season!)
+    const sendList = useSendListTelegram();
 
     const orderByRating = (a: IAnime, b: IAnime) => {
         const ratingA = a.mean ? a.mean : 0;
@@ -75,6 +77,7 @@ export const ScheduleAnimes = () => {
                                         currentYear={currentYear}
                                         orderStrategy={orderStrategy}
                                         setOrderStrategy={setOrderStrategy}/>
+
                     {
                         isLoading &&
                         <Center>
@@ -82,7 +85,8 @@ export const ScheduleAnimes = () => {
                         </Center>
                     }
                     {
-                        !isLoading &&
+                        !isLoading && <>
+                        <Button onClick={() => sendList(filteredList)}>Enviar Lista</Button>
                         <SimpleGrid
                             breakpoints={[
                                 {minWidth: "lg", cols: 4}
@@ -95,7 +99,7 @@ export const ScheduleAnimes = () => {
                                     )
                                 })
                             }
-                        </SimpleGrid>
+                        </SimpleGrid> </>
                     }
                 </Container>
             </Template>

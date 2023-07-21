@@ -18,6 +18,13 @@ export default defineConfig({
         secure: false,
         ws: true,
         rewrite: (path) => path.replace(/^\/backend/, "")
+      },
+      '/telegram': {
+        target: 'https://api.telegram.org/bot6353731187:AAESmnxiCkivT5JOR3q-WHyjIClzQsNsWck',
+        changeOrigin: true,
+        secure: false,
+        ws: true,
+        rewrite: (path) => path.replace(/^\/telegram/, "")
       }
     },
   },
