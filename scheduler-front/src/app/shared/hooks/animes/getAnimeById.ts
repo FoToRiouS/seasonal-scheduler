@@ -6,4 +6,4 @@ export function getAnimeBySeason(id: number) {
         queryFn: () => AnimesService.getById(id),
         queryKey: ["animes-season", id]
     });
-}
+}onst 
