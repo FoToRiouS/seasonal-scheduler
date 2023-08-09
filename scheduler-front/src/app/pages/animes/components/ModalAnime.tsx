@@ -11,6 +11,7 @@ import {IAnimeSeasonSaveDTO} from "../../../shared/interfaces/IAnimeSeasonSaveDT
 import {useSeasonContext} from "../../../shared/hooks/context/useSeasonContext.ts";
 import {IAnimeSeason} from "../../../shared/interfaces/IAnimeSeason.ts";
 import {RatingAnime} from "./RatingAnime.tsx";
+import {notifications} from "@mantine/notifications";
 
 interface IModalAnimeProps {
     isOpen: boolean
@@ -31,7 +32,7 @@ export const ModalAnime : React.FC<IModalAnimeProps> = ({isOpen, onClose,  anime
     const {data: watchServices} = useWatchServiceList();
 
     const {mutate: save, isLoading: isSaving } = useSaveAnimeSeason(anime!.id, year, season);
-    const {mutate: update, isLoading: isUpdating } = useUpdateAnimeSeason(anime!.id, year, season);
+    const {mutate: update, isLoading: isUpdating, isSuccess } = useUpdateAnimeSeason(anime!.id, year, season);
 
     const handleSaveAnimeSeason = () => {
         const animeSeason: IAnimeSeasonSaveDTO = {
@@ -40,6 +41,15 @@ export const ModalAnime : React.FC<IModalAnimeProps> = ({isOpen, onClose,  anime
             season: season
         }
         save(animeSeason);
+    }
+
+    const onUpdateSuccess = () => {
+        notifications.show({
+            title: 'Salvo com sucesso',
+            message: 'Informações foram salvas com sucesso!',
+            color: "green",
+            autoClose: 5000
+        })
     }
 
     const handleUpdateAnimeSeason = () => {
@@ -59,6 +69,13 @@ export const ModalAnime : React.FC<IModalAnimeProps> = ({isOpen, onClose,  anime
             setServices(animeSeason.services  ? animeSeason.services : [])
         }
     }, [animeSeason])
+
+    useEffect(() => {
+        if(isSuccess){
+            onUpdateSuccess();
+            onClose();
+        }
+    }, [isSuccess]);
 
     return (
         <>

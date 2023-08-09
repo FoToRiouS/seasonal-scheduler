@@ -1,7 +1,7 @@
 import React, {ReactNode} from "react";
 import {MobileMenu} from "./MobileMenu.tsx";
 import {DesktopMenu} from "./DesktopMenu.tsx";
-import {Group, Title} from "@mantine/core";
+import {Box, Group, Title} from "@mantine/core";
 
 interface TemplateProps {
     children: ReactNode
@@ -29,7 +29,9 @@ export const Template: React.FC<TemplateProps> = ({children}) => {
             <Title mx={{base: "auto", md: "0"}}>Menu</Title>
             <DesktopMenu menuItems={items}/>
         </Group>
-        {children}
+        <Box>
+            {children}
+        </Box>
     </>)
 
 }

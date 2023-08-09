@@ -8,7 +8,8 @@ export interface IAnime {
     mainPicture: IMainPicture,
     broadcast: IBroadcast,
     startSeason: IStartSeason,
-    mediaType: "tv" | "ona" | "ova" | "movie" | "special"
+    mediaType: "tv" | "ona" | "ova" | "movie" | "special",
+    genres: IGenre[]
 }
 
 interface IAlternativeTitles {
@@ -25,7 +26,13 @@ interface IBroadcast {
     start_time: string
 }
 
+export interface IGenre {
+    id: number,
+    name: string
+}
+
 export interface IStartSeason {
     year: number,
     season: AnimeSeasons
 }
+

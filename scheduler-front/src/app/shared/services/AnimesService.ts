@@ -58,7 +58,8 @@ const mapJsonAnimeFromList = (node: any) => {
         mean: node.node.mean,
         broadcast: node.node.broadcast,
         mediaType: node.node.media_type,
-        startSeason: node.node.start_season
+        startSeason: node.node.start_season,
+        genres: node.node.genres
     }
 }
 
@@ -71,24 +72,24 @@ export const mapJsonAnimeFromId = (node: any) => {
         mean: node.mean,
         broadcast: node.broadcast,
         mediaType: node.media_type,
-        startSeason: node.start_season
+        startSeason: node.start_season,
+        genres: node.genres
     }
 }
 
 const getBySeason = async (year: number, season: AnimeSeasons): Promise<IAnime[]>  => {
-    const { data } = await MyAnimeListApi().get(`/anime/season/${year}/${season}?limit=500&fields=alternative_titles,broadcast,media_type,start_season,mean`, {
+    const { data } = await MyAnimeListApi().get(`/anime/season/${year}/${season}?limit=500&fields=alternative_titles,broadcast,media_type,start_season,mean,genres&nsfw=true`, {
         headers: animeApiHeaders
     });
-    return data.data.map(mapJsonAnimeFromList)
-        .filter((a:IAnime) => a.mediaType === "tv" || a.mediaType === "ona" || a.mediaType === "ova")
-        .filter((a:IAnime) => a.startSeason && a.startSeason.year === year && a.startSeason.season === season)
-        .sort((a1:IAnime, a2:IAnime) => {
-            return a1.title.localeCompare(a2.title);
-        });
+    const filter = data.data.map(mapJsonAnimeFromList)
+        .filter((a: IAnime) => a.mediaType === "tv" || a.mediaType === "ona" || a.mediaType === "ova")
+        .filter((a: IAnime) => a.startSeason && a.startSeason.year === year && a.startSeason.season === season)
+        .filter((a: IAnime) => a.genres && !(a.genres.map(g => g.name).includes("Hentai")));
+    return filter;
 }
 
 const getById = async (id: number) : Promise<IAnime> => {
-    const { data } = await MyAnimeListApi().get(`/anime/${id}?fields=alternative_titles,broadcast,media_type,start_season,mean`, {
+    const { data } = await MyAnimeListApi().get(`/anime/${id}?fields=alternative_titles,broadcast,media_type,start_season,mean,genres`, {
         headers: animeApiHeaders
     });
     return mapJsonAnimeFromId(data);

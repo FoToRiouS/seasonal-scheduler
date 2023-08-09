@@ -67,9 +67,19 @@ export const CardAnime: React.FC<ICardAnimeProps> = ({anime, onOpen, animeSeason
                     <Image src={anime.mainPicture.large} alt={anime.title} h={450} sx={{overflow: "hidden", display: "flex", justifyContent: "center", alignItems: "center"}}/>
                 </Card.Section>
                 <Stack spacing={0} mb="xl">
-                    <Title order={4} c={"white"} ta={"center"} lineClamp={2}>{anime.title}</Title>
-                    <Title order={5} c={"white"} ta={"center"} lineClamp={2}>{anime.alternativeTitles ? anime.alternativeTitles.en : ""}</Title>
+                    <Title order={4} c={"white"} ta={"center"} lineClamp={2}>{anime.alternativeTitles ? anime.alternativeTitles.en : ""}</Title>
+                    <Title order={5} c={"white"} ta={"center"} lineClamp={2}>{anime.title}</Title>
                 </Stack>
+                <Group>
+                    {
+                        animeSeason && animeSeason.previewText &&
+                        <Text>PREVIEW</Text>
+                    }
+                    {
+                        animeSeason && animeSeason.reviewText &&
+                        <Text>PREVIEW</Text>
+                    }
+                </Group>
                 <Group mt="auto" position="right">
                     {
                         anime.mean &&

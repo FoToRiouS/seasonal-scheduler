@@ -21,10 +21,10 @@ public class AnimeSeason {
     @JoinColumn(name = "season_id")
     private Season season;
 
-    @Column(name = "preview_text")
+    @Column(name = "preview_text", length = 900)
     private String previewText;
 
-    @Column(name = "review_text")
+    @Column(name = "review_text", length = 900)
     private String reviewText;
 
     @ManyToMany(fetch = FetchType.LAZY)
