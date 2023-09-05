@@ -1,5 +1,5 @@
 import {Template} from "../../shared/components/Template.tsx";
-import {Center, Container, Loader, SimpleGrid} from "@mantine/core";
+import {Button, Center, Container, Loader, SimpleGrid} from "@mantine/core";
 import {AnimeSeasons, getCurrentSeason} from "../../shared/services/AnimesService.ts";
 import {useCallback, useEffect, useState} from "react";
 import {SearchHeaderAnime} from "./components/SearchHeaderAnime.tsx";
@@ -7,33 +7,26 @@ import {useGetAnimeSeasonBySeason} from "../../shared/hooks/backend/useGetAnimeS
 import {SeasonContextProvider} from "../../shared/contexts/SeasonContextProvider.tsx";
 import {IAnimeSeason} from "../../shared/interfaces/IAnimeSeason.ts";
 import {FetchedAnimeItem} from "./components/FetchedAnimeItem.tsx";
+import {useAnimesSeasonUtils} from "../../shared/hooks/utils/useAnimesSeasonUtils.ts";
+import {useDisclosure} from "@mantine/hooks";
+import {ModalSendMessages} from "./components/ModalSendMessages.tsx";
 
 export const ScheduleAnimes = () => {
     const currentYear = new Date().getFullYear();
     const currentSeason = getCurrentSeason();
+    const [opened, { open, close }] = useDisclosure(false);
 
     const [filteredList, setFilteredList ] = useState<IAnimeSeason[] | undefined>( []);
     const [searchValue, setSearchValue] = useState("");
     const [year, setYear] = useState<number | ''>(currentYear);
     const [season, setSeason] = useState<AnimeSeasons | null>(currentSeason);
     const [orderStrategy, setOrderStrategy] = useState<"rating" | "name">("rating")
+    const {orderByRating, orderByName} = useAnimesSeasonUtils();
 
     const {data, isLoading} = useGetAnimeSeasonBySeason(+year, season!)
     // const sendList = useSendListTelegram();
 
-    const orderByRating = (a: IAnimeSeason, b: IAnimeSeason) => {
-        const ratingA = a.anime!.mean ? a.anime!.mean : 0;
-        const ratingB = b.anime!.mean ? b.anime!.mean : 0;
-        if(ratingA === ratingB) return 0
-        else if(ratingB > ratingA) return 1
-        return -1;
-    }
-
-    const orderByName = (a: IAnimeSeason, b: IAnimeSeason) => {
-        return a.anime!.title.localeCompare(b.anime!.title);
-    }
-
-    const filterAndOrderList = useCallback((searchValue: string, orderStrategy: (a: IAnimeSeason, b: IAnimeSeason) => number) => {
+    const filterAndOrderList = useCallback((searchValue: string, orderStrategy: "rating" | "name") => {
         if (data) {
             let filtered = data;
             if (searchValue) {
@@ -44,14 +37,14 @@ export const ScheduleAnimes = () => {
             }
 
             if(filtered){
-                filtered = [...filtered].sort(orderStrategy)
+                filtered = orderStrategy === "rating" ? orderByRating(filtered, "desc") : orderByName(filtered);
             }
             setFilteredList(filtered);
         }
     }, [data])
 
     useEffect(() => {
-        const strategy = orderStrategy === "rating" ? orderByRating : orderByName;
+        const strategy = orderStrategy === "rating" ? "rating" : "name";
         filterAndOrderList(searchValue, strategy);
     }, [searchValue, orderStrategy, data]);
 
@@ -81,10 +74,11 @@ export const ScheduleAnimes = () => {
                     }
                     {
                         !isLoading && <>
-                        {/*{*/}
-                        {/*    data &&*/}
-                        {/*    <Button onClick={() => sendList(data, filteredList!)}>Enviar Lista</Button>*/}
-                        {/*}*/}
+                        {
+                            data && <>
+                            <Button onClick={open}>Enviar Lista</Button>
+                            <ModalSendMessages opened={opened} onClose={close} animesSeason={data}/></>
+                        }
 
                         <SimpleGrid
                             breakpoints={[
@@ -98,10 +92,11 @@ export const ScheduleAnimes = () => {
                                     )
                                 })
                             }
-                        </SimpleGrid> </>
+                        </SimpleGrid>
+                        </>
                     }
                 </Container>
-            </Template>w
+            </Template>
         </SeasonContextProvider>
     </>)
 }

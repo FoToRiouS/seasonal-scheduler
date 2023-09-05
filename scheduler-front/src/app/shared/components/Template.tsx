@@ -24,7 +24,11 @@ export const Template: React.FC<TemplateProps> = ({children}) => {
     ]
 
     return(<>
-        <Group bg="gray.2"  miw="100%" mih={100} mb={50} px={50} sx={{boxShadow: "0px 4px 20px -3px rgba(0,0,0,0.75)"}}>
+        <Group c="white"  miw="100%" mih={100} mb={50} px={50} position="center"
+           sx={(theme) => ({
+               boxShadow: "0px 4px 20px -3px rgba(0,0,0,0.75)",
+               backgroundImage: theme.fn.gradient({ from: 'grape.9', to: 'grape.6', deg: 0 }),
+            })}>
             <MobileMenu menuItems={items}/>
             <Title mx={{base: "auto", md: "0"}}>Menu</Title>
             <DesktopMenu menuItems={items}/>

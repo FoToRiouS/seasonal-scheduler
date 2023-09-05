@@ -7,6 +7,7 @@ import {Template} from "../../shared/components/Template.tsx";
 import {Box, Center, Container, Loader, SimpleGrid} from "@mantine/core";
 import {SearchHeaderAnime} from "./components/SearchHeaderAnime.tsx";
 import {SeasonContextProvider} from "../../shared/contexts/SeasonContextProvider.tsx";
+import {useAnimesUtils} from "../../shared/hooks/utils/useAnimesUtils.ts";
 
 export const ListAnimes = () => {
     const currentYear = new Date().getFullYear();
@@ -17,22 +18,11 @@ export const ListAnimes = () => {
     const [year, setYear] = useState<number | ''>(currentYear);
     const [season, setSeason] = useState<AnimeSeasons | null>(currentSeason);
     const [orderStrategy, setOrderStrategy] = useState<"rating" | "name">("name")
+    const {orderByRating, orderByName} = useAnimesUtils();
 
     const { data, isLoading } = useAnimesBySeason(+year, season as AnimeSeasons);
 
-    const orderByRating = (a: IAnime, b: IAnime) => {
-        const ratingA = a.mean ? a.mean : 0;
-        const ratingB = b.mean ? b.mean : 0;
-        if(ratingA === ratingB) return 0
-        else if(ratingB > ratingA) return 1
-        return -1;
-    }
-
-    const orderByName = (a: IAnime, b: IAnime) => {
-        return a.title.localeCompare(b.title);
-    }
-
-    const filterList = useCallback((searchValue: string, orderStrategy: (a: IAnime, b: IAnime) => number) => {
+    const filterList = useCallback((searchValue: string, orderStrategy: "rating" | "name") => {
         if (data) {
             let filtered = data;
             if (searchValue) {
@@ -43,14 +33,14 @@ export const ListAnimes = () => {
             }
 
             if(filtered){
-                filtered = [...filtered].sort(orderStrategy);
+                filtered = orderStrategy === "rating" ? orderByRating(filtered) : orderByName(filtered);
             }
             setFilteredList(filtered);
         }
     }, [data])
 
     useEffect(() => {
-        const strategy = orderStrategy === "rating" ? orderByRating : orderByName;
+        const strategy = orderStrategy === "rating" ? "rating" : "name";
         filterList(searchValue, strategy);
     }, [searchValue, orderStrategy, data]);
 

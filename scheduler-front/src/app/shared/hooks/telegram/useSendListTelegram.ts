@@ -2,18 +2,22 @@ import {useGroups} from "../backend/useGroups.ts";
 import {IAnime} from "../../interfaces/IAnime.ts";
 import {useSendPhoto} from "./useSendPhoto.ts";
 import {IAnimeSeason} from "../../interfaces/IAnimeSeason.ts";
+import {useMemo} from "react";
+import {useAnimesSeasonUtils} from "../utils/useAnimesSeasonUtils.ts";
 
-export const useSendListTelegram = () => {
+export const useSendListTelegram = (animeSeasons: IAnimeSeason[]) => {
     const { data} = useGroups();
     const sendPhoto = useSendPhoto();
+    const {orderByRating} = useAnimesSeasonUtils();
 
-    const handleSendMessage = (group:number, anime: IAnime, animeSeason: IAnimeSeason) => {
+    const sortedList = useMemo(() => orderByRating(animeSeasons, "asc"), [animeSeasons]);
+
+    const handleSendMessage = (group:number, anime: IAnime, message: string) => {
         const title = anime.title;
         const enTitle = anime.alternativeTitles.en;
-        const text = animeSeason.previewText ? animeSeason.previewText : "";
         const formattedTitle = enTitle ? `${enTitle} (${title})` : `${title}`;
 
-        let caption = `<b>${formattedTitle}</b>` + "%0A%0A" + text;
+        let caption = `<b>${formattedTitle}</b>` + "%0A%0A" + message;
         caption = caption.replace("&", "%26amp;");
 
         sendPhoto(group, anime.mainPicture.large, caption).then(undefined);
@@ -21,13 +25,40 @@ export const useSendListTelegram = () => {
 
     const timer = (ms: number) => new Promise(res => setTimeout(res, ms))
 
-    return async (animeSeasons: IAnimeSeason[], animes: IAnime[]) => {
+    const emptyPreviews = () : IAnimeSeason[] => {
+        return sortedList.filter(a => !(a.previewText));
+    }
+
+    const emptyReviews = () : IAnimeSeason[] => {
+        return sortedList.filter(a => !(a.reviewText));
+    }
+
+    const sendPreviewMessages = async () => {
         for (const g of data!){
-            for (const anime of animes) {
-                const animeSeason = animeSeasons?.find(a => a.idAnime === anime.id)
-                handleSendMessage(g, anime!, animeSeason!);
-                await timer(3500);
+            for (const anime of sortedList) {
+                if(anime.previewText){
+                    handleSendMessage(g, anime.anime!, anime.previewText);
+                    await timer(3500);
+                }
             }
         }
-    };
+    }
+
+    const sendReviewMessages = async () => {
+        for (const g of data!){
+            for (const anime of sortedList) {
+                if(anime.reviewText) {
+                    handleSendMessage(g, anime.anime!, anime.reviewText);
+                    await timer(3500);
+                }
+            }
+        }
+    }
+
+    return {
+        sendPreviewMessages,
+        sendReviewMessages,
+        emptyPreviews,
+        emptyReviews
+    }
 }
