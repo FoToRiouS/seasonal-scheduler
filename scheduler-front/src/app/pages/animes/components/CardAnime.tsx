@@ -1,6 +1,6 @@
 import React from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCalendarXmark, faEye, faPlus} from "@fortawesome/free-solid-svg-icons";
+import {faCalendarXmark, faEye, faPlus, faR} from "@fortawesome/free-solid-svg-icons";
 import {ActionIcon, Box, Button, Card, Group, Image, Stack, Text, Title} from "@mantine/core";
 import {IAnimeSeason} from "../../../shared/interfaces/IAnimeSeason.ts";
 import {useDeleteAnimeSeason} from "../../../shared/hooks/backend/useDeleteAnimeSeason.ts";
@@ -10,6 +10,8 @@ import {IAnime} from "../../../shared/interfaces/IAnime.ts";
 import {useSaveAnimeSeason} from "../../../shared/hooks/backend/useSaveAnimeSeason.ts";
 import {IAnimeSeasonSaveDTO} from "../../../shared/interfaces/IAnimeSeasonSaveDTO.ts";
 import {RatingAnime} from "./RatingAnime.tsx";
+import {faP} from "@fortawesome/free-solid-svg-icons/faP";
+import {ServicesAnime} from "./ServicesAnime.tsx";
 
 interface ICardAnimeProps {
     anime: IAnime,
@@ -70,27 +72,30 @@ export const CardAnime: React.FC<ICardAnimeProps> = ({anime, onOpen, animeSeason
                     <Title order={4} c={"white"} ta={"center"} lineClamp={2}>{anime.alternativeTitles ? anime.alternativeTitles.en : ""}</Title>
                     <Title order={5} c={"white"} ta={"center"} lineClamp={2}>{anime.title}</Title>
                 </Stack>
-                <Group>
-                    {
-                        animeSeason && animeSeason.previewText &&
-                        <Text>PREVIEW</Text>
-                    }
-                    {
-                        animeSeason && animeSeason.reviewText &&
-                        <Text>PREVIEW</Text>
-                    }
-                </Group>
+                {
+                    animeSeason && animeSeason.services &&
+                    <ServicesAnime services={animeSeason.services}/>
+                }
                 <Group mt="auto" position="right">
                     {
                         anime.mean &&
                         <Box mr="auto" h="100%">
                             <RatingAnime rating={anime.mean}/>
                         </Box>
-                        // <Flex h="100%" mr="auto" justify="center" align="center" bg="gray" px="sm" sx={{borderRadius: "2rem", background: "rgba(169, 169, 169, 0.5)"}}>
-                        //     <Text color="yellow" mr="xs"><FontAwesomeIcon icon={faStar}/></Text>
-                        //     <Text color="gray.0"> {anime.mean} </Text>
-                        // </Flex>
                     }
+                    {
+                        <Group mr="auto">
+                            {
+                                animeSeason && animeSeason.previewText &&
+                                <FontAwesomeIcon icon={faP} style={{color: "white"}}/>
+                            }
+                            {
+                                animeSeason && animeSeason.reviewText &&
+                                <FontAwesomeIcon icon={faR} style={{color: "white"}}/>
+                            }
+                        </Group>
+                    }
+
                     {
                         animeSeason ?
                         <ActionIcon variant="gradient" gradient={{from: "red.9", to: "grape.9"}} size="lg" onClick={openDeleteModal}>

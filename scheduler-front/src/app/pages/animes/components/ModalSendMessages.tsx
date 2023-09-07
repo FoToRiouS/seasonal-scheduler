@@ -26,33 +26,47 @@ export const ModalSendMessages : React.FC<ModalSendMessagesProps> = ({opened, on
         onClose();
     }
 
+    const handleSendMessages = () => {
+        if(method === "preview") {
+            sendPreviewMessages().then(undefined);
+        } else {
+            sendReviewMessages().then(undefined);
+        }
+        handleClose();
+    }
+
+
     return(
-        <Modal opened={opened} onClose={handleClose} title="Método de Envio" size="xl" withCloseButton>
+        <Modal opened={opened} onClose={handleClose} title="Método de Envio" size="lg" withCloseButton>
             <Stack>
             {
                 !method && <>
                 <Text>Qual o método de envio?</Text>
                 <Group position="right">
-                    <Button onClick={() => setMethod("preview")}>Enviar Preview</Button>
-                    <Button onClick={() => setMethod("review")}>Enviar Review</Button>
+                    <Button variant="gradient" gradient={{ from: 'red.9', to: 'grape.9' }} onClick={() => setMethod("preview")}>Enviar Preview</Button>
+                    <Button variant="gradient" gradient={{ from: 'red.9', to: 'grape.9' }} onClick={() => setMethod("review")}>Enviar Review</Button>
                 </Group></>
             }
             {
                 method && <>
                 <Text>Os seguintes animes não tem o {method} preenchido e não serão enviados:</Text>
-                <List withPadding>
+                <List icon="•" size="sm" withPadding>
                 {
-                    emptyList.map(a => <List.Item key={a.id}>{
+                    emptyList.map(a => <List.Item key={a.id}><Text>{
                         a.anime?.alternativeTitles.en
                             ? a.anime.alternativeTitles.en + ` (${a.anime.title})`
                             : a.anime?.title
-                    }</List.Item>)
+                    }</Text></List.Item>)
                 }
                 </List>
                 <Text>Tem certeza que deseja enviar?</Text>
                 <Group position="right">
-                    <Button onClick={() => setMethod(null)}>Voltar</Button>
-                    <Button>Enviar Lista</Button>
+                    <Button variant="gradient" gradient={{ from: 'red.9', to: 'grape.9' }} onClick={() => setMethod(null)}>Voltar</Button>
+                    <Button
+                        variant="gradient"
+                        gradient={{ from: 'red.9', to: 'grape.9' }}
+                        onClick={handleSendMessages}
+                    >Enviar Lista</Button>
                 </Group></>
             }
             </Stack>

@@ -5,6 +5,6 @@ export function useWatchServiceList() {
     return useQuery({
         queryFn: () => BackendService.getAllWatchServices(),
         queryKey: ["watch-services-list"],
-        staleTime: 10 * 60 * 1000
+        staleTime: Infinity
     });
 }

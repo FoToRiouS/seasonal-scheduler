@@ -5,7 +5,6 @@ export const useGroups = () => {
 
     const getGroups = async (): Promise<number[]> => {
         const { data } = await SchedulerBackApi().get<number[]>("/groups/list");
-        console.log(data);
         return data;
     }
 

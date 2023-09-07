@@ -81,11 +81,10 @@ const getBySeason = async (year: number, season: AnimeSeasons): Promise<IAnime[]
     const { data } = await MyAnimeListApi().get(`/anime/season/${year}/${season}?limit=500&fields=alternative_titles,broadcast,media_type,start_season,mean,genres&nsfw=true`, {
         headers: animeApiHeaders
     });
-    const filter = data.data.map(mapJsonAnimeFromList)
+    return data.data.map(mapJsonAnimeFromList)
         .filter((a: IAnime) => a.mediaType === "tv" || a.mediaType === "ona" || a.mediaType === "ova")
         .filter((a: IAnime) => a.startSeason && a.startSeason.year === year && a.startSeason.season === season)
         .filter((a: IAnime) => a.genres && !(a.genres.map(g => g.name).includes("Hentai")));
-    return filter;
 }
 
 const getById = async (id: number) : Promise<IAnime> => {
