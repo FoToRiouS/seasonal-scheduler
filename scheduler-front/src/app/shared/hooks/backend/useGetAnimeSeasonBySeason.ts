@@ -12,7 +12,6 @@ export function useGetAnimeSeasonBySeason(year: number, season: AnimeSeasons) {
         let animes = [] as IAnime[];
         for(const s of seasons){
             const season = JSON.parse(s) as IStartSeason;
-            console.log(season)
             animes = [...animes, ...await AnimesService.getBySeason(season.year, season.season)]
         }
 

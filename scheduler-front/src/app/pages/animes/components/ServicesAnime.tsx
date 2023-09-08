@@ -1,21 +1,22 @@
-import {Flex, Group, Text} from "@mantine/core";
+import {Box, Flex, Group, Image} from "@mantine/core";
 import React from "react";
-import {useWatchServiceList} from "../../../shared/hooks/backend/useWatchServiceList.ts";
+import {useWatchServicesFunctions} from "../../../shared/hooks/backend/useWatchServicesFunctions.ts";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faTv} from "@fortawesome/free-solid-svg-icons";
 
 export const ServicesAnime : React.FC<{services: string[]}> = ({services}) => {
-    const {data: watchServices, isSuccess} = useWatchServiceList();
+    const {getIcon} = useWatchServicesFunctions();
 
     return(
-        <Flex mt="auto" justify="center" align="center" bg="gray" px="sm" sx={{borderRadius: "2rem", background: "rgba(169, 169, 169, 0.5)"}}>
-            <Text>S</Text>
+        <Flex mt="auto" justify="center" align="center" bg="gray" px="sm" py={5} sx={{borderRadius: "2rem", background: "rgba(169, 169, 169, 0.5)"}}>
+            <Box><FontAwesomeIcon icon={faTv} style={{color: "yellow"}}/></Box>
             <Group ml="auto">
             {
-                isSuccess &&
                 services.map(s => (
-                    <Text>{
-                        watchServices!.find(w => w.id === s)!.name.charAt(0)
-                    }</Text>)
-                )
+                    <Box>
+                        <Image src={getIcon(s)}/>
+                    </Box>
+                ))
             }
             </Group>
         </Flex>
