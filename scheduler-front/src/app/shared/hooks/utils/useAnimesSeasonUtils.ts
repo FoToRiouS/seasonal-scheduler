@@ -1,4 +1,5 @@
 import {IAnimeSeason} from "../../interfaces/IAnimeSeason.ts";
+import {IAnime} from "../../interfaces/IAnime.ts";
 
 export const useAnimesSeasonUtils = () => {
 
@@ -11,7 +12,7 @@ export const useAnimesSeasonUtils = () => {
     }
 
     const nameStrategy = (a: IAnimeSeason, b: IAnimeSeason) => {
-        return a.anime!.title.localeCompare(b.anime!.title);
+        return getFullName(a.anime!).localeCompare(getFullName(b.anime!));
     }
 
     const orderByRating = (animesSeason: IAnimeSeason[], direction: "asc" | "desc" | undefined | null) => {
@@ -25,8 +26,15 @@ export const useAnimesSeasonUtils = () => {
         return [...animesSeason].sort(nameStrategy)
     }
 
+    const getFullName = (anime: IAnime) => {
+      return anime?.alternativeTitles.en
+          ? anime.alternativeTitles.en + ` (${anime.title})`
+          : anime?.title
+    }
+
     return {
         orderByRating,
-        orderByName
+        orderByName,
+        getFullName
     }
 }

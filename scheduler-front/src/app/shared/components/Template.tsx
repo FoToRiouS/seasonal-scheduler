@@ -1,6 +1,7 @@
 import React, {ReactNode} from "react";
 import {MobileMenu} from "./MobileMenu.tsx";
 import {Box, Button, Center, Group, Image} from "@mantine/core";
+import {useNavigate} from "react-router-dom";
 
 interface TemplateProps {
     children: ReactNode
@@ -13,6 +14,7 @@ export interface MenuItemInfo {
 }
 
 export const Template: React.FC<TemplateProps> = ({children}) => {
+    const navigate = useNavigate();
 
     const items: MenuItemInfo[] = [
         {nome: "Animes", subItems: [
@@ -29,11 +31,11 @@ export const Template: React.FC<TemplateProps> = ({children}) => {
             })}>
             <MobileMenu menuItems={items}/>
             <Center>
-                <Button variant="gradient" gradient={{ from: 'red.9', to: 'grape.9' }}>Lista</Button>
+                <Button variant="gradient" gradient={{ from: 'red.9', to: 'grape.9' }} onClick={() => navigate("/animes/list")}>Lista</Button>
                 <Box w={200} mx="lg">
                     <Image fit="contain" src="/logo.png"/>
                 </Box>
-                <Button variant="gradient" gradient={{ from: 'red.9', to: 'grape.9' }}>Calendário</Button>
+                <Button variant="gradient" gradient={{ from: 'red.9', to: 'grape.9' }} onClick={() => navigate("/animes/schedule")}>Calendário</Button>
             </Center>
         </Group>
         <Box>

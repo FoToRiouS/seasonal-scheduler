@@ -18,7 +18,6 @@ export const useWatchServicesFunctions = () => {
     }
 
     const getIcon = (id: string) => {
-        console.log(id);
         return mapImages.current.get(id);
     }
 

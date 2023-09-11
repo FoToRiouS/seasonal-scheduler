@@ -65,17 +65,17 @@ export const CardAnime: React.FC<ICardAnimeProps> = ({anime, onOpen, animeSeason
     return (
         <>
             <Card bg="dark.8" radius="lg" withBorder sx={{display: "flex", flexDirection: "column", borderWidth: "2px", borderColor: "graple"}}>
-                <Card.Section bg="gray.5">
+                <Card.Section bg="gray.5" pos="relative">
                     <Image src={anime.mainPicture.large} alt={anime.title} h={450} sx={{overflow: "hidden", display: "flex", justifyContent: "center", alignItems: "center"}}/>
+                    {
+                        (animeSeason?.services && animeSeason?.services.length > 0) &&
+                        <ServicesAnime services={animeSeason.services}/>
+                    }
                 </Card.Section>
                 <Stack spacing={0} mb="xl">
                     <Title order={4} c={"white"} ta={"center"} lineClamp={2}>{anime.alternativeTitles ? anime.alternativeTitles.en : ""}</Title>
                     <Title order={5} c={"white"} ta={"center"} lineClamp={2}>{anime.title}</Title>
                 </Stack>
-                {
-                    animeSeason && animeSeason.services &&
-                    <ServicesAnime services={animeSeason.services}/>
-                }
                 <Group mt="auto" position="right">
                     {
                         anime.mean &&
