@@ -8,7 +8,9 @@ export function useGetAnimeSeasonBySeason(year: number, season: AnimeSeasons) {
     const getBySeason = async (year: number, season: AnimeSeasons) : Promise<IAnimeSeason[]> => {
         const {data: animesSeason} = await SchedulerBackApi().get<IAnimeSeason[]>(`/animeseason/${year}/${season}`)
 
-        const seasons = [...new Set(animesSeason.map(as => JSON.stringify(as.season)))];
+        const seasonMap = animesSeason.flatMap(as => as.seasons).map(s => JSON.stringify(s))
+        const seasons = [...new Set<string>([...seasonMap])];
+
         let animes = [] as IAnime[];
         for(const s of seasons){
             const season = JSON.parse(s) as IStartSeason;

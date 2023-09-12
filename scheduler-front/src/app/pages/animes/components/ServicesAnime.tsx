@@ -9,7 +9,7 @@ export const ServicesAnime : React.FC<{services: string[]}> = ({services}) => {
         <Group px="sm" py={5} sx={{borderRadius: "2rem", backgroundColor: "rgb(0,0,0,.4)"}} pos="absolute" top={5} left={5}>
             {
                 services.map(s => (
-                    <Box>
+                    <Box key={s}>
                         <Image src={getIcon(s)}/>
                     </Box>
                 ))

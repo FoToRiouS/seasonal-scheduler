@@ -2,9 +2,7 @@ package apps.schedulerback.model;
 
 import jakarta.persistence.*;
 
-import java.util.SortedSet;
-import java.util.TreeSet;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name = "anime_season")
@@ -17,9 +15,12 @@ public class AnimeSeason {
     @Column(name = "id_anime")
     private long idAnime;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "season_id")
-    private Season season;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "anime_season_season",
+            joinColumns = @JoinColumn(name = "anime_season_id"),
+            inverseJoinColumns = @JoinColumn(name = "season_id"))
+    private Set<Season> seasons;
 
     @Column(name = "preview_text", length = 900)
     private String previewText;
@@ -38,7 +39,7 @@ public class AnimeSeason {
 
     public AnimeSeason(long idAnime, Season season) {
         this.idAnime = idAnime;
-        this.season = season;
+        getSeasons().add(season);
     }
 
     public UUID getId() {
@@ -57,12 +58,15 @@ public class AnimeSeason {
         this.idAnime = idAnime;
     }
 
-    public Season getSeason() {
-        return season;
+    public Set<Season> getSeasons() {
+        if(seasons == null){
+            seasons = new HashSet<>();
+        }
+        return seasons;
     }
 
-    public void setSeason(Season season) {
-        this.season = season;
+    public void setSeasons(Set<Season> seasons) {
+        this.seasons = seasons;
     }
 
     public String getPreviewText() {

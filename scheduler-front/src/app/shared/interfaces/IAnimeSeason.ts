@@ -4,7 +4,7 @@ export interface IAnimeSeason {
     id?: string,
     idAnime?: number,
     anime?: IAnime,
-    season?: IStartSeason,
+    seasons?: IStartSeason[],
     previewText?: string,
     reviewText?: string,
     services?: string[]

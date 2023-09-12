@@ -15,10 +15,10 @@ public interface AnimeSeasonRepository extends JpaRepository<apps.schedulerback.
     @EntityGraph(attributePaths = {"watchServices"})
     Optional<AnimeSeason> findById(UUID uuid);
 
-    @EntityGraph(attributePaths = {"season", "watchServices"})
-    Optional<AnimeSeason> findByIdAnimeAndSeason_YearAndSeason_SeasonName(long idAnime, long seasonYear, Seasons seasonSeasonName);
+    @EntityGraph(attributePaths = {"seasons", "watchServices"})
+    Optional<AnimeSeason> findByIdAnimeAndSeasons_YearAndSeasons_SeasonName(long idAnime, long seasonYear, Seasons seasonSeasonName);
 
-    @EntityGraph(attributePaths = {"season", "watchServices"})
-    List<AnimeSeason> findBySeason_YearAndSeason_SeasonName(long seasonYear, Seasons seasonSeasonName);
+    @EntityGraph(attributePaths = {"seasons", "watchServices"})
+    List<AnimeSeason> findBySeasons_YearAndSeasons_SeasonName(long seasonYear, Seasons seasonSeasonName);
 
 }
