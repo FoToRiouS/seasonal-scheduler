@@ -12,7 +12,7 @@ public class AnimeSeason {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "id_anime")
+    @Column(name = "id_anime", unique = true)
     private long idAnime;
 
     @ManyToMany(fetch = FetchType.LAZY)

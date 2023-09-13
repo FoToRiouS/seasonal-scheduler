@@ -48,6 +48,7 @@ public class AnimeSeasonService extends GenericService<AnimeSeason, UUID, AnimeS
             season = new Season(saveRequest.season(), saveRequest.year());
             season = seasonRepository.save(season);
         }
+        //TODO Pesquisar se já exsiste um AnimeSeason antes de salvar
         return repository.save(new AnimeSeason(saveRequest.idAnime(), season));
     }
 

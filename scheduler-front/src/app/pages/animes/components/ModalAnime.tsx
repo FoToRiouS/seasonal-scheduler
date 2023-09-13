@@ -1,17 +1,15 @@
 import React, {useEffect, useState} from "react";
 import {getDayOfExhibition} from "../../../shared/services/AnimesService.ts";
 import {IAnime} from "../../../shared/interfaces/IAnime.ts";
-import {useSaveAnimeSeason} from "../../../shared/hooks/backend/useSaveAnimeSeason.ts";
 import {Box, Button, Chip, Divider, Grid, Group, Image, Modal, SimpleGrid, Stack, Text, Textarea} from "@mantine/core";
-import {useToggle} from "@mantine/hooks";
 import {useWatchServiceList} from "../../../shared/hooks/backend/useWatchServiceList.ts";
 import {useUpdateAnimeSeason} from "../../../shared/hooks/backend/useUpdateAnimeSeason.ts";
 import {IAnimeSeasonUpdateDTO} from "../../../shared/interfaces/IAnimeSeasonUpdateDTO.ts";
-import {IAnimeSeasonSaveDTO} from "../../../shared/interfaces/IAnimeSeasonSaveDTO.ts";
 import {useSeasonContext} from "../../../shared/hooks/context/useSeasonContext.ts";
 import {IAnimeSeason} from "../../../shared/interfaces/IAnimeSeason.ts";
 import {RatingAnime} from "./RatingAnime.tsx";
 import {notifications} from "@mantine/notifications";
+import {InputGroupAnimeSeason} from "./InputGroupAnimeSeason.tsx";
 
 interface IModalAnimeProps {
     isOpen: boolean
@@ -22,7 +20,6 @@ interface IModalAnimeProps {
 
 export const ModalAnime : React.FC<IModalAnimeProps> = ({isOpen, onClose,  anime, animeSeason}) => {
 
-    const [value, toggle] = useToggle(["outline", "filled"])
     const {season, year} = useSeasonContext();
 
     const [services, setServices] = useState([] as string[]);
@@ -31,17 +28,7 @@ export const ModalAnime : React.FC<IModalAnimeProps> = ({isOpen, onClose,  anime
 
     const {data: watchServices} = useWatchServiceList();
 
-    const {mutate: save, isLoading: isSaving } = useSaveAnimeSeason(anime!.id, year, season);
     const {mutate: update, isLoading: isUpdating, isSuccess } = useUpdateAnimeSeason(anime!.id, year, season);
-
-    const handleSaveAnimeSeason = () => {
-        const animeSeason: IAnimeSeasonSaveDTO = {
-            idAnime: anime!.id.toString(),
-            year: year,
-            season: season
-        }
-        save(animeSeason);
-    }
 
     const onUpdateSuccess = () => {
         notifications.show({
@@ -79,7 +66,7 @@ export const ModalAnime : React.FC<IModalAnimeProps> = ({isOpen, onClose,  anime
 
     return (
         <>
-            <Modal opened={isOpen} onClose={onClose} title={anime!.title}  centered size="xl" radius="lg" closeOnClickOutside={false}>
+            <Modal opened={isOpen} onClose={onClose} title={anime!.title}  centered size={880} radius="lg" closeOnClickOutside={false}>
                 <Grid columns={2}>
                     <Grid.Col xs={2} lg={1}>
                         <Box pos="relative">
@@ -138,25 +125,22 @@ export const ModalAnime : React.FC<IModalAnimeProps> = ({isOpen, onClose,  anime
                                         }
                                         </SimpleGrid>
                                     </Chip.Group>
-                                    <Button variant={value} color={"grape.9"} mt="auto" loading={isUpdating}
-                                            onMouseEnter={() => toggle()}
-                                            onMouseLeave={() => toggle()}
-                                            onClick={handleUpdateAnimeSeason}>
-                                        {isUpdating ? "Salvando..." : "Salvar"}
-                                    </Button>
+                                    <Stack mt="auto" spacing="xs" >
+                                        <Button variant="filled" color={"grape.9"} mt="auto" loading={isUpdating}
+                                                onClick={handleUpdateAnimeSeason}>
+                                            {isUpdating ? "Salvando..." : "Salvar Alterações"}
+                                        </Button>
+                                        <InputGroupAnimeSeason anime={anime!} initialYear={year} initialSeason={season}/>
+                                    </Stack>
                                 </>
                             }
                             {
                                 !animeSeason && <>
-                                    <Button variant={value} color={"green.9"} mt="auto" loading={isSaving}
-                                            onMouseEnter={() => toggle()}
-                                            onMouseLeave={() => toggle()}
-                                            onClick={handleSaveAnimeSeason}>
-                                        {isUpdating ? "Adicionando..." : "Adicionar a Temporada"}
-                                    </Button>
+                                    <Box mt="auto">
+                                        <InputGroupAnimeSeason anime={anime!} initialYear={year} initialSeason={season}/>
+                                    </Box>
                                 </>
                             }
-
                         </Stack>
                     </Grid.Col>
                 </Grid>
