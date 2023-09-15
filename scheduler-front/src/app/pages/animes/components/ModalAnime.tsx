@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
-import {getDayOfExhibition} from "../../../shared/services/AnimesService.ts";
-import {IAnime} from "../../../shared/interfaces/IAnime.ts";
+import {getDayOfExhibition, getSeasonInPortuguese} from "../../../shared/services/AnimesService.ts";
+import {IAnime, IStartSeason} from "../../../shared/interfaces/IAnime.ts";
 import {Box, Button, Chip, Divider, Grid, Group, Image, Modal, SimpleGrid, Stack, Text, Textarea} from "@mantine/core";
 import {useWatchServiceList} from "../../../shared/hooks/backend/useWatchServiceList.ts";
 import {useUpdateAnimeSeason} from "../../../shared/hooks/backend/useUpdateAnimeSeason.ts";
@@ -10,6 +10,9 @@ import {IAnimeSeason} from "../../../shared/interfaces/IAnimeSeason.ts";
 import {RatingAnime} from "./RatingAnime.tsx";
 import {notifications} from "@mantine/notifications";
 import {InputGroupAnimeSeason} from "./InputGroupAnimeSeason.tsx";
+import {BadgeSeason} from "./BadgeSeason.tsx";
+import {modals} from "@mantine/modals";
+import {useDeleteAnimeSeason} from "../../../shared/hooks/backend/useDeleteAnimeSeason.ts";
 
 interface IModalAnimeProps {
     isOpen: boolean
@@ -29,6 +32,22 @@ export const ModalAnime : React.FC<IModalAnimeProps> = ({isOpen, onClose,  anime
     const {data: watchServices} = useWatchServiceList();
 
     const {mutate: update, isLoading: isUpdating, isSuccess } = useUpdateAnimeSeason(anime!.id, year, season);
+    const {mutate: deleteAnimeSeason} = useDeleteAnimeSeason(anime!.id, year, season)
+
+    const openDeleteModal = (startSeason: IStartSeason) => {
+        modals.openConfirmModal({
+            title: "Retirar da lista",
+            centered: true,
+            children: (
+                <Text size="sm">
+                    Tem certeza que deseja retirar {anime!.title} do calendário de {getSeasonInPortuguese(startSeason.season)} de {startSeason.year} ?
+                </Text>
+            ),
+            labels: { confirm: 'Retirar', cancel: "Cancelar" },
+            confirmProps: { color: 'red' },
+            onConfirm: () => deleteAnimeSeason({uuid: animeSeason!.id!, year: startSeason.year, season: startSeason.season})
+        });
+    }
 
     const onUpdateSuccess = () => {
         notifications.show({
@@ -80,7 +99,7 @@ export const ModalAnime : React.FC<IModalAnimeProps> = ({isOpen, onClose,  anime
                         </Box>
                     </Grid.Col>
                     <Grid.Col xs={2} lg={1}>
-                        <Stack h="100%">
+                        <Stack h="100%" spacing="xs">
                             <Group spacing="xs" noWrap>
                                 <Text fw="bold">Nome:</Text>
                                 <Text>
@@ -102,6 +121,12 @@ export const ModalAnime : React.FC<IModalAnimeProps> = ({isOpen, onClose,  anime
                             {
                                 animeSeason && <>
                                     <Divider my={5}/>
+                                    {
+                                        animeSeason.seasons &&
+                                        <Group position="center">{
+                                            animeSeason.seasons.map(s => <BadgeSeason key={s.season + s.year} startSeason={s} close={() => openDeleteModal(s)}/>)
+                                        }</Group>
+                                    }
                                     <Textarea label="Preview" value={preview} onChange={e => setPreview(e.currentTarget.value)}/>
                                     <Textarea label="Review" value={review} onChange={e => setReview(e.currentTarget.value)}/>
                                     <Chip.Group multiple value={services} onChange={setServices}>

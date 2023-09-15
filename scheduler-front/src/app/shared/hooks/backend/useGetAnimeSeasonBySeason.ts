@@ -23,6 +23,12 @@ export function useGetAnimeSeasonBySeason(year: number, season: AnimeSeasons) {
             const newAnimeSeason = {...as, anime: anime}
             fetchedList.push(newAnimeSeason);
         })
+
+        //Fail safe, para casos especiais onde o anime esteja apenas em uma temporada que não seja sua original
+        for(const as of fetchedList.filter(as => !as.anime)){
+            as.anime = await AnimesService.getById(as.idAnime!)
+        }
+
         return fetchedList;
     }
 

@@ -3,6 +3,19 @@ import {IAnime} from "../interfaces/IAnime.ts";
 
 export type AnimeSeasons = "winter" | "spring" | "summer" | "fall";
 
+export function getSeasonInPortuguese(animeSeason: AnimeSeasons){
+    switch (animeSeason) {
+        case "summer":
+            return "Verão";
+        case "winter":
+            return "Inverno";
+        case "fall":
+            return "Outono";
+        case "spring":
+            return "Primavera";
+    }
+}
+
 export function getCurrentSeason() {
     const month = new Date().getMonth();
     if(month === 12 || (month >= 1  && month <= 2)) {

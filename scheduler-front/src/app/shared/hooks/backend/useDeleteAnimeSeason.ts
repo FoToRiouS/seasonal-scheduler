@@ -19,7 +19,7 @@ export function useDeleteAnimeSeason(idAnime: number, year: number, season: Anim
         mutationFn: deleteQuery,
         retry: 2,
         onSuccess: () => {
-            queryClient.invalidateQueries(["anime-season", idAnime, year, season]);
+            queryClient.invalidateQueries(["anime-season", idAnime]);
             queryClient.invalidateQueries(["anime-season-by-season", year, season]);
         }
     });

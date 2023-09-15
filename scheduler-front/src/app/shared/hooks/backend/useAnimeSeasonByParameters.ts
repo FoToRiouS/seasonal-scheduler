@@ -1,11 +1,10 @@
 import {useQuery} from "@tanstack/react-query";
-import {AnimeSeasons} from "../../services/AnimesService.ts";
 import {BackendService} from "../../services/BackendService.ts";
 
-export function useAnimeSeasonByParameters(idAnime: number, year: number, season: AnimeSeasons) {
+export function useAnimeSeasonByParameters(idAnime: number) {
     return useQuery({
-        queryFn: () => BackendService.getAnimeSeason(idAnime, year, season),
-        queryKey: ["anime-season", idAnime, year, season],
+        queryFn: () => BackendService.getAnimeSeason(idAnime),
+        queryKey: ["anime-season", idAnime],
         staleTime: 5 * 60 * 1000
     });
 }

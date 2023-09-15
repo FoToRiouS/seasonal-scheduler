@@ -34,8 +34,8 @@ public class AnimeSeasonService extends GenericService<AnimeSeason, UUID, AnimeS
         this.groupRepository = groupRepository;
     }
 
-    public AnimeSeason getAnimeSeasonByIdAnimeAndSeason(Long idAnime, Long year, String seasonName){
-        return repository.findByIdAnimeAndSeasons_YearAndSeasons_SeasonName(idAnime, year, Seasons.valueOf(seasonName)).orElse(null);
+    public AnimeSeason getAnimeSeasonByIdAnimeAndSeason(Long idAnime){
+        return repository.findByIdAnime(idAnime).orElse(null);
     }
 
     public List<AnimeSeason> getAnimeSeasonBySeason(Long year, String seasonName){

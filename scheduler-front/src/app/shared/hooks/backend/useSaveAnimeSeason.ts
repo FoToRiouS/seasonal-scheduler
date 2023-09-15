@@ -14,7 +14,7 @@ export function useSaveAnimeSeason(idAnime: number, year: number, season: AnimeS
         mutationFn: saveAnimeSeason,
         retry: 2,
         onSuccess: () => {
-            queryClient.invalidateQueries(["anime-season", idAnime, year, season]);
+            queryClient.invalidateQueries(["anime-season", idAnime]);
             queryClient.invalidateQueries(["anime-season-by-season", year, season]);
         }
     });

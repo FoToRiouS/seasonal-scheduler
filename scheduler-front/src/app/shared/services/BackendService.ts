@@ -4,8 +4,8 @@ import {SchedulerBackApi} from "./api/SchedulerBackApi.ts";
 import {IWatchService} from "../interfaces/IWatchService.ts";
 
 
-const getAnimeSeason = async (idAnime: number, year: number, season: AnimeSeasons) : Promise<IAnimeSeason> => {
-    const { data } = await SchedulerBackApi().get("/animeseason/" + idAnime + "/" + year + "/" + season);
+const getAnimeSeason = async (idAnime: number) : Promise<IAnimeSeason> => {
+    const { data } = await SchedulerBackApi().get("/animeseason/" + idAnime);
     return data;
 }
 

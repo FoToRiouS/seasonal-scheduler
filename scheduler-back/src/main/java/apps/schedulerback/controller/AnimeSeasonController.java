@@ -24,9 +24,9 @@ public class AnimeSeasonController {
         this.animeSeasonService = animeSeasonService;
     }
 
-    @GetMapping("/{idAnime}/{year}/{season}")
-    public ResponseEntity<AnimeSeasonDTO> getByIdAndSeason(@PathVariable long idAnime, @PathVariable String season, @PathVariable long year){
-        AnimeSeason animeSeason = animeSeasonService.getAnimeSeasonByIdAnimeAndSeason(idAnime, year, season);
+    @GetMapping("/{idAnime}")
+    public ResponseEntity<AnimeSeasonDTO> getByIdAndSeason(@PathVariable long idAnime){
+        AnimeSeason animeSeason = animeSeasonService.getAnimeSeasonByIdAnimeAndSeason(idAnime);
         if(animeSeason == null) {
             return ResponseEntity.ok().build();
         }

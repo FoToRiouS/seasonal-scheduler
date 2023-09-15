@@ -1,9 +1,8 @@
 import React from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCalendarXmark, faEye, faPlus, faR} from "@fortawesome/free-solid-svg-icons";
+import {faEye, faPlus, faR} from "@fortawesome/free-solid-svg-icons";
 import {ActionIcon, Box, Button, Card, Group, Image, Stack, Text, Title} from "@mantine/core";
 import {IAnimeSeason} from "../../../shared/interfaces/IAnimeSeason.ts";
-import {useDeleteAnimeSeason} from "../../../shared/hooks/backend/useDeleteAnimeSeason.ts";
 import {useSeasonContext} from "../../../shared/hooks/context/useSeasonContext.ts";
 import {modals} from "@mantine/modals";
 import {IAnime} from "../../../shared/interfaces/IAnime.ts";
@@ -12,6 +11,7 @@ import {IAnimeSeasonSaveDTO} from "../../../shared/interfaces/IAnimeSeasonSaveDT
 import {RatingAnime} from "./RatingAnime.tsx";
 import {faP} from "@fortawesome/free-solid-svg-icons/faP";
 import {ServicesAnime} from "./ServicesAnime.tsx";
+import {getSeasonInPortuguese} from "../../../shared/services/AnimesService.ts";
 
 interface ICardAnimeProps {
     anime: IAnime,
@@ -23,22 +23,6 @@ export const CardAnime: React.FC<ICardAnimeProps> = ({anime, onOpen, animeSeason
     const {season, year} = useSeasonContext();
 
     const {mutate: saveAnimeSeason } = useSaveAnimeSeason(anime.id, year, season);
-    const {mutate: deleteAnimeSeason} = useDeleteAnimeSeason(anime.id, year, season)
-
-    const openDeleteModal = () => {
-        modals.openConfirmModal({
-            title: "Retirar da lista",
-            centered: true,
-            children: (
-                <Text size="sm">
-                    Tem certeza que deseja retirar {anime!.title} da lista?
-                </Text>
-            ),
-            labels: { confirm: 'Retirar', cancel: "Cancelar" },
-            confirmProps: { color: 'red' },
-            onConfirm: () => deleteAnimeSeason({uuid: animeSeason!.id!, year: year, season: season})
-        });
-    }
 
     const openSaveModal = () => {
         modals.openConfirmModal({
@@ -46,7 +30,7 @@ export const CardAnime: React.FC<ICardAnimeProps> = ({anime, onOpen, animeSeason
             centered: true,
             children: (
                 <Text size="sm">
-                    Tem certeza que deseja adicionar {anime!.title} a lista?
+                    Tem certeza que deseja adicionar {anime!.title} ao calendário de {getSeasonInPortuguese(season)} de {year}?
                 </Text>
             ),
             labels: { confirm: 'Adicionar', cancel: "Cancelar" },
@@ -97,11 +81,7 @@ export const CardAnime: React.FC<ICardAnimeProps> = ({anime, onOpen, animeSeason
                     }
 
                     {
-                        animeSeason ?
-                            <ActionIcon variant="gradient" gradient={{from: "red.9", to: "grape.9"}} size="lg" onClick={openDeleteModal}>
-                                <FontAwesomeIcon icon={faCalendarXmark}/>
-                            </ActionIcon>
-                            :
+                        !animeSeason &&
                             <ActionIcon variant="gradient" gradient={{from: "red.9", to: "grape.9"}} size="lg" onClick={openSaveModal}>
                                 <FontAwesomeIcon icon={faPlus}/>
                             </ActionIcon>
