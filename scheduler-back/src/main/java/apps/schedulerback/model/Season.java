@@ -55,4 +55,19 @@ public class Season {
     public void setYear(long year) {
         this.year = year;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Season season = (Season) o;
+
+        return id.equals(season.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
 }

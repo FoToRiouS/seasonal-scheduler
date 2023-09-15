@@ -37,9 +37,8 @@ public class AnimeSeason {
 
     public AnimeSeason() {}
 
-    public AnimeSeason(long idAnime, Season season) {
+    public AnimeSeason(long idAnime) {
         this.idAnime = idAnime;
-        getSeasons().add(season);
     }
 
     public UUID getId() {

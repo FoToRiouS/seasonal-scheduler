@@ -12,7 +12,7 @@ import java.util.UUID;
 public interface AnimeSeasonRepository extends JpaRepository<apps.schedulerback.model.AnimeSeason, UUID> {
 
     @Override
-    @EntityGraph(attributePaths = {"watchServices"})
+    @EntityGraph(attributePaths = {"seasons", "watchServices"})
     Optional<AnimeSeason> findById(UUID uuid);
 
     @EntityGraph(attributePaths = {"seasons", "watchServices"})
@@ -21,4 +21,6 @@ public interface AnimeSeasonRepository extends JpaRepository<apps.schedulerback.
     @EntityGraph(attributePaths = {"seasons", "watchServices"})
     List<AnimeSeason> findBySeasons_YearAndSeasons_SeasonName(long seasonYear, Seasons seasonSeasonName);
 
+    @EntityGraph(attributePaths = {"seasons", "watchServices"})
+    Optional<AnimeSeason> findByIdAnime(long idAnime);
 }

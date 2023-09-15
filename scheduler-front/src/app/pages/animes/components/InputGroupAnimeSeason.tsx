@@ -29,8 +29,8 @@ export const InputGroupAnimeSeason: React.FC<InputGroupAnimeSeasonProps> = ({ani
     }
 
     return (<>
-        <Group grow noWrap>
-            <Select value={season} onChange={(e) => setSeason(e as AnimeSeasons)} data={[
+        <Group spacing="xs" noWrap>
+            <Select value={season} onChange={(e) => setSeason(e as AnimeSeasons)} w={280} data={[
                 {value: "winter", label: "Inverno"},
                 {value: "spring", label: "Primavera"},
                 {value: "summer", label: "Verão"},
@@ -38,7 +38,7 @@ export const InputGroupAnimeSeason: React.FC<InputGroupAnimeSeasonProps> = ({ani
             ]}/>
             <NumberInput defaultValue={year} onChange={setYear} min={1900} max={currentYear}/>
             <Button color="grape.8" onClick={handleSaveAnimeSeason} loading={isSaving}>
-                {isSaving ? "Adicionando..." : "Adicionar"}
+                {isSaving ? "Adicionando..." : "Adicionar Temporada"}
             </Button>
         </Group>
     </>)

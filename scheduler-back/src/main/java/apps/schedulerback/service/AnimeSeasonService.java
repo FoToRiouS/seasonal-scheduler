@@ -48,8 +48,13 @@ public class AnimeSeasonService extends GenericService<AnimeSeason, UUID, AnimeS
             season = new Season(saveRequest.season(), saveRequest.year());
             season = seasonRepository.save(season);
         }
-        //TODO Pesquisar se já exsiste um AnimeSeason antes de salvar
-        return repository.save(new AnimeSeason(saveRequest.idAnime(), season));
+
+        AnimeSeason animeSeason = repository.findByIdAnime(saveRequest.idAnime()).orElse(null);
+        if(animeSeason == null){
+            animeSeason = new AnimeSeason(saveRequest.idAnime());
+        }
+        animeSeason.getSeasons().add(season);
+        return repository.save(animeSeason);
     }
 
     public AnimeSeason updateAnimeAndSeason(UUID id, AnimeSeasonUpdateDTO saveRequest){
@@ -61,6 +66,17 @@ public class AnimeSeasonService extends GenericService<AnimeSeason, UUID, AnimeS
         animeSeason.setWatchServices(new TreeSet<>(watchServiceRepository.findAllById(listServices)));
         animeSeason. getWatchServices().addAll(watchServiceRepository.findAllById(listServices));
         return repository.save(animeSeason);
+    }
+
+    public void deleteAnimeSeasonFromSeason(UUID id, Long year, String seasonName) {
+        AnimeSeason animeSeason = repository.findById(id).orElseThrow();
+        Season season = seasonRepository.findBySeasonNameAndYear(Seasons.valueOf(seasonName), year).orElseThrow();
+        animeSeason.getSeasons().remove(season);
+        if(animeSeason.getSeasons().isEmpty()){
+            repository.delete(animeSeason);
+        } else {
+            repository.save(animeSeason);
+        }
     }
 
     public Collection<Season> listAllSeasons(){

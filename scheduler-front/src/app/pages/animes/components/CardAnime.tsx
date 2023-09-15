@@ -16,7 +16,7 @@ import {ServicesAnime} from "./ServicesAnime.tsx";
 interface ICardAnimeProps {
     anime: IAnime,
     onOpen: () => void
-    animeSeason: IAnimeSeason | undefined
+    animeSeason: IAnimeSeason | undefined,
 }
 
 export const CardAnime: React.FC<ICardAnimeProps> = ({anime, onOpen, animeSeason}) => {
@@ -36,7 +36,7 @@ export const CardAnime: React.FC<ICardAnimeProps> = ({anime, onOpen, animeSeason
             ),
             labels: { confirm: 'Retirar', cancel: "Cancelar" },
             confirmProps: { color: 'red' },
-            onConfirm: () => deleteAnimeSeason(animeSeason!.id!)
+            onConfirm: () => deleteAnimeSeason({uuid: animeSeason!.id!, year: year, season: season})
         });
     }
 
@@ -98,12 +98,13 @@ export const CardAnime: React.FC<ICardAnimeProps> = ({anime, onOpen, animeSeason
 
                     {
                         animeSeason ?
-                        <ActionIcon variant="gradient" gradient={{from: "red.9", to: "grape.9"}} size="lg" onClick={openDeleteModal}>
-                            <FontAwesomeIcon icon={faCalendarXmark}/>
-                        </ActionIcon> :
-                        <ActionIcon variant="gradient" gradient={{from: "red.9", to: "grape.9"}} size="lg" onClick={openSaveModal}>
-                            <FontAwesomeIcon icon={faPlus}/>
-                        </ActionIcon>
+                            <ActionIcon variant="gradient" gradient={{from: "red.9", to: "grape.9"}} size="lg" onClick={openDeleteModal}>
+                                <FontAwesomeIcon icon={faCalendarXmark}/>
+                            </ActionIcon>
+                            :
+                            <ActionIcon variant="gradient" gradient={{from: "red.9", to: "grape.9"}} size="lg" onClick={openSaveModal}>
+                                <FontAwesomeIcon icon={faPlus}/>
+                            </ActionIcon>
                     }
                     <Button leftIcon={<FontAwesomeIcon icon={faEye}/>} variant="gradient" gradient={{from: "red.9", to: "grape.9"}} onClick={onOpen}>Info</Button>
                 </Group>

@@ -57,9 +57,9 @@ public class AnimeSeasonController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @DeleteMapping ("/{uuid}")
-    public ResponseEntity<Boolean> deleteAnimeSeason(@PathVariable @NotEmpty String uuid){
-        animeSeasonService.deleteById(UUID.fromString(uuid));
+    @DeleteMapping ("/{uuid}/{year}/{season}")
+    public ResponseEntity<Boolean> deleteAnimeSeason(@PathVariable @NotEmpty String uuid, @PathVariable String season, @PathVariable long year){
+        animeSeasonService.deleteAnimeSeasonFromSeason(UUID.fromString(uuid), year, season);
         return ResponseEntity.ok().build();
     }
 
