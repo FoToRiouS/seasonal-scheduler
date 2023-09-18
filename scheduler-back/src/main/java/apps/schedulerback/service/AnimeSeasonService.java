@@ -68,15 +68,17 @@ public class AnimeSeasonService extends GenericService<AnimeSeason, UUID, AnimeS
         return repository.save(animeSeason);
     }
 
-    public void deleteAnimeSeasonFromSeason(UUID id, Long year, String seasonName) {
+    public AnimeSeason deleteAnimeSeasonFromSeason(UUID id, Long year, String seasonName) {
         AnimeSeason animeSeason = repository.findById(id).orElseThrow();
         Season season = seasonRepository.findBySeasonNameAndYear(Seasons.valueOf(seasonName), year).orElseThrow();
         animeSeason.getSeasons().remove(season);
         if(animeSeason.getSeasons().isEmpty()){
             repository.delete(animeSeason);
+            return null;
         } else {
             repository.save(animeSeason);
         }
+        return animeSeason;
     }
 
     public Collection<Season> listAllSeasons(){

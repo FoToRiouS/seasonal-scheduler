@@ -3,6 +3,7 @@ import {IAnimeSeason} from "../../../shared/interfaces/IAnimeSeason.ts";
 import {useMemo, useState} from "react";
 import {useSendListTelegram} from "../../../shared/hooks/telegram/useSendListTelegram.ts";
 import {useAnimesSeasonUtils} from "../../../shared/hooks/utils/useAnimesSeasonUtils.ts";
+import {useSeasonContext} from "../../../shared/hooks/context/useSeasonContext.ts";
 
 type ModalSendMessagesProps = {
     opened: boolean,
@@ -11,7 +12,9 @@ type ModalSendMessagesProps = {
 }
 
 export const ModalSendMessages : React.FC<ModalSendMessagesProps> = ({opened, onClose, animesSeason}) => {
-    const {sendReviewMessages, sendPreviewMessages, emptyPreviews, emptyReviews} = useSendListTelegram(animesSeason);
+    const {season, year} = useSeasonContext();
+
+    const {sendReviewMessages, sendPreviewMessages, emptyPreviews, emptyReviews} = useSendListTelegram(animesSeason, year, season);
     const [method, setMethod] = useState<"preview" | "review" | null>();
     const {orderByName, getFullName} = useAnimesSeasonUtils();
 

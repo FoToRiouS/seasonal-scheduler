@@ -10,17 +10,24 @@ interface DeleteRequest {
 }
 
 const deleteQuery = async (deleteRequest: DeleteRequest) : Promise<IAnimeSeason> => {
-    return SchedulerBackApi().delete(`/animeseason/${deleteRequest.uuid}/${deleteRequest.year}/${deleteRequest.season}`);
+    const res = await SchedulerBackApi().delete(`/animeseason/${deleteRequest.uuid}/${deleteRequest.year}/${deleteRequest.season}`);
+    return res.data;
 
 }
-export function useDeleteAnimeSeason(idAnime: number, year: number, season: AnimeSeasons) {
+export function useDeleteAnimeSeason(idAnime: number) {
     const queryClient = useQueryClient()
     return useMutation({
         mutationFn: deleteQuery,
         retry: 2,
-        onSuccess: () => {
+        onSuccess: (data, variables) => {
             queryClient.invalidateQueries(["anime-season", idAnime]);
-            queryClient.invalidateQueries(["anime-season-by-season", year, season]);
+            console.log(data?.seasons)
+            if(data?.seasons){
+                data.seasons.forEach(s => {
+                    queryClient.invalidateQueries(["anime-season-by-season", s.year, s.season])
+                })
+            }
+            queryClient.invalidateQueries(["anime-season-by-season", variables.year, variables.season])
         }
     });
 }

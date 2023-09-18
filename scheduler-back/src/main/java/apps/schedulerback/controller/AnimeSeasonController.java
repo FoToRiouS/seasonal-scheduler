@@ -6,7 +6,6 @@ import apps.schedulerback.model.record.AnimeSeasonSaveDTO;
 import apps.schedulerback.model.record.AnimeSeasonUpdateDTO;
 import apps.schedulerback.service.AnimeSeasonService;
 import jakarta.validation.constraints.NotEmpty;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -52,15 +51,15 @@ public class AnimeSeasonController {
     }
 
     @PutMapping ("/{uuid}")
-    public ResponseEntity<Boolean> updateAnimeSeason(@PathVariable String uuid, @RequestBody AnimeSeasonUpdateDTO saveRequest){
-        animeSeasonService.updateAnimeAndSeason(UUID.fromString(uuid), saveRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<AnimeSeasonDTO> updateAnimeSeason(@PathVariable String uuid, @RequestBody AnimeSeasonUpdateDTO saveRequest){
+        AnimeSeason animeSeason = animeSeasonService.updateAnimeAndSeason(UUID.fromString(uuid), saveRequest);
+        return ResponseEntity.ok(new AnimeSeasonDTO(animeSeason));
     }
 
     @DeleteMapping ("/{uuid}/{year}/{season}")
-    public ResponseEntity<Boolean> deleteAnimeSeason(@PathVariable @NotEmpty String uuid, @PathVariable String season, @PathVariable long year){
-        animeSeasonService.deleteAnimeSeasonFromSeason(UUID.fromString(uuid), year, season);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<AnimeSeasonDTO> deleteAnimeSeason(@PathVariable @NotEmpty String uuid, @PathVariable String season, @PathVariable long year){
+        AnimeSeason animeSeason = animeSeasonService.deleteAnimeSeasonFromSeason(UUID.fromString(uuid), year, season);
+        return ResponseEntity.ok(new AnimeSeasonDTO(animeSeason));
     }
 
 }

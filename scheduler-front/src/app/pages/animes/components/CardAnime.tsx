@@ -22,7 +22,7 @@ interface ICardAnimeProps {
 export const CardAnime: React.FC<ICardAnimeProps> = ({anime, onOpen, animeSeason}) => {
     const {season, year} = useSeasonContext();
 
-    const {mutate: saveAnimeSeason } = useSaveAnimeSeason(anime.id, year, season);
+    const {mutate: saveAnimeSeason } = useSaveAnimeSeason(anime.id);
 
     const openSaveModal = () => {
         modals.openConfirmModal({

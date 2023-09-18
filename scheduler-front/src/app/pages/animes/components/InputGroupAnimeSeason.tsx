@@ -17,7 +17,7 @@ export const InputGroupAnimeSeason: React.FC<InputGroupAnimeSeasonProps> = ({ani
     const [year, setYear] = useState<number | ''>(initialYear);
     const [season, setSeason] = useState<AnimeSeasons | null>(initialSeason);
 
-    const {mutate: save, isLoading: isSaving } = useSaveAnimeSeason(anime!.id, +year, season!);
+    const {mutate: save, isLoading: isSaving } = useSaveAnimeSeason(anime!.id);
 
     const handleSaveAnimeSeason = () => {
         const animeSeason: IAnimeSeasonSaveDTO = {
