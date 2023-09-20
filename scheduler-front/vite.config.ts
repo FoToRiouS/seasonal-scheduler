@@ -13,7 +13,7 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/myanimelist/, "")
       },
       '/backend': {
-        target: 'http://localhost:8080',
+        target: 'http://localhost:8080', //http://scheduler-back:8080
         changeOrigin: true,
         secure: false,
         ws: true,
