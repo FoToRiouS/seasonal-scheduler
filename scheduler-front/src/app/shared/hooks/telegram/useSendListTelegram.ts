@@ -45,6 +45,7 @@ export const useSendListTelegram = (animeSeasons: IAnimeSeason[], year: number, 
     const sendPreviewMessages = async () => {
         for (const g of data!){
             await handleSendHashtag(g, "preview");
+            let previousSeason = [] as IAnimeSeason[];
             for (const anime of sortedList) {
                 const toSend = !!anime.previewText && (
                     anime.seasons?.length === 1 ||
@@ -53,6 +54,16 @@ export const useSendListTelegram = (animeSeasons: IAnimeSeason[], year: number, 
                     )
                 );
                 if(toSend){
+                    handleSendMessage(g, anime.anime!, anime.previewText!);
+                    await timer(3500);
+                } else {
+                    previousSeason = [...previousSeason, anime]
+                }
+            }
+
+            // Envia os animes das temporada que não são do atual calendário
+            for(const anime of previousSeason){
+                if(anime.previewText){
                     handleSendMessage(g, anime.anime!, anime.previewText!);
                     await timer(3500);
                 }

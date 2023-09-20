@@ -76,7 +76,7 @@ export const ScheduleAnimes = () => {
                         !isLoading && <>
                         {
                             data && <>
-                            <Button onClick={open}>Enviar Lista</Button>
+                            <Button size="lg" w="100%" mb="md" uppercase variant="gradient" gradient={{ from: 'red.9', to: 'grape.9' }} onClick={open}>Enviar Lista</Button>
                             <ModalSendMessages opened={opened} onClose={close} animesSeason={data}/></>
                         }
 
