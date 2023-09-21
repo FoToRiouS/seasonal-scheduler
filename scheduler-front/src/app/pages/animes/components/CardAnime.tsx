@@ -1,34 +1,93 @@
 import React from "react";
-import {Button, Card, CardBody, CardFooter, Flex, Heading, Image, Spacer} from "@chakra-ui/react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faEye} from "@fortawesome/free-solid-svg-icons";
+import {faEye, faPlus, faR} from "@fortawesome/free-solid-svg-icons";
+import {ActionIcon, Box, Button, Card, Group, Image, Stack, Text, Title} from "@mantine/core";
+import {IAnimeSeason} from "../../../shared/interfaces/IAnimeSeason.ts";
+import {useSeasonContext} from "../../../shared/hooks/context/useSeasonContext.ts";
+import {modals} from "@mantine/modals";
+import {IAnime} from "../../../shared/interfaces/IAnime.ts";
+import {useSaveAnimeSeason} from "../../../shared/hooks/backend/useSaveAnimeSeason.ts";
+import {IAnimeSeasonSaveDTO} from "../../../shared/interfaces/IAnimeSeasonSaveDTO.ts";
+import {RatingAnime} from "./RatingAnime.tsx";
+import {faP} from "@fortawesome/free-solid-svg-icons/faP";
+import {ServicesAnime} from "./ServicesAnime.tsx";
+import {getSeasonInPortuguese} from "../../../shared/services/AnimesService.ts";
 
 interface ICardAnimeProps {
-    image: string,
-    jpnName: string,
-    engName: string
+    anime: IAnime,
     onOpen: () => void
+    animeSeason: IAnimeSeason | undefined,
 }
 
-const fontSize = "md"
+export const CardAnime: React.FC<ICardAnimeProps> = ({anime, onOpen, animeSeason}) => {
+    const {season, year} = useSeasonContext();
 
-export const CardAnime: React.FC<ICardAnimeProps> = ({image, jpnName, engName, onOpen}) => {
+    const {mutate: saveAnimeSeason } = useSaveAnimeSeason(anime.id);
+
+    const openSaveModal = () => {
+        modals.openConfirmModal({
+            title: "Adicionar a lista",
+            centered: true,
+            children: (
+                <Text size="sm">
+                    Tem certeza que deseja adicionar {anime!.title} ao calendário de {getSeasonInPortuguese(season)} de {year}?
+                </Text>
+            ),
+            labels: { confirm: 'Adicionar', cancel: "Cancelar" },
+            confirmProps: { color: 'green.9' },
+            onConfirm: () => {
+                const animeSeason: IAnimeSeasonSaveDTO = {
+                    idAnime: anime!.id.toString(),
+                    year: year,
+                    season: season
+                }
+                saveAnimeSeason(animeSeason);
+            }
+        });
+    }
+
     return (
         <>
-            <Card bg={"blackAlpha.800"} maxW={"sm"} minW={"sm"} minH={"full"}>
-                <CardBody>
-                    <Flex minW={"full"} maxH={450} mb={3} overflow={"hidden"} justify={"center"} align={"center"} borderRadius={"lg"} border={"1px"} borderColor={"white"} >
-                        <Image src={image} alt={jpnName} borderRadius={"lg"}/>
-                    </Flex>
-                    <Spacer/>
-                    <Flex direction={"column"} align={"center"}>
-                        <Heading color={"white"} fontSize={fontSize} textAlign={"center"} mb={2}>{jpnName}</Heading>
-                        <Heading color={"white"} fontSize={fontSize} textAlign={"center"}>{engName}</Heading>
-                    </Flex>
-                </CardBody>
-                <CardFooter display={"flex"} justify={"end"}>
-                    <Button leftIcon={<FontAwesomeIcon icon={faEye}/>} onClick={onOpen}>Info</Button>
-                </CardFooter>
+            <Card bg="dark.8" radius="lg" withBorder sx={{display: "flex", flexDirection: "column", borderWidth: "2px", borderColor: "graple"}}>
+                <Card.Section bg="gray.5" pos="relative">
+                    <Image src={anime.mainPicture.large} alt={anime.title} h={450} sx={{overflow: "hidden", display: "flex", justifyContent: "center", alignItems: "center"}}/>
+                    {
+                        (animeSeason?.services && animeSeason?.services.length > 0) &&
+                        <ServicesAnime services={animeSeason.services}/>
+                    }
+                </Card.Section>
+                <Stack spacing={0} mb="xl">
+                    <Title order={4} c={"white"} ta={"center"} lineClamp={2}>{anime.alternativeTitles ? anime.alternativeTitles.en : ""}</Title>
+                    <Title order={5} c={"white"} ta={"center"} lineClamp={2}>{anime.title}</Title>
+                </Stack>
+                <Group mt="auto" position="right">
+                    {
+                        anime.mean &&
+                        <Box mr="auto" h="100%">
+                            <RatingAnime rating={anime.mean}/>
+                        </Box>
+                    }
+                    {
+                        <Group mr="auto">
+                            {
+                                animeSeason && animeSeason.previewText &&
+                                <FontAwesomeIcon icon={faP} style={{color: "white"}}/>
+                            }
+                            {
+                                animeSeason && animeSeason.reviewText &&
+                                <FontAwesomeIcon icon={faR} style={{color: "white"}}/>
+                            }
+                        </Group>
+                    }
+
+                    {
+                        !animeSeason &&
+                            <ActionIcon variant="gradient" gradient={{from: "red.9", to: "grape.9"}} size="lg" onClick={openSaveModal}>
+                                <FontAwesomeIcon icon={faPlus}/>
+                            </ActionIcon>
+                    }
+                    <Button leftIcon={<FontAwesomeIcon icon={faEye}/>} variant="gradient" gradient={{from: "red.9", to: "grape.9"}} onClick={onOpen}>Info</Button>
+                </Group>
             </Card>
         </>
     )

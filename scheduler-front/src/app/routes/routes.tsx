@@ -1,7 +1,8 @@
-import {BrowserRouter, Route, Routes, Navigate} from "react-router-dom";
-import {Animes} from "../pages/animes/Animes.tsx";
+import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
+import {ListAnimes} from "../pages/animes/ListAnimes.tsx";
 import {Login} from "../pages/login/Login.tsx";
 import {UsuarioLogadoProvider} from "../shared/contexts/UsuarioLogado.tsx";
+import {ScheduleAnimes} from "../pages/animes/ScheduleAnimes.tsx";
 
 export const Rotas = () => {
 
@@ -10,9 +11,10 @@ export const Rotas = () => {
             <BrowserRouter>
                 <Routes>
                     <Route path="/login" element={<Login/>}/>
-                    <Route path="/animes" element={<Animes/>}/>
+                    <Route path="/animes/list" element={<ListAnimes/>}/>
+                    <Route path="/animes/schedule" element={<ScheduleAnimes/>}/>
 
-                    <Route path="*" element={<Navigate to="/animes"/>}/>
+                    <Route path="*" element={<Navigate to="/animes/list"/>}/>
                 </Routes>
             </BrowserRouter>
         </UsuarioLogadoProvider>

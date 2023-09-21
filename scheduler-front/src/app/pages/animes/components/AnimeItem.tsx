@@ -1,21 +1,19 @@
 import React from "react";
-import {useDisclosure} from "@chakra-ui/react";
-import {ModalAnime} from "./ModalAnime.tsx";
-import {CardAnime} from "./CardAnime.tsx";
 import {IAnime} from "../../../shared/interfaces/IAnime.ts";
+import {useAnimeSeasonByParameters} from "../../../shared/hooks/backend/useAnimeSeasonByParameters.ts";
+import {FetchedAnimeItem} from "./FetchedAnimeItem.tsx";
 
 interface IAnimeItemProps {
     anime: IAnime
 }
 
 export const AnimeItem: React.FC<IAnimeItemProps> = ({anime}) => {
-    const {isOpen, onOpen , onClose} = useDisclosure();
-    const {mainPicture, title, alternativeTitles} = anime
+    const {id} = anime
+    const {data: animeSeason} = useAnimeSeasonByParameters(id)
 
     return (
         <>
-            <CardAnime image={mainPicture.large} jpnName={title} engName={alternativeTitles.en} onOpen={onOpen}/>
-            <ModalAnime anime={anime} isOpen={isOpen} onClose={onClose}/>
+            <FetchedAnimeItem anime={anime} animeSeason={animeSeason!}/>
         </>
     )
 }

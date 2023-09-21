@@ -6,14 +6,17 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "watch_service")
-public class WatchService {
+public class WatchService implements Comparable<WatchService> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
+
+    @Column(name = "color" , nullable = false)
+    private String color;
 
     public UUID getId() {
         return id;
@@ -29,5 +32,18 @@ public class WatchService {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String icon) {
+        this.color = icon;
+    }
+
+    @Override
+    public int compareTo(WatchService o) {
+        return this.getName().compareToIgnoreCase(o.getName());
     }
 }

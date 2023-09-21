@@ -2,8 +2,7 @@ package apps.schedulerback.model;
 
 import jakarta.persistence.*;
 
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name = "anime_season")
@@ -13,31 +12,33 @@ public class AnimeSeason {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "id_anime")
+    @Column(name = "id_anime", unique = true)
     private long idAnime;
 
-    @ManyToOne
-    @JoinColumn(name = "season_id")
-    private Season season;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "anime_season_season",
+            joinColumns = @JoinColumn(name = "anime_season_id"),
+            inverseJoinColumns = @JoinColumn(name = "season_id"))
+    private Set<Season> seasons;
 
-    @Column(name = "preview_text")
+    @Column(name = "preview_text", length = 900)
     private String previewText;
 
-    @Column(name = "review_text")
+    @Column(name = "review_text", length = 900)
     private String reviewText;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "anime_service",
             joinColumns = @JoinColumn(name = "anime_id"),
             inverseJoinColumns = @JoinColumn(name = "service_id"))
-    private Set<WatchService> watchServices;
+    private SortedSet<WatchService> watchServices;
 
     public AnimeSeason() {}
 
-    public AnimeSeason(long idAnime, Season season) {
+    public AnimeSeason(long idAnime) {
         this.idAnime = idAnime;
-        this.season = season;
     }
 
     public UUID getId() {
@@ -56,12 +57,15 @@ public class AnimeSeason {
         this.idAnime = idAnime;
     }
 
-    public Season getSeason() {
-        return season;
+    public Set<Season> getSeasons() {
+        if(seasons == null){
+            seasons = new HashSet<>();
+        }
+        return seasons;
     }
 
-    public void setSeason(Season season) {
-        this.season = season;
+    public void setSeasons(Set<Season> seasons) {
+        this.seasons = seasons;
     }
 
     public String getPreviewText() {
@@ -80,11 +84,14 @@ public class AnimeSeason {
         this.reviewText = reviewText;
     }
 
-    public Set<WatchService> getWatchServices() {
+    public SortedSet<WatchService> getWatchServices() {
+        if(watchServices == null){
+            watchServices = new TreeSet<>();
+        }
         return watchServices;
     }
 
-    public void setWatchServices(Set<WatchService> watchServices) {
+    public void setWatchServices(SortedSet<WatchService> watchServices) {
         this.watchServices = watchServices;
     }
 }

@@ -1,7 +1,7 @@
 import React, {ReactNode} from "react";
-import {Flex, Heading, HStack} from "@chakra-ui/react";
 import {MobileMenu} from "./MobileMenu.tsx";
-import {DesktopMenu} from "./DesktopMenu.tsx";
+import {Box, Button, Center, Group, Image} from "@mantine/core";
+import {useNavigate} from "react-router-dom";
 
 interface TemplateProps {
     children: ReactNode
@@ -14,26 +14,33 @@ export interface MenuItemInfo {
 }
 
 export const Template: React.FC<TemplateProps> = ({children}) => {
+    const navigate = useNavigate();
 
     const items: MenuItemInfo[] = [
         {nome: "Animes", subItems: [
-                {nome: "Animes da Temporada", link: "/animes"},
-                {nome: "Calendário", link: ""}
-            ]},
-        // {nome: "Animes da Temporada", link: "/animes"},
-        // {nome: "Calendário", link: ""},
-        {nome: "Login", link: "/login"}
+                {nome: "Animes da Temporada", link: "/animes/list"},
+                {nome: "Calendário", link: "/animes/schedule"}
+            ]}
     ]
 
     return(<>
-        <HStack bg="blackAlpha.200" boxShadow="xl" minW={"full"} minH={"100px"} mb={16} px={10}>
+        <Group c="white"  miw="100%" h={100} mb={50} px={50} position="center"
+           sx={(theme) => ({
+               boxShadow: "0px 4px 20px -3px rgba(0,0,0,0.75)",
+               backgroundImage: theme.fn.gradient({ from: 'red.9', to: 'grape.9', deg: 0 }),
+            })}>
             <MobileMenu menuItems={items}/>
-            <Flex flex="1">
-                <Heading mx={{base: "auto", lg: "0"}}>Menu</Heading>
-            </Flex>
-            <DesktopMenu menuItems={items}/>
-        </HStack>
-        {children}
+            <Center>
+                <Button variant="gradient" gradient={{ from: 'red.9', to: 'grape.9' }} onClick={() => navigate("/animes/list")}>Lista</Button>
+                <Box w={200} mx="lg">
+                    <Image fit="contain" src="/logo.png"/>
+                </Box>
+                <Button variant="gradient" gradient={{ from: 'red.9', to: 'grape.9' }} onClick={() => navigate("/animes/schedule")}>Calendário</Button>
+            </Center>
+        </Group>
+        <Box>
+            {children}
+        </Box>
     </>)
 
 }

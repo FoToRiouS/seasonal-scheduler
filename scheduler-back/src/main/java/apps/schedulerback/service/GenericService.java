@@ -18,6 +18,10 @@ public class GenericService<ENTITY, PK, RESPOSITORY extends JpaRepository<ENTITY
         repository.delete(entity);
     }
 
+    public void deleteById(PK pk) {
+        repository.deleteById(pk);
+    }
+
     public ENTITY findById(PK id) {
         return repository.findById(id).orElse(null);
     }
