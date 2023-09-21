@@ -1,0 +1,20 @@
+spring:
+  datasource:
+    url: jdbc:sqlserver://localhost:1433;databaseName=scheduler;encrypt=false
+#    url: jdbc:mysql://localhost:3306/scheduler
+    username: scheduler
+    password: scheduler!@#
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+    hibernate:
+      ddl-auto: update
+
+logging:
+  level:
+    sql: debug
+    org.hibernate.orm.jdbc.bind: trace
+
+server:
+  port: 7000

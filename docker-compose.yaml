@@ -1,9 +1,27 @@
 version: "3.8"
 services:
 
+  db:
+    image: mysql:8.1
+    restart: always
+    environment:
+      MYSQL_USER: scheduler
+      MYSQL_PASSWORD: scheduler!@#
+      MYSQL_DATABASE: scheduler
+      MYSQL_RANDOM_ROOT_PASSWORD: true
+    ports:
+      - "3306:3306"
+    volumes:
+      - type: volume
+        source: database-volume
+        target: /var/lib/mysql
+    networks:
+      - scheduler-network
+
   scheduler-back:
     build:
-      dockerfile: scheduler-back/Dockerfile
+      context: scheduler-back
+      dockerfile: Dockerfile
     image: scheduler-back:latest
     environment:
       TZ: "America/Sao_Paulo"
@@ -12,11 +30,14 @@ services:
       LANGUAGE: "pt_BR:UTF-8"
     networks:
       - scheduler-network
+    depends_on:
+      - db
 
   scheduler-front:
     build:
-      dockerfile: scheduler-front/Dockerfile
-    image: scheduler-back:lastest
+      context: scheduler-front
+      dockerfile: Dockerfile
+    image: scheduler-front:lastest
     environment:
       TZ: "America/Sao_Paulo"
       LC_ALL: "pt_BR.UTF-8"
@@ -27,6 +48,7 @@ services:
 
   nginx:
     build:
+      context: nginx
       dockerfile: Dockerfile
     image: nginx
     networks:
@@ -37,6 +59,11 @@ services:
     ports:
       - "9090:443"
       - "8080:80"
+    depends_on:
+      - scheduler-front
 
 networks:
   scheduler-network:
+
+volumes:
+  database-volume:

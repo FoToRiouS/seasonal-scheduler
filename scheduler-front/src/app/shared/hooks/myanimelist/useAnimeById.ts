@@ -7,4 +7,4 @@ export function useAnimeById(id: number) {
         queryKey: ["animes-season", id],
         staleTime: 5 * 60 * 1000
     });
-}onst 
+}

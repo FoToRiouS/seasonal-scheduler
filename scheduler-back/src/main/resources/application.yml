@@ -1,8 +1,6 @@
 spring:
-  datasource:
-    url: jdbc:sqlserver://localhost:1433;databaseName=scheduler;encrypt=false
-    username: scheduler
-    password: scheduler!@#
+  profiles:
+    active: prod
   jpa:
     open-in-view: 'false'
     hibernate:
@@ -24,21 +22,3 @@ management:
 
 ---
 
-spring:
-  config:
-    activate:
-      on-profile: dev
-#  datasource:
-#    url: jdbc:sqlserver://localhost:1433;databaseName=UniEVENTOS;encrypt=false
-
-  jpa:
-    properties:
-      hibernate:
-        format_sql: true
-    hibernate:
-      ddl-auto: update
-
-logging:
-  level:
-    sql: debug
-    org.hibernate.orm.jdbc.bind: trace

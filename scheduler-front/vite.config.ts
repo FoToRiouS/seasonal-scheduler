@@ -1,32 +1,39 @@
-import {defineConfig} from 'vite'
+import {defineConfig, loadEnv} from 'vite'
 import react from '@vitejs/plugin-react'
 
 // https://vitejs.dev/config/
-export default defineConfig({
-  server:{
-    proxy: {
-      '/myanimelist': {
-        target: 'https://api.myanimelist.net/v2',
-        changeOrigin: true,
-        secure: false,
-        ws: true,
-        rewrite: (path) => path.replace(/^\/myanimelist/, "")
+export default defineConfig(({ command, mode }) => {
+  // Load env file based on `mode` in the current working directory.
+  // Set the third parameter to '' to load all env regardless of the `VITE_` prefix.
+  const env = loadEnv(mode, process.cwd())
+  return {
+    server:{
+      host: true,
+      port: 5173,
+      proxy: {
+        '/myanimelist': {
+          target: 'https://api.myanimelist.net/v2',
+          changeOrigin: true,
+          secure: false,
+          ws: true,
+          rewrite: (path) => path.replace(/^\/myanimelist/, "")
+        },
+        '/backend': {
+          target: env.VITE_BACKEND_URI,
+          changeOrigin: true,
+          secure: false,
+          ws: true,
+          rewrite: (path) => path.replace(/^\/backend/, "")
+        },
+        '/telegram': {
+          target: env.VITE_TELEGRAM_API,
+          changeOrigin: true,
+          secure: false,
+          ws: true,
+          rewrite: (path) => path.replace(/^\/telegram/, "")
+        }
       },
-      '/backend': {
-        target: 'http://localhost:8080', //http://scheduler-back:8080
-        changeOrigin: true,
-        secure: false,
-        ws: true,
-        rewrite: (path) => path.replace(/^\/backend/, "")
-      },
-      '/telegram': {
-        target: 'https://api.telegram.org/bot6353731187:AAESmnxiCkivT5JOR3q-WHyjIClzQsNsWck',
-        changeOrigin: true,
-        secure: false,
-        ws: true,
-        rewrite: (path) => path.replace(/^\/telegram/, "")
-      }
     },
-  },
-  plugins: [react()],
+    plugins: [react()],
+  }
 })
