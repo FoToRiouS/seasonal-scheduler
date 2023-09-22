@@ -37,7 +37,7 @@ services:
     build:
       context: scheduler-front
       dockerfile: Dockerfile
-    image: scheduler-front:lastest
+    image: scheduler-front:latest
     environment:
       TZ: "America/Sao_Paulo"
       LC_ALL: "pt_BR.UTF-8"
@@ -50,7 +50,7 @@ services:
     build:
       context: nginx
       dockerfile: Dockerfile
-    image: nginx
+    image: nginx-scheduler:latest
     networks:
       - scheduler-network
     environment:
