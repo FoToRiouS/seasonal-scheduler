@@ -60,7 +60,7 @@ export function getDayOfExhibition(day: string, hour: string) {
     return days.get(daysIndex[dayIndex]) + " as " + newHour;
 }
 
-const animeApiHeaders = {"X-MAL-CLIENT-ID": "eb6aa17ec9b6961f8812f79c38318240"}
+const animeApiHeaders = {"X-MAL-CLIENT-ID": `${import.meta.env.VITE_MYANIMELIST_API_TOKEN}`}
 
 const mapJsonAnimeFromList = (node: any) => {
     return <IAnime> {

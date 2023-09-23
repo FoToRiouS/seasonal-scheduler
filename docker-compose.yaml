@@ -46,11 +46,11 @@ services:
     networks:
       - scheduler-network
 
-  nginx:
+  nginx-external:
     build:
-      context: nginx
+      context: nginx/external
       dockerfile: Dockerfile
-    image: nginx-scheduler:latest
+    image: nginx-external:latest
     networks:
       - scheduler-network
     environment:
@@ -61,6 +61,22 @@ services:
       - "8080:80"
     depends_on:
       - scheduler-front
+
+  nginx-internal:
+    build:
+      context: nginx/internal
+      dockerfile: Dockerfile
+    image: nginx-internal:latest
+    networks:
+      - scheduler-network
+    environment:
+      TZ: "America/Sao_Paulo"
+    tty: true
+    ports:
+      - "555:555"
+    depends_on:
+      - scheduler-front
+      - scheduler-back
 
 networks:
   scheduler-network:

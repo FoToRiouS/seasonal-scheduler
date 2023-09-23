@@ -12,7 +12,7 @@ export default defineConfig(({ command, mode }) => {
       port: 5173,
       proxy: {
         '/myanimelist': {
-          target: 'https://api.myanimelist.net/v2',
+          target:  env.VITE_MYANIMELIST_API,
           changeOrigin: true,
           secure: false,
           ws: true,
