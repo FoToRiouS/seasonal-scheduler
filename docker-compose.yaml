@@ -52,7 +52,7 @@ services:
   nginx:
     build:
       context: nginx
-      dockerfile: nginx/Dockerfile
+      dockerfile: Dockerfile
     image: nginx-scheduler:latest
     container_name: nginx-external
     networks:
