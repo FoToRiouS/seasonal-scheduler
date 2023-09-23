@@ -4,6 +4,7 @@ services:
   db:
     image: mysql:8.1
     restart: always
+    container_name: database
     environment:
       MYSQL_USER: scheduler
       MYSQL_PASSWORD: scheduler!@#
@@ -23,6 +24,7 @@ services:
       context: scheduler-back
       dockerfile: Dockerfile
     image: scheduler-back:latest
+    container_name: scheduler-back
     environment:
       TZ: "America/Sao_Paulo"
       LC_ALL: "pt_BR.UTF-8"
@@ -38,6 +40,7 @@ services:
       context: scheduler-front
       dockerfile: Dockerfile
     image: scheduler-front:latest
+    container_name: scheduler-front
     environment:
       TZ: "America/Sao_Paulo"
       LC_ALL: "pt_BR.UTF-8"
@@ -51,6 +54,7 @@ services:
       context: nginx/external
       dockerfile: Dockerfile
     image: nginx-external:latest
+    container_name: nginx-external
     networks:
       - scheduler-network
     environment:
@@ -67,6 +71,7 @@ services:
       context: nginx/internal
       dockerfile: Dockerfile
     image: nginx-internal:latest
+    container_name: nginx-internal
     networks:
       - scheduler-network
     environment:
