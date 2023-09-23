@@ -51,9 +51,9 @@ services:
 
   nginx:
     build:
-      context: nginx/external
-      dockerfile: Dockerfile
-    image: nginx-external:latest
+      context: nginx
+      dockerfile: nginx/Dockerfile
+    image: nginx-scheduler:latest
     container_name: nginx-external
     networks:
       - scheduler-network
@@ -63,6 +63,7 @@ services:
     ports:
       - "9090:443"
       - "8080:80"
+      - "555:555"
     depends_on:
       - scheduler-front
 
