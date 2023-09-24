@@ -1,11 +1,11 @@
 import {useWatchServiceList} from "./useWatchServiceList.ts";
 
 const mapImages = new Map<string, string>([
-    ["3acbc99b-d54d-4d24-8b9e-3705307fea39", "/Netflix.png"],
-    ["9b03dffd-7217-4bb1-b2d3-4daa4772ff2e", "/Internet.png"],
-    ["33d9f629-40d6-4e6f-a05c-8cb450e80c69", "/Crunchyroll.png"],
-    ["dd1cfef9-9dac-48ea-b6d2-ac8a9a673196", "/Disney+.png"],
-    ["974b904a-999f-44d2-aab5-d3ed07babcc4", "/Star+.png"],
+    ["33414342-4339-3942-2d44-3534442d3444", "/Netflix.png"],
+    ["39423033-4446-4644-2d37-3231372d3442", "/Internet.png"],
+    ["33334439-4636-3239-2d34-3044362d3445", "/Crunchyroll.png"],
+    ["44443143-4645-4639-2d39-4441432d3438", "/Disney+.png"],
+    ["39373442-3930-3441-2d39-3939462d3434", "/Star+.png"],
 ]);
 
 export const useWatchServicesFunctions = () => {

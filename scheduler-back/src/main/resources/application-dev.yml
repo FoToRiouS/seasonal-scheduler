@@ -1,7 +1,7 @@
 spring:
   datasource:
-    url: jdbc:sqlserver://localhost:1433;databaseName=scheduler;encrypt=false
-#    url: jdbc:mysql://localhost:3306/scheduler
+#    url: jdbc:sqlserver://localhost:1433;databaseName=scheduler;encrypt=false
+    url: jdbc:mysql://67.205.170.183:3306/scheduler
     username: scheduler
     password: scheduler!@#
   jpa:
