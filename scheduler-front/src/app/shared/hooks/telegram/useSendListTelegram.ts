@@ -1,16 +1,25 @@
 import {useGroups} from "../backend/useGroups.ts";
-import {IAnime} from "../../interfaces/IAnime.ts";
 import {useSendPhoto} from "./useSendPhoto.ts";
 import {IAnimeSeason} from "../../interfaces/IAnimeSeason.ts";
 import {useMemo} from "react";
 import {useAnimesSeasonUtils} from "../utils/useAnimesSeasonUtils.ts";
 import {AnimeSeasons, getSeasonInPortuguese} from "../../services/AnimesService.ts";
 import {useSendMessage} from "./useSendMessage.ts";
+import {useWatchServicesFunctions} from "../backend/useWatchServicesFunctions.ts";
+
+function escapeHtml(html: string): string {
+    const escapeMap: { [key: string]: string } = {
+        '&': '&amp;',
+    };
+
+    return html.replace(/&/g, (match) => escapeMap[match]);
+}
 
 export const useSendListTelegram = (animeSeasons: IAnimeSeason[], year: number, season: AnimeSeasons) => {
     const { data} = useGroups();
     const sendMessage = useSendMessage();
     const sendPhoto = useSendPhoto();
+    const {getService} = useWatchServicesFunctions();
     const {orderByRating} = useAnimesSeasonUtils();
 
     const sortedList = useMemo(() => orderByRating(animeSeasons, "asc"), [animeSeasons]);
@@ -20,14 +29,21 @@ export const useSendListTelegram = (animeSeasons: IAnimeSeason[], year: number, 
         await sendMessage(group, `%23fotolista ${typeText}-${getSeasonInPortuguese(season)}/${year}`);
     }
 
-    const handleSendMessage = (group:number, anime: IAnime, message: string) => {
+    const handleSendMessage = (group:number, animeSeason: IAnimeSeason, message: string) => {
+        const anime = animeSeason.anime!;
+
         const title = anime.title;
         const enTitle = anime.alternativeTitles.en;
         const formattedTitle = enTitle ? `${enTitle} (${title})` : `${title}`;
         const formattedRating = anime.mean ? `<b>Nota MAL:</b> ${anime.mean} %0A%0A` : "";
+        const formattedServices = animeSeason.services ?
+            `<b>Onde Assistir:</b> ${animeSeason.services.map(s => getService(s)!.name).join(", ")} %0A%0A` : ""
 
-        let caption = `<b>${formattedTitle}</b>` + "%0A%0A" + formattedRating + message;
-        caption = caption.replace("&", "%26amp;");
+        let caption = `<b>${formattedTitle}</b>` + "%0A%0A" + formattedRating + formattedServices + message;
+        console.log(caption)
+        caption = escapeHtml(caption);
+        console.log(caption)
+        // caption = caption.replace("&", "%26amp;");
 
         sendPhoto(group, anime.mainPicture.large, caption).then(undefined);
     }
@@ -54,7 +70,7 @@ export const useSendListTelegram = (animeSeasons: IAnimeSeason[], year: number, 
                     )
                 );
                 if(toSend){
-                    handleSendMessage(g, anime.anime!, anime.previewText!);
+                    handleSendMessage(g, anime, anime.previewText!);
                     await timer(3500);
                 } else {
                     previousSeason = [...previousSeason, anime]
@@ -64,7 +80,7 @@ export const useSendListTelegram = (animeSeasons: IAnimeSeason[], year: number, 
             // Envia os animes das temporada que não são do atual calendário
             for(const anime of previousSeason){
                 if(anime.previewText){
-                    handleSendMessage(g, anime.anime!, anime.previewText!);
+                    handleSendMessage(g, anime, anime.previewText!);
                     await timer(3500);
                 }
             }
@@ -76,7 +92,7 @@ export const useSendListTelegram = (animeSeasons: IAnimeSeason[], year: number, 
             await handleSendHashtag(g, "review");
             for (const anime of sortedList) {
                 if(anime.reviewText) {
-                    handleSendMessage(g, anime.anime!, anime.reviewText);
+                    handleSendMessage(g, anime, anime.reviewText);
                     await timer(3500);
                 }
             }
