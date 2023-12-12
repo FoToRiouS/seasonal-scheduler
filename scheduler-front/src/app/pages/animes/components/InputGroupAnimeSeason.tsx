@@ -36,7 +36,7 @@ export const InputGroupAnimeSeason: React.FC<InputGroupAnimeSeasonProps> = ({ani
                 {value: "summer", label: "Verão"},
                 {value: "fall", label: "Outono"}
             ]}/>
-            <NumberInput defaultValue={year} onChange={setYear} min={1900} max={currentYear}/>
+            <NumberInput defaultValue={year} onChange={setYear} min={1900} max={currentYear+1}/>
             <Button color="grape.8" onClick={handleSaveAnimeSeason} loading={isSaving}>
                 {isSaving ? "Adicionando..." : "Adicionar ao Calendário"}
             </Button>

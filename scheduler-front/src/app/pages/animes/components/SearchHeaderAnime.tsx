@@ -31,7 +31,7 @@ export const SearchHeaderAnime: React.FC<SearchHeaderAnimeProps> = ({searchValue
                 ]}/>
             </Grid.Col>
             <Grid.Col span={2}>
-                <NumberInput defaultValue={year} onChange={setYear} min={1900} max={currentYear}/>
+                <NumberInput defaultValue={year} onChange={setYear} min={1900} max={currentYear+1}/>
             </Grid.Col>
             <Grid.Col span="content" ml="auto">
                 <Group spacing={5}>
