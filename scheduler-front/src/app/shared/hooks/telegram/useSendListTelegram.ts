@@ -8,11 +8,17 @@ import {useSendMessage} from "./useSendMessage.ts";
 import {useWatchServicesFunctions} from "../backend/useWatchServicesFunctions.ts";
 
 function escapeHtml(html: string): string {
+    let escapedHtml = html;
     const escapeMap: { [key: string]: string } = {
         '&': '&amp;',
+        '\n': '%0A',
     };
 
-    return html.replace(/&/g, (match) => escapeMap[match]);
+    for (let escapeMapKey in escapeMap) {
+        const regex = new RegExp(escapeMapKey, 'g');
+        escapedHtml = escapedHtml.replace(regex, (match) => escapeMap[match]);
+    }
+    return escapedHtml;
 }
 
 export const useSendListTelegram = (animeSeasons: IAnimeSeason[], year: number, season: AnimeSeasons) => {
@@ -40,11 +46,7 @@ export const useSendListTelegram = (animeSeasons: IAnimeSeason[], year: number, 
             `<b>Onde Assistir:</b> ${animeSeason.services.map(s => getService(s)!.name).join(", ")} %0A%0A` : ""
 
         let caption = `<b>${formattedTitle}</b>` + "%0A%0A" + formattedRating + formattedServices + message;
-        console.log(caption)
         caption = escapeHtml(caption);
-        console.log(caption)
-        // caption = caption.replace("&", "%26amp;");
-
         sendPhoto(group, anime.mainPicture.large, caption).then(undefined);
     }
 
