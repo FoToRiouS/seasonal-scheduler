@@ -1,8 +1,8 @@
-import {Link, useNavigate} from "react-router-dom";
-import {useCallback, useMemo, useRef, useState} from "react";
-import {InputLogin} from "./components/InputLogin.tsx";
-import {useUsuarioLogado} from "../../shared/hooks/UseUsuarioLogado.ts";
-import {Template} from "../../shared/components/Template.tsx";
+import { Link, useNavigate } from "react-router-dom";
+import { useCallback, useMemo, useRef, useState } from "react";
+import { InputLogin } from "./components/InputLogin.tsx";
+import { useUsuarioLogado } from "../../shared/hooks/UseUsuarioLogado.ts";
+import { Template } from "../../shared/components/Template.tsx";
 
 export const Login = () => {
     const navigate = useNavigate();
@@ -11,19 +11,19 @@ export const Login = () => {
 
     const [user, setUser] = useState("");
     const [password, setPassword] = useState("");
-        
+
     const usuarioLogadoContext = useUsuarioLogado();
-    
+
     const handleEntrar = useCallback(() => {
         usuarioLogadoContext.setNome(user + "\n" + password);
         navigate("/animes");
     }, [password, user, usuarioLogadoContext]);
 
-    const lenghtUser  = useMemo(() => {
+    const lenghtUser = useMemo(() => {
         return user.length;
     }, [user]);
 
-    return(
+    return (
         <Template>
             <div>
                 <h1>Login</h1>
@@ -32,7 +32,7 @@ export const Login = () => {
                     <InputLogin
                         label="Usuário"
                         value={user}
-                        onChange={newValue => setUser(newValue)}
+                        onChange={(newValue) => setUser(newValue)}
                         onPressEnter={() => passwordRef.current?.focus()}
                     />
 
@@ -41,12 +41,14 @@ export const Login = () => {
                         value={password}
                         type="password"
                         ref={passwordRef}
-                        onChange={newValue => setPassword(newValue)}
+                        onChange={(newValue) => setPassword(newValue)}
                     />
-                    <button type="button" onClick={handleEntrar}>Login</button>
+                    <button type="button" onClick={handleEntrar}>
+                        Login
+                    </button>
                 </form>
                 <Link to="/animes">Animes</Link>
             </div>
         </Template>
-    )
-}
+    );
+};

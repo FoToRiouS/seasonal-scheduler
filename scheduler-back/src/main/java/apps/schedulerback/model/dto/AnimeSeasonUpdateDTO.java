@@ -1,4 +1,4 @@
-package apps.schedulerback.model.record;
+package apps.schedulerback.model.dto;
 
 import java.util.Set;
 

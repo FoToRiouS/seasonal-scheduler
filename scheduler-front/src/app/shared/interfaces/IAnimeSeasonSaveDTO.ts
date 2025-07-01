@@ -1,5 +1,5 @@
 export interface IAnimeSeasonSaveDTO {
-    idAnime: string,
-    season: string,
-    year: number,
+    idAnime: string;
+    season: string;
+    year: number;
 }

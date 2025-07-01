@@ -1,4 +1,4 @@
-import React, {createContext, ReactNode, useCallback, useState} from "react";
+import React, { createContext, ReactNode, useCallback, useState } from "react";
 
 interface IUsuarioLogadoData {
     nome: string;
@@ -7,22 +7,23 @@ interface IUsuarioLogadoData {
 }
 
 interface UsuarioLogadoProviderProps {
-    children: ReactNode
+    children: ReactNode;
 }
 
 export const UsuarioLogadoContext = createContext<IUsuarioLogadoData>({} as IUsuarioLogadoData);
 
-export const UsuarioLogadoProvider: React.FC<UsuarioLogadoProviderProps> = ({children}) => {
-
+export const UsuarioLogadoProvider: React.FC<UsuarioLogadoProviderProps> = ({ children }) => {
     const [nomeUsuario, setNomeUsuario] = useState("");
-    
+
     const handleExibirNome = useCallback(() => {
         window.alert(nomeUsuario);
     }, [nomeUsuario]);
 
     return (
-        <UsuarioLogadoContext.Provider value={{nome: nomeUsuario, exibirNome: handleExibirNome, setNome: setNomeUsuario}}>
+        <UsuarioLogadoContext.Provider
+            value={{ nome: nomeUsuario, exibirNome: handleExibirNome, setNome: setNomeUsuario }}
+        >
             {children}
         </UsuarioLogadoContext.Provider>
-    )
-}
+    );
+};

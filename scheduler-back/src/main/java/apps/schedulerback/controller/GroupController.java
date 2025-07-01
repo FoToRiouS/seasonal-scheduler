@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("groups")
+@RequestMapping("api/groups")
 public class GroupController {
 
     final AnimeSeasonService animeSeasonService;

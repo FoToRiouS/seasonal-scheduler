@@ -1,38 +1,37 @@
-import {AnimeSeasons} from "../services/AnimesService.ts";
+import { AnimeSeasons } from "../services/AnimesService.ts";
 
 export interface IAnime {
-    id: number,
-    title: string,
-    alternativeTitles: IAlternativeTitles,
-    mean: number,
-    mainPicture: IMainPicture,
-    broadcast: IBroadcast,
-    startSeason: IStartSeason,
-    mediaType: "tv" | "ona" | "ova" | "movie" | "special",
-    genres: IGenre[]
+    id: number;
+    title: string;
+    alternativeTitles: IAlternativeTitles;
+    mean: number;
+    mainPicture: IMainPicture;
+    broadcast: IBroadcast;
+    startSeason: IStartSeason;
+    mediaType: "tv" | "ona" | "ova" | "movie" | "special";
+    genres: IGenre[];
 }
 
 interface IAlternativeTitles {
-    en: string,
-    ja: string
+    en: string;
+    ja: string;
 }
 interface IMainPicture {
-    medium: string,
-    large: string
+    medium: string;
+    large: string;
 }
 
 interface IBroadcast {
-    day_of_the_week: "sunday",
-    start_time: string
+    day_of_the_week: "sunday";
+    start_time: string;
 }
 
 export interface IGenre {
-    id: number,
-    name: string
+    id: number;
+    name: string;
 }
 
 export interface IStartSeason {
-    year: number,
-    season: AnimeSeasons
+    year: number;
+    season: AnimeSeasons;
 }
-

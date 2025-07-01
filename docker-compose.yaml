@@ -1,74 +1,73 @@
 version: "3.8"
 services:
+    db:
+        image: mysql:8.1
+        restart: always
+        container_name: database
+        environment:
+            MYSQL_USER: scheduler
+            MYSQL_PASSWORD: scheduler!@#
+            MYSQL_DATABASE: scheduler
+            MYSQL_RANDOM_ROOT_PASSWORD: true
+        ports:
+            - "3306:3306"
+        volumes:
+            - type: volume
+              source: database-volume
+              target: /var/lib/mysql
+        networks:
+            - scheduler-network
 
-  db:
-    image: mysql:8.1
-    restart: always
-    container_name: database
-    environment:
-      MYSQL_USER: scheduler
-      MYSQL_PASSWORD: scheduler!@#
-      MYSQL_DATABASE: scheduler
-      MYSQL_RANDOM_ROOT_PASSWORD: true
-    ports:
-      - "3306:3306"
-    volumes:
-      - type: volume
-        source: database-volume
-        target: /var/lib/mysql
-    networks:
-      - scheduler-network
+    scheduler-back:
+        build:
+            context: scheduler-back
+            dockerfile: Dockerfile
+        image: scheduler-back:latest
+        container_name: scheduler-back
+        environment:
+            TZ: "America/Sao_Paulo"
+            LC_ALL: "pt_BR.UTF-8"
+            LANG: "pt_BR.UTF-8"
+            LANGUAGE: "pt_BR:UTF-8"
+        networks:
+            - scheduler-network
+        depends_on:
+            - db
 
-  scheduler-back:
-    build:
-      context: scheduler-back
-      dockerfile: Dockerfile
-    image: scheduler-back:latest
-    container_name: scheduler-back
-    environment:
-      TZ: "America/Sao_Paulo"
-      LC_ALL: "pt_BR.UTF-8"
-      LANG: "pt_BR.UTF-8"
-      LANGUAGE: "pt_BR:UTF-8"
-    networks:
-      - scheduler-network
-    depends_on:
-      - db
+    scheduler-front:
+        build:
+            context: scheduler-front
+            dockerfile: Dockerfile
+        image: scheduler-front:latest
+        container_name: scheduler-front
+        environment:
+            TZ: "America/Sao_Paulo"
+            LC_ALL: "pt_BR.UTF-8"
+            LANG: "pt_BR.UTF-8"
+            LANGUAGE: "pt_BR:UTF-8"
+        networks:
+            - scheduler-network
 
-  scheduler-front:
-    build:
-      context: scheduler-front
-      dockerfile: Dockerfile
-    image: scheduler-front:latest
-    container_name: scheduler-front
-    environment:
-      TZ: "America/Sao_Paulo"
-      LC_ALL: "pt_BR.UTF-8"
-      LANG: "pt_BR.UTF-8"
-      LANGUAGE: "pt_BR:UTF-8"
-    networks:
-      - scheduler-network
-
-  nginx:
-    build:
-      context: nginx
-      dockerfile: Dockerfile
-    image: nginx-scheduler:latest
-    container_name: nginx-external
-    networks:
-      - scheduler-network
-    environment:
-      TZ: "America/Sao_Paulo"
-    tty: true
-    ports:
-      - "9090:443"
-      - "8080:80"
-      - "555:555"
-    depends_on:
-      - scheduler-front
+    nginx:
+        build:
+            context: nginx
+            dockerfile: Dockerfile
+        image: nginx-scheduler:latest
+        container_name: nginx-external
+        networks:
+            - scheduler-network
+        environment:
+            TZ: "America/Sao_Paulo"
+        tty: true
+        ports:
+            - "9090:443"
+            - "8080:80"
+            - "555:555"
+        depends_on:
+            - scheduler-front
 
 networks:
-  scheduler-network:
+    scheduler-network:
 
 volumes:
-  database-volume:
+    database-volume:

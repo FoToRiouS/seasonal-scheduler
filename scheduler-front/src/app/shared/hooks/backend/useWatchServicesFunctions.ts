@@ -1,4 +1,4 @@
-import {useWatchServiceList} from "./useWatchServiceList.ts";
+import { useWatchServiceList } from "./useWatchServiceList.ts";
 
 const mapImages = new Map<string, string>([
     ["33414342-4339-3942-2d44-3534442d3444", "/Netflix.png"],
@@ -9,19 +9,18 @@ const mapImages = new Map<string, string>([
 ]);
 
 export const useWatchServicesFunctions = () => {
-    const {data} = useWatchServiceList();
+    const { data } = useWatchServiceList();
 
     const getService = (id: string) => {
-        return data?.find(d => d.id === id);
-    }
+        return data?.find((d) => d.id === id);
+    };
 
     const getIcon = (id: string) => {
         return mapImages.get(id);
-    }
+    };
 
     return {
         getService,
-        getIcon
-    }
-
-}
+        getIcon,
+    };
+};

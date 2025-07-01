@@ -1,0 +1,38 @@
+Arguments: 
+  c:\nvm4w\nodejs\node.exe C:\Users\ferna\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js outdated --json prettier
+
+PATH: 
+  c:\program files\eclipse adoptium\jdk-17.0.7.7-hotspot\bin;c:\program files\oculus\support\oculus-runtime;c:\windows\system32;c:\windows;c:\windows\system32\wbem;c:\windows\system32\windowspowershell\v1.0\;c:\windows\system32\openssh\;c:\program files\tortoisesvn\bin;c:\program files (x86)\microsoft sql server\150\dts\binn\;c:\program files\azure data studio\bin;c:\program files\microsoft sql server\client sdk\odbc\170\tools\binn\;c:\program files (x86)\microsoft sql server\150\tools\binn\;c:\program files\microsoft sql server\150\tools\binn\;c:\program files\microsoft sql server\150\dts\binn\;c:\program files\redhat\java-11-openjdk-11.0.16-2\bin;c:\windows\system32;c:\windows;c:\windows\system32\wbem;c:\windows\system32\windowspowershell\v1.0\;c:\windows\system32\openssh\;c:\program files\process lasso\;c:\program files\dotnet\;c:\program files (x86)\bitvise ssh client;c:\program files\tortoisegit\bin;c:\program files\rancher desktop\resources\resources\win32\bin\;c:\program files\rancher desktop\resources\resources\linux\bin\;c:\programdata\chocolatey\bin;c:\program files\git\cmd;c:\users\ferna\appdata\local\nvm;c:\nvm4w\nodejs;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\NVIDIA Corporation\NVIDIA app\NvDLISR;C:\Program Files\Streamlink\bin;C:\Users\ferna\AppData\Local\Microsoft\WindowsApps;C:\Program Files\Azure Data Studio\bin;C:\Users\ferna\AppData\Roaming\npm;C:\Users\ferna\AppData\Local\spicetify;C:\Users\ferna\AppData\Local\nvm;C:\nvm4w\nodejs;C:\Users\ferna\AppData\Local\Microsoft\WindowsApps;
+
+Yarn version: 
+  1.22.19
+
+Node version: 
+  23.6.1
+
+Platform: 
+  win32 x64
+
+Trace: 
+  SyntaxError: C:\Workspaces\git\seasonal-scheduler\package.json: Expected double-quoted property name in JSON at position 101 (line 7 column 2)
+      at JSON.parse (<anonymous>)
+      at C:\Users\ferna\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:1629:59
+      at Generator.next (<anonymous>)
+      at step (C:\Users\ferna\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:310:30)
+      at C:\Users\ferna\AppData\Roaming\npm\node_modules\yarn\lib\cli.js:321:13
+
+npm manifest: 
+  {
+  	"devDependencies": {
+  		"prettier": "3.6.2"
+  	},
+  	"scripts": {
+  		"format": "next dev --turbopack",
+  	}
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
