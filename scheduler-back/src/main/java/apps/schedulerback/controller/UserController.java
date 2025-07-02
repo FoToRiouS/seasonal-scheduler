@@ -1,11 +1,13 @@
 package apps.schedulerback.controller;
 
 import apps.schedulerback.model.User;
-import apps.schedulerback.model.dto.AuthenticateResponseDTO;
+import apps.schedulerback.model.dto.AuthenticationRequestDTO;
+import apps.schedulerback.model.dto.AuthenticationResponseDTO;
 import apps.schedulerback.model.dto.UserDTO;
 import apps.schedulerback.model.dto.UserRegisterDTO;
 import apps.schedulerback.model.mappers.UserMapper;
 import apps.schedulerback.service.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,12 +38,16 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthenticateResponseDTO> login(@RequestBody User user) {
-        return null;
+    public ResponseEntity<AuthenticationResponseDTO> login(@RequestBody AuthenticationRequestDTO request) {
+        return ResponseEntity.ok(userService.login(request));
     }
 
     @PostMapping("/refresh-token")
-    public ResponseEntity<AuthenticateResponseDTO> refreshToken(@RequestBody User user) {
-        return null;
+    public ResponseEntity<AuthenticationResponseDTO> refreshToken(@RequestBody String refreshToken) {
+        AuthenticationResponseDTO response = userService.refreshToken(refreshToken);
+        if(response == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        return ResponseEntity.ok(response);
     }
 }

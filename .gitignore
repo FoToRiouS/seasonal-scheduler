@@ -1,3 +1,5 @@
 /seasonal-scheduler.iml
 /.idea/
 .idea
+/node_modules
+*.iml

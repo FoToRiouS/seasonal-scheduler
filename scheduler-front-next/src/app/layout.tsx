@@ -9,6 +9,8 @@ import {
 import { Layout } from "@/components/layout/Layout";
 import { Notifications } from "@mantine/notifications";
 import { ReactQueryProvider } from "@/providers/ReactQueryProvider";
+import { AuthProvider } from "@/providers/AuthProvider";
+import { auth } from "@/security/authOptions";
 
 interface Props {
     children: React.ReactNode;
@@ -33,7 +35,9 @@ const defaultTheme = createTheme({
     },
 });
 
-export default function RootLayout({ children }: Props) {
+export default async function RootLayout({ children }: Props) {
+    const session = await auth();
+
     return (
         <html lang="en" {...mantineHtmlProps}>
             <head>
@@ -41,10 +45,12 @@ export default function RootLayout({ children }: Props) {
             </head>
             <body>
                 <ReactQueryProvider>
-                    <MantineProvider theme={defaultTheme}>
-                        <Notifications />
-                        <Layout>{children}</Layout>
-                    </MantineProvider>
+                    <AuthProvider session={session}>
+                        <MantineProvider theme={defaultTheme}>
+                            <Notifications />
+                            <Layout>{children}</Layout>
+                        </MantineProvider>
+                    </AuthProvider>
                 </ReactQueryProvider>
             </body>
         </html>
