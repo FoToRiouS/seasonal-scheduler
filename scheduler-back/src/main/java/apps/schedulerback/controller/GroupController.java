@@ -1,7 +1,7 @@
 package apps.schedulerback.controller;
 
 import apps.schedulerback.model.Group;
-import apps.schedulerback.service.AnimeSeasonService;
+import apps.schedulerback.service.AnimeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,15 +13,15 @@ import java.util.List;
 @RequestMapping("api/groups")
 public class GroupController {
 
-    final AnimeSeasonService animeSeasonService;
+    final AnimeService animeService;
 
-    public GroupController(AnimeSeasonService animeSeasonService) {
-        this.animeSeasonService = animeSeasonService;
+    public GroupController(AnimeService animeService) {
+        this.animeService = animeService;
     }
 
     @GetMapping("/list")
     public ResponseEntity<List<Long>> getAllGroups() {
-        return ResponseEntity.ok(animeSeasonService.listAllGroups().stream().map(Group::getGroupId).toList());
+        return ResponseEntity.ok(animeService.listAllGroups().stream().map(Group::getGroupId).toList());
     }
 
 }

@@ -2,7 +2,7 @@ package apps.schedulerback.controller;
 
 import apps.schedulerback.model.dto.SeasonDTO;
 import apps.schedulerback.model.mappers.SeasonMapper;
-import apps.schedulerback.service.AnimeSeasonService;
+import apps.schedulerback.service.AnimeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,18 +14,18 @@ import java.util.Collection;
 @RequestMapping("api/seasons")
 public class SeasonController {
 
-    final AnimeSeasonService animeSeasonService;
+    final AnimeService animeService;
 
     final SeasonMapper mapper;
 
-    public SeasonController(AnimeSeasonService animeSeasonService, SeasonMapper mapper) {
-        this.animeSeasonService = animeSeasonService;
+    public SeasonController(AnimeService animeService, SeasonMapper mapper) {
+        this.animeService = animeService;
         this.mapper = mapper;
     }
 
     @GetMapping(value = "/list", produces = "application/json")
     public ResponseEntity<Collection<SeasonDTO>> listAll(){
-        return ResponseEntity.ok(mapper.toDto(animeSeasonService.listAllSeasons()));
+        return ResponseEntity.ok(mapper.toDto(animeService.listAllSeasons()));
     }
 
 }
