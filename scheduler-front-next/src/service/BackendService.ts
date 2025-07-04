@@ -1,3 +1,7 @@
+import { auth } from "@/security/authOptions";
+import { getSession } from "next-auth/react";
+import { Session } from "next-auth";
+
 const getBaseUri = (): string => {
     let uri;
     if (process.env.BASE_SSR_URI) {
@@ -9,26 +13,25 @@ const getBaseUri = (): string => {
 };
 
 export const fetchAuth = async (input: RequestInfo | URL, init?: RequestInit | undefined): Promise<any> => {
-    // let session;
-    // try {
-    //     session = await auth();
-    //     // session = null;
-    // } catch (e) {
-    //     session = await getSession();
-    // }
-    //
-    // if (session?.error === "RefreshAccessTokenError") {
-    //     return;
-    // }
+    let session;
+    try {
+        session = await auth();
+    } catch (e) {
+        session = await getSession();
+    }
 
-    return await fetch(getBaseUri() + input, buildInit(init, null));
+    if (session?.error === "RefreshAccessTokenError") {
+        return;
+    }
+
+    return await fetch(getBaseUri() + input, buildInit(init, session));
 };
 
 export const fetchNoAuth = async (input: RequestInfo | URL, init?: RequestInit | undefined): Promise<any> => {
     return await fetch(getBaseUri() + input, buildInit(init, null));
 };
 
-const buildInit = (init: RequestInit | undefined, session: null): RequestInit => {
+const buildInit = (init: RequestInit | undefined, session: Session | null): RequestInit => {
     if (init) {
         return {
             ...init,
@@ -45,11 +48,11 @@ const buildInit = (init: RequestInit | undefined, session: null): RequestInit =>
     }
 };
 
-const buildHeader = (session: null | undefined): HeadersInit => {
+const buildHeader = (session: Session | null): HeadersInit => {
     if (session) {
         return {
             ...buildJSONContentType(),
-            Authorization: `Bearer ${session ?? ""}`,
+            Authorization: `Bearer ${session.accessToken ?? ""}`,
         };
     } else {
         return buildJSONContentType();

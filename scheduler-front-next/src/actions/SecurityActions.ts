@@ -10,7 +10,6 @@ export const signIn = async (loginRequest: AuthenticationRequest): Promise<SignI
             ...loginRequest,
             redirect: false,
         });
-        console.log("RESPONSE", res);
         return { ok: true };
     } catch (e: any) {
         return { ok: false, error: e.errorType };

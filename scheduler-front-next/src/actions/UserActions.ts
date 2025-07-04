@@ -1,7 +1,7 @@
 "use server";
 
 import { UserRegister } from "@/interfaces/UserRegister";
-import { fetchNoAuth } from "@/service/BackendService";
+import { fetchAuth, fetchNoAuth } from "@/service/BackendService";
 import { User } from "@/interfaces/User";
 import { AuthenticationRequest } from "@/interfaces/AuthenticationRequest";
 
@@ -27,7 +27,7 @@ export const refreshToken = async (refreshToken: string): Promise<Response> => {
     });
 };
 
-export const allUsers = async (): Promise<User[]> => {
-    const response = await fetchNoAuth("/api/user/all");
+export const getUser = async (id?: string): Promise<User> => {
+    const response = await fetchAuth(`/api/user/${id}`);
     return response.json();
 };

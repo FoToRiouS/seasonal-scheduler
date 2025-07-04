@@ -1,13 +1,21 @@
 "use client";
 import { Group, Image, Stack } from "@mantine/core";
 import { MenuItem } from "@/components/layout/MenuItem";
-import { createContext, useState } from "react";
+import React, { createContext, ReactNode, useMemo, useState } from "react";
+import { useSession } from "@/hooks/useSession";
+import { useGetUser } from "@/queries/UserQueries";
+import { signOut } from "@/actions/SecurityActions";
+import { RxExit } from "react-icons/rx";
+import { CgProfile } from "react-icons/cg";
 
 export interface MenuItemDefinition {
     key: string;
-    link: string;
+    link?: string;
     label: string;
+    icon?: ReactNode;
     atRight?: boolean;
+    onClick?: () => void;
+    subItems?: MenuItemDefinition[];
 }
 
 interface LayoutContextProps {
@@ -18,6 +26,8 @@ interface LayoutContextProps {
 export const LayoutContext = createContext<LayoutContextProps>({} as LayoutContextProps);
 
 export const Layout = ({ children }: { children: React.ReactNode }) => {
+    const session = useSession();
+    const { data: user } = useGetUser(session?.userId);
     const [activePageKey, setActivePageKey] = useState("");
 
     const menuItemsNotLogged: MenuItemDefinition[] = [
@@ -26,20 +36,36 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
         { key: "login", link: "/login", label: "Login", atRight: true },
     ];
 
+    const menuItemsLogged: MenuItemDefinition[] = [
+        { key: "list", link: "/lista", label: "Lista" },
+        { key: "calendar", link: "/calendario", label: "Calendário" },
+        {
+            key: "profile",
+            label: "Profile",
+            atRight: true,
+            subItems: [
+                { key: "sub-profile", link: "/perfil", label: "Perfil", icon: <CgProfile /> },
+                { key: "logout", onClick: signOut, label: "Sair", icon: <RxExit /> },
+            ],
+        },
+    ];
+
+    const actualMenuItems = useMemo(() => (session ? menuItemsLogged : menuItemsNotLogged), [session]);
+
     return (
         <LayoutContext.Provider value={{ activePageKey: activePageKey, setActivePage: setActivePageKey }}>
-            <Stack className={"bg-[#FDFDFD]"} gap={"xl"}>
+            <Stack className={"bg-[#FDFDFD]"} gap={"xl"} pb={"xl"}>
                 <Group className={"bg-[#2C3E50]"} h={80}>
                     <Image src={"/logo.png"} alt={"logo"} w={150} mr={"xl"} />
                     <Group h={"100%"} gap={0}>
-                        {menuItemsNotLogged
+                        {actualMenuItems
                             .filter((item) => !item.atRight)
                             .map((item) => (
                                 <MenuItem key={item.key} item={item} />
                             ))}
                     </Group>
                     <Group ml={"auto"} h={"100%"} gap={0}>
-                        {menuItemsNotLogged
+                        {actualMenuItems
                             .filter((item) => item.atRight)
                             .map((item) => (
                                 <MenuItem key={item.key} item={item} />

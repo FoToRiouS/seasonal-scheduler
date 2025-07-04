@@ -1,7 +1,8 @@
 import { UserRegister } from "@/interfaces/UserRegister";
-import { allUsers, registerUser } from "@/actions/UserActions";
+import { getUser, registerUser } from "@/actions/UserActions";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { resolveServerAction } from "@/service/BackendService";
+import { User } from "@/interfaces/User";
 
 export const useRegisterUser = () => {
     const queryClient = useQueryClient();
@@ -14,9 +15,11 @@ export const useRegisterUser = () => {
     });
 };
 
-export const useGetAllUsers = () => {
-    return useQuery({
-        queryKey: ["users"],
-        queryFn: allUsers,
+export const useGetUser = (id?: string) => {
+    return useQuery<User>({
+        queryKey: ["user", id],
+        queryFn: () => resolveServerAction(getUser)(id),
+        staleTime: 60000,
+        enabled: !!id,
     });
 };

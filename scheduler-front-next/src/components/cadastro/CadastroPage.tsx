@@ -1,6 +1,6 @@
 "use client";
 import { useSetActivePage } from "@/hooks/useSetActivePage";
-import { Button, PasswordInput, Stack, TextInput } from "@mantine/core";
+import { Button, Center, Image, PasswordInput, Stack, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { UserRegister } from "@/interfaces/UserRegister";
 import { z } from "zod/v4";
@@ -64,7 +64,10 @@ export const CadastroPage = () => {
     return (
         <Stack align={"center"}>
             <form onSubmit={form.onSubmit(handleSubmit)}>
-                <Stack w={500}>
+                <Stack w={500} gap={5}>
+                    <Center>
+                        <Image src={"/cadastro.png"} w={400} />
+                    </Center>
                     <TextInput
                         label={"Nome"}
                         size={"lg"}
@@ -111,7 +114,7 @@ export const CadastroPage = () => {
                         key={form.key("confirmPassword")}
                         {...form.getInputProps("confirmPassword")}
                     />
-                    <Button size={"lg"} color={"dark-blue.9"} type={"submit"}>
+                    <Button size={"lg"} color={"dark-blue.9"} type={"submit"} mt={"lg"}>
                         Cadastrar
                     </Button>
                 </Stack>

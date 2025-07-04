@@ -13,6 +13,6 @@ interface AuthContext {
 
 export const AuthContext = createContext<AuthContext>({ session: null });
 
-export const AuthProvider = async ({ children, session }: Props) => {
+export const AuthProvider = ({ children, session }: Props) => {
     return <AuthContext.Provider value={{ session }}>{children}</AuthContext.Provider>;
 };

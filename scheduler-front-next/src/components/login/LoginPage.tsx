@@ -1,7 +1,7 @@
 "use client";
 
 import { useSetActivePage } from "@/hooks/useSetActivePage";
-import { Button, PasswordInput, Stack, TextInput } from "@mantine/core";
+import { Button, Center, Image, PasswordInput, Stack, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { signIn } from "@/actions/SecurityActions";
 import { useNotifications } from "@/hooks/useNotifications";
@@ -26,30 +26,36 @@ export const LoginPage = () => {
         if (!res.ok) {
             if (res.error === "BadCredentialsException") {
                 showError("Usuário/Senha incorretos!");
-                // showErrorMessage(res.error, { message: "Usuário/Senha incorretos!" });
             } else {
                 showError(res.error);
             }
             return;
         }
-        router.push("/lista");
+        router.push("/calendario");
     };
 
     return (
         <Stack align={"center"}>
             <form onSubmit={form.onSubmit((values) => handleLogin(values.username, values.password))}>
-                <Stack w={500}>
+                <Stack w={300} gap={5}>
+                    <Center>
+                        <Image src={"/login.png"} w={300} />
+                    </Center>
                     <TextInput
                         label={"Usuário"}
+                        size={"lg"}
                         key={form.key("username")}
                         {...form.getInputProps("username")}
                     />
                     <PasswordInput
                         label={"Senha"}
+                        size={"lg"}
                         key={form.key("password")}
                         {...form.getInputProps("password")}
                     />
-                    <Button type={"submit"}>Login</Button>
+                    <Button size={"lg"} color={"dark-blue.9"} type={"submit"} mt={"lg"}>
+                        Entrar
+                    </Button>
                 </Stack>
             </form>
         </Stack>
