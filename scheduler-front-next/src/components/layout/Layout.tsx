@@ -2,12 +2,11 @@
 import { Group, Image, Stack } from "@mantine/core";
 import { MenuItem } from "@/components/layout/MenuItem";
 import React, { createContext, ReactNode, useMemo, useState } from "react";
-import { useSession } from "@/hooks/useSession";
-import { useGetUser } from "@/queries/UserQueries";
 import { signOut } from "@/actions/SecurityActions";
 import { RxExit } from "react-icons/rx";
 import { CgProfile } from "react-icons/cg";
 import { useRouter } from "next/navigation";
+import { useUserSession } from "@/hooks/useUserSession";
 
 export interface MenuItemDefinition {
     key: string;
@@ -26,9 +25,10 @@ interface LayoutContextProps {
 
 export const LayoutContext = createContext<LayoutContextProps>({} as LayoutContextProps);
 
-export const Layout = ({ children }: { children: React.ReactNode }) => {
-    const session = useSession();
-    const { data: user } = useGetUser(session?.userId);
+export interface LayoutProps extends React.PropsWithChildren {}
+
+export const Layout = ({ children }: LayoutProps) => {
+    const { user, session } = useUserSession();
     const router = useRouter();
     const [activePageKey, setActivePageKey] = useState("");
 

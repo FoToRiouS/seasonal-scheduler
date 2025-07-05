@@ -12,6 +12,7 @@ import { ReactQueryProvider } from "@/providers/ReactQueryProvider";
 import { AuthProvider } from "@/providers/AuthProvider";
 import { auth } from "@/security/authOptions";
 import { ModalsProvider } from "@mantine/modals";
+import { getUser } from "@/actions/UserActions";
 
 interface Props {
     children: React.ReactNode;
@@ -38,6 +39,7 @@ const defaultTheme = createTheme({
 
 export default async function RootLayout({ children }: Props) {
     const session = await auth();
+    const user = await getUser(session?.userId);
 
     return (
         <html lang="en" {...mantineHtmlProps}>
@@ -46,7 +48,7 @@ export default async function RootLayout({ children }: Props) {
             </head>
             <body>
                 <ReactQueryProvider>
-                    <AuthProvider session={session}>
+                    <AuthProvider session={session} user={user}>
                         <MantineProvider theme={defaultTheme}>
                             <Notifications />
                             <ModalsProvider>

@@ -2,11 +2,11 @@ import { Button, PasswordInput, Stack } from "@mantine/core";
 import { z } from "zod/v4";
 import { useForm } from "@mantine/form";
 import { zod4Resolver } from "mantine-form-zod-resolver";
-import { useSession } from "@/hooks/useSession";
 import { useUpdatePassword } from "@/queries/UserQueries";
 import { useNotifications } from "@/hooks/useNotifications";
 import { UserUpdatePassword } from "@/interfaces/UserUpdatePassword";
 import { useDisclosure } from "@mantine/hooks";
+import { useUserSession } from "@/hooks/useUserSession";
 
 const schema = z
     .object({
@@ -23,7 +23,7 @@ type schemaType = z.infer<typeof schema>;
 
 export const PerfilPasswordTab = () => {
     const { showSuccess, showError } = useNotifications();
-    const session = useSession();
+    const { session } = useUserSession();
     const { mutate: updatePassword, isPending } = useUpdatePassword(session?.userId);
 
     const [passwordVisible, { toggle: toggleVisible }] = useDisclosure(false);

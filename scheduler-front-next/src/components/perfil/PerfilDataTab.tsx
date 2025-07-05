@@ -1,11 +1,11 @@
 import { Button, Stack, Text, TextInput } from "@mantine/core";
-import { useUpdateProfile } from "@/queries/UserQueries";
+import { useGetUser, useUpdateProfile } from "@/queries/UserQueries";
 import { useForm } from "@mantine/form";
 import { z } from "zod/v4";
 import { zod4Resolver } from "mantine-form-zod-resolver";
 import { UserUpdateProfile } from "@/interfaces/UserUpdateProfile";
 import { useNotifications } from "@/hooks/useNotifications";
-import { useGetUserSession } from "@/hooks/useGetUserSession";
+import { useUserSession } from "@/hooks/useUserSession";
 import { useEffect } from "react";
 import { modals } from "@mantine/modals";
 
@@ -19,8 +19,9 @@ type schemaType = z.infer<typeof schema>;
 
 export const PerfilDataTab = () => {
     const { showSuccess, showError } = useNotifications();
-    const user = useGetUserSession();
-    const { mutate: updateProfile, isPending } = useUpdateProfile(user?.id);
+    const { user: sessionUser } = useUserSession();
+    const { data: user } = useGetUser(sessionUser?.id);
+    const { mutate: updateProfile, isPending } = useUpdateProfile(sessionUser?.id);
 
     const form = useForm<schemaType>({
         mode: "uncontrolled",
@@ -67,6 +68,7 @@ export const PerfilDataTab = () => {
         <Stack align={"center"}>
             <form onSubmit={form.onSubmit(openConfirmation)}>
                 <Stack w={500}>
+                    {JSON.stringify(sessionUser)}
                     <TextInput
                         size={"lg"}
                         label="Nome"

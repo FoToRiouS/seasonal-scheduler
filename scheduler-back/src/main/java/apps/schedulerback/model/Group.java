@@ -24,15 +24,7 @@ public class Group {
     private String name;
 
     @Column(name = "group_id")
-    private Long groupId;
-
-    public Long getGroupId() {
-        return groupId;
-    }
-
-    public void setGroupId(Long groupId) {
-        this.groupId = groupId;
-    }
+    private String groupId;
 
     public UUID getId() {
         return id;
@@ -56,5 +48,13 @@ public class Group {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
     }
 }
