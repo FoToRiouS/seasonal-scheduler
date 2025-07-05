@@ -11,6 +11,7 @@ import { Notifications } from "@mantine/notifications";
 import { ReactQueryProvider } from "@/providers/ReactQueryProvider";
 import { AuthProvider } from "@/providers/AuthProvider";
 import { auth } from "@/security/authOptions";
+import { ModalsProvider } from "@mantine/modals";
 
 interface Props {
     children: React.ReactNode;
@@ -48,7 +49,9 @@ export default async function RootLayout({ children }: Props) {
                     <AuthProvider session={session}>
                         <MantineProvider theme={defaultTheme}>
                             <Notifications />
-                            <Layout>{children}</Layout>
+                            <ModalsProvider>
+                                <Layout>{children}</Layout>
+                            </ModalsProvider>
                         </MantineProvider>
                     </AuthProvider>
                 </ReactQueryProvider>

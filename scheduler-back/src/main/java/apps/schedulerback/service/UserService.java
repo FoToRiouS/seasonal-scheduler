@@ -3,9 +3,7 @@ package apps.schedulerback.service;
 import apps.schedulerback.model.Group;
 import apps.schedulerback.model.User;
 import apps.schedulerback.model.domain.ValidationException;
-import apps.schedulerback.model.dto.AuthenticationRequestDTO;
-import apps.schedulerback.model.dto.AuthenticationResponseDTO;
-import apps.schedulerback.model.dto.UserRegisterDTO;
+import apps.schedulerback.model.dto.*;
 import apps.schedulerback.model.mappers.UserMapper;
 import apps.schedulerback.repository.GroupRepository;
 import apps.schedulerback.repository.UserRepository;
@@ -85,6 +83,33 @@ public class UserService extends GenericService<User, UUID, UserRepository> impl
         String newAccessToken = jwtService.generateAccessToken(userId);
         String newRefreshToken = jwtService.generateRefreshToken(userId);
         return new AuthenticationResponseDTO(newAccessToken, newRefreshToken, userId);
+    }
+
+    public User updateProfile(UUID userId, UpdateProfileDTO profileDTO) {
+        User user = findById(userId);
+        if(user == null) {
+            throw new RuntimeException("User not found");
+        }
+
+        user.setName(profileDTO.name());
+        user.setEmail(profileDTO.email());
+        user.setPhone(profileDTO.phone());
+
+        return save(user);
+    }
+
+    public void updatePassword(UUID userId, UpdatePasswordDTO passwordDTO) {
+        User user = findById(userId);
+        if(user == null) {
+            throw new RuntimeException("User not found");
+        }
+
+        if(!passwordEncoder.matches(passwordDTO.oldPassword(), user.getPassword())) {
+            throw new ValidationException(List.of("Senha antiga inválida"));
+        }
+
+        user.setPassword(passwordEncoder.encode(passwordDTO.newPassword()));
+        save(user);
     }
 
     public List<User> listAllUsers() { return repository.findAll(); }

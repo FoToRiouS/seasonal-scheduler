@@ -1,7 +1,7 @@
 import { auth } from "@/security/authOptions";
 import { NextResponse } from "next/server";
 
-const authRoutes = ["/calendario"];
+const authRoutes = ["/calendario", "/perfil"];
 
 export default auth(async (request) => {
     const { nextUrl } = request;

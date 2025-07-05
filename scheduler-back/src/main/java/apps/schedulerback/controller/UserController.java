@@ -1,10 +1,7 @@
 package apps.schedulerback.controller;
 
 import apps.schedulerback.model.User;
-import apps.schedulerback.model.dto.AuthenticationRequestDTO;
-import apps.schedulerback.model.dto.AuthenticationResponseDTO;
-import apps.schedulerback.model.dto.UserDTO;
-import apps.schedulerback.model.dto.UserRegisterDTO;
+import apps.schedulerback.model.dto.*;
 import apps.schedulerback.model.mappers.UserMapper;
 import apps.schedulerback.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -55,5 +52,16 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getById(@PathVariable UUID id) {
         return ResponseEntity.ok(userMapper.toDto(userService.findById(id)));
+    }
+
+    @PutMapping("/profile/{id}")
+    public ResponseEntity<UserDTO> updateProfile(@PathVariable UUID id, @RequestBody UpdateProfileDTO profileDto) {
+        return ResponseEntity.ok(userMapper.toDto(userService.updateProfile(id, profileDto)));
+    }
+
+    @PatchMapping("/password/{id}")
+    public ResponseEntity<Boolean> updatePassword(@PathVariable UUID id, @RequestBody UpdatePasswordDTO passwordDTO) {
+        userService.updatePassword(id, passwordDTO);
+        return ResponseEntity.ok(true);
     }
 }

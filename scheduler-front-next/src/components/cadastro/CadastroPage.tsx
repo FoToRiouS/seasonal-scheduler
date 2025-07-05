@@ -9,13 +9,15 @@ import { useMask } from "@react-input/mask";
 import { useDisclosure } from "@mantine/hooks";
 import { useRegisterUser } from "@/queries/UserQueries";
 import { useNotifications } from "@/hooks/useNotifications";
+import { useRouter } from "next/navigation";
 
 export const CadastroPage = () => {
     useSetActivePage("register");
+    const router = useRouter();
     const { showSuccess, showError } = useNotifications();
     const [visible, { toggle }] = useDisclosure(false);
 
-    const { mutate: registerUser } = useRegisterUser();
+    const { mutate: registerUser, isPending } = useRegisterUser();
 
     const schema = z
         .object({
@@ -24,7 +26,7 @@ export const CadastroPage = () => {
             email: z.email("O email não é válido"),
             phone: z.string().min(1, "O telefone deve ser preenchido"),
             password: z.string().min(1, "A senha deve ser preenchida"),
-            confirmPassword: z.string().min(1),
+            confirmPassword: z.string().min(1, "A senha deve ser preenchida"),
         })
         .refine((data) => data.password === data.confirmPassword, {
             message: "As senhas devem ser iguais",
@@ -52,11 +54,12 @@ export const CadastroPage = () => {
     const handleSubmit = (user: UserRegister) => {
         registerUser(user, {
             onSuccess: (data) => {
-                console.log("data", data);
                 showSuccess("Cadastro realizado com sucesso!");
+                form.reset();
+                router.push("/login?success=true");
             },
             onError: (error) => {
-                showError(error.message);
+                showError(error);
             },
         });
     };
@@ -114,7 +117,7 @@ export const CadastroPage = () => {
                         key={form.key("confirmPassword")}
                         {...form.getInputProps("confirmPassword")}
                     />
-                    <Button size={"lg"} color={"dark-blue.9"} type={"submit"} mt={"lg"}>
+                    <Button size={"lg"} color={"dark-blue.9"} type={"submit"} mt={"lg"} loading={isPending}>
                         Cadastrar
                     </Button>
                 </Stack>

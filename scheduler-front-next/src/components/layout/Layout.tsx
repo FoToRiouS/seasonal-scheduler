@@ -7,6 +7,7 @@ import { useGetUser } from "@/queries/UserQueries";
 import { signOut } from "@/actions/SecurityActions";
 import { RxExit } from "react-icons/rx";
 import { CgProfile } from "react-icons/cg";
+import { useRouter } from "next/navigation";
 
 export interface MenuItemDefinition {
     key: string;
@@ -28,7 +29,15 @@ export const LayoutContext = createContext<LayoutContextProps>({} as LayoutConte
 export const Layout = ({ children }: { children: React.ReactNode }) => {
     const session = useSession();
     const { data: user } = useGetUser(session?.userId);
+    const router = useRouter();
     const [activePageKey, setActivePageKey] = useState("");
+
+    const username = useMemo(() => (user ? user.username : ""), [user]);
+
+    const handleLogout = async () => {
+        await signOut();
+        router.push("/login");
+    };
 
     const menuItemsNotLogged: MenuItemDefinition[] = [
         { key: "list", link: "/lista", label: "Lista" },
@@ -41,16 +50,19 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
         { key: "calendar", link: "/calendario", label: "Calendário" },
         {
             key: "profile",
-            label: "Profile",
+            label: username,
             atRight: true,
             subItems: [
                 { key: "sub-profile", link: "/perfil", label: "Perfil", icon: <CgProfile /> },
-                { key: "logout", onClick: signOut, label: "Sair", icon: <RxExit /> },
+                { key: "logout", onClick: handleLogout, label: "Sair", icon: <RxExit /> },
             ],
         },
     ];
 
-    const actualMenuItems = useMemo(() => (session ? menuItemsLogged : menuItemsNotLogged), [session]);
+    const actualMenuItems = useMemo(
+        () => (session ? menuItemsLogged : menuItemsNotLogged),
+        [session, menuItemsLogged, menuItemsNotLogged],
+    );
 
     return (
         <LayoutContext.Provider value={{ activePageKey: activePageKey, setActivePage: setActivePageKey }}>
