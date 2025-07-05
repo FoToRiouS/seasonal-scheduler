@@ -54,11 +54,23 @@ public class Anime {
     }
 
     public Set<AnimeSeason> getAnimeSeasons() {
+        if(animeSeasons == null){
+            animeSeasons = new HashSet<>();
+        }
         return animeSeasons;
     }
 
     public void setAnimeSeasons(Set<AnimeSeason> animeSeasons) {
         this.animeSeasons = animeSeasons;
+    }
+
+    public void addSeason(Season season) {
+        AnimeSeason animeSeason = new AnimeSeason(this, season);
+        getAnimeSeasons().add(animeSeason);
+    }
+
+    public void removeSeason(Season season) {
+        getAnimeSeasons().removeIf(animeSeason -> animeSeason.getSeason().equals(season));
     }
 
     public String getPreviewText() {

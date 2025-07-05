@@ -30,6 +30,12 @@ public class AnimeSeason {
         this.id = new AnimeSeasonID();
     }
 
+    public AnimeSeason(Anime anime, Season season) {
+        this();
+        this.anime = anime;
+        this.season = season;
+    }
+
     public AnimeSeasonID getId() {
         return id;
     }

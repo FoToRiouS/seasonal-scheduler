@@ -1,11 +1,13 @@
 package apps.schedulerback.service;
 
+import apps.schedulerback.model.Group;
 import apps.schedulerback.model.User;
 import apps.schedulerback.model.domain.ValidationException;
 import apps.schedulerback.model.dto.AuthenticationRequestDTO;
 import apps.schedulerback.model.dto.AuthenticationResponseDTO;
 import apps.schedulerback.model.dto.UserRegisterDTO;
 import apps.schedulerback.model.mappers.UserMapper;
+import apps.schedulerback.repository.GroupRepository;
 import apps.schedulerback.repository.UserRepository;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,17 +33,20 @@ public class UserService extends GenericService<User, UUID, UserRepository> impl
 
     final JwtService jwtService;
 
+    final GroupRepository groupRepository;
+
     public UserService(
             UserRepository repository,
             UserMapper userMapper,
             @Lazy PasswordEncoder passwordEncoder,
             @Lazy AuthenticationManager authenticationManager,
-            JwtService jwtService) {
+            JwtService jwtService, GroupRepository groupRepository) {
         super(repository);
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
+        this.groupRepository = groupRepository;
     }
 
     @Override
@@ -83,4 +88,6 @@ public class UserService extends GenericService<User, UUID, UserRepository> impl
     }
 
     public List<User> listAllUsers() { return repository.findAll(); }
+
+    public List<Group> findByUserId(UUID userId) { return groupRepository.findByUserId(userId); }
 }

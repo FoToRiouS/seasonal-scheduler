@@ -1,7 +1,6 @@
 package apps.schedulerback.service;
 
 import apps.schedulerback.model.Anime;
-import apps.schedulerback.model.Group;
 import apps.schedulerback.model.Season;
 import apps.schedulerback.model.WatchService;
 import apps.schedulerback.model.dto.AnimeSeasonSaveDTO;
@@ -25,13 +24,10 @@ public class AnimeService extends GenericService<Anime, UUID, AnimeRepository> {
 
     private final WatchServiceRepository watchServiceRepository;
 
-    private final GroupRepository groupRepository;
-
     public AnimeService(AnimeRepository repository, SeasonRepository seasonRepository, WatchServiceRepository watchServiceRepository, GroupRepository groupRepository) {
         super(repository);
         this.seasonRepository = seasonRepository;
         this.watchServiceRepository = watchServiceRepository;
-        this.groupRepository = groupRepository;
     }
 
     public Anime getAnimeSeasonByIdAnimeAndSeason(Long idAnime){
@@ -39,7 +35,7 @@ public class AnimeService extends GenericService<Anime, UUID, AnimeRepository> {
     }
 
     public List<Anime> getAnimeSeasonBySeason(Long year, String seasonName){
-        return repository.findBySeasons_YearAndSeasons_SeasonName(year, Seasons.valueOf(seasonName));
+        return repository.findByAnimeSeasons_Season_YearAndAnimeSeasons_Season_SeasonName(year, Seasons.valueOf(seasonName));
     }
 
     public Anime saveAnimeSeasonByIdAnimeAndSeason(AnimeSeasonSaveDTO saveRequest){
@@ -53,7 +49,7 @@ public class AnimeService extends GenericService<Anime, UUID, AnimeRepository> {
         if(anime == null){
             anime = new Anime(saveRequest.idAnime());
         }
-        anime.getSeasons().add(season);
+        anime.addSeason(season);
         return repository.save(anime);
     }
 
@@ -71,8 +67,8 @@ public class AnimeService extends GenericService<Anime, UUID, AnimeRepository> {
     public Anime deleteAnimeSeasonFromSeason(UUID id, Long year, String seasonName) {
         Anime anime = repository.findById(id).orElseThrow();
         Season season = seasonRepository.findBySeasonNameAndYear(Seasons.valueOf(seasonName), year).orElseThrow();
-        anime.getSeasons().remove(season);
-        if(anime.getSeasons().isEmpty()){
+        anime.removeSeason(season);
+        if(anime.getAnimeSeasons() == null ||anime.getAnimeSeasons().isEmpty()){
             repository.delete(anime);
             return null;
         } else {
@@ -87,9 +83,5 @@ public class AnimeService extends GenericService<Anime, UUID, AnimeRepository> {
 
     public Collection<WatchService> listAllWatchServices(){
         return watchServiceRepository.findAll();
-    }
-
-    public Collection<Group> listAllGroups(){
-        return groupRepository.findAll();
     }
 }

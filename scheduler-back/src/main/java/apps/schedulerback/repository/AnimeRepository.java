@@ -16,10 +16,10 @@ public interface AnimeRepository extends JpaRepository<Anime, UUID> {
     Optional<Anime> findById(UUID uuid);
 
     @EntityGraph(attributePaths = {"seasons", "watchServices"})
-    Optional<Anime> findByIdAnimeAndSeasons_YearAndSeasons_SeasonName(long idAnime, long seasonYear, Seasons seasonSeasonName);
+    Optional<Anime> findByIdAnimeAndAnimeSeasons_Season_YearAndAnimeSeasons_Season_SeasonName(long idAnime, long seasonYear, Seasons seasonSeasonName);
 
     @EntityGraph(attributePaths = {"seasons", "watchServices"})
-    List<Anime> findBySeasons_YearAndSeasons_SeasonName(long seasonYear, Seasons seasonSeasonName);
+    List<Anime> findByAnimeSeasons_Season_YearAndAnimeSeasons_Season_SeasonName(long seasonYear, Seasons seasonSeasonName);
 
     @EntityGraph(attributePaths = {"seasons", "watchServices"})
     Optional<Anime> findByIdAnime(long idAnime);
