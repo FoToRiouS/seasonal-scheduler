@@ -2,6 +2,7 @@ package apps.schedulerback.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.UUID;
 
@@ -15,6 +16,7 @@ public class Group {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
@@ -23,6 +25,7 @@ public class Group {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @NotEmpty
     @Column(name = "group_id")
     private String groupId;
 

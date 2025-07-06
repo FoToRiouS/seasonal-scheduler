@@ -13,6 +13,7 @@ import { AuthProvider } from "@/providers/AuthProvider";
 import { auth } from "@/security/authOptions";
 import { ModalsProvider } from "@mantine/modals";
 import { getUser } from "@/actions/UserActions";
+import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
 
 interface Props {
     children: React.ReactNode;
@@ -38,8 +39,13 @@ const defaultTheme = createTheme({
 });
 
 export default async function RootLayout({ children }: Props) {
+    const queryClient = new QueryClient();
+
     const session = await auth();
-    const user = await getUser(session?.userId);
+    await queryClient.prefetchQuery({
+        queryKey: ["user", session?.userId],
+        queryFn: () => getUser(session?.userId),
+    });
 
     return (
         <html lang="en" {...mantineHtmlProps}>
@@ -48,14 +54,16 @@ export default async function RootLayout({ children }: Props) {
             </head>
             <body>
                 <ReactQueryProvider>
-                    <AuthProvider session={session} user={user}>
-                        <MantineProvider theme={defaultTheme}>
-                            <Notifications />
-                            <ModalsProvider>
-                                <Layout>{children}</Layout>
-                            </ModalsProvider>
-                        </MantineProvider>
-                    </AuthProvider>
+                    <HydrationBoundary state={dehydrate(queryClient)}>
+                        <AuthProvider session={session}>
+                            <MantineProvider theme={defaultTheme}>
+                                <Notifications />
+                                <ModalsProvider>
+                                    <Layout>{children}</Layout>
+                                </ModalsProvider>
+                            </MantineProvider>
+                        </AuthProvider>
+                    </HydrationBoundary>
                 </ReactQueryProvider>
             </body>
         </html>

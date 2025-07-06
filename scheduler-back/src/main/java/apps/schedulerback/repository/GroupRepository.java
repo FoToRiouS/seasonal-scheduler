@@ -10,4 +10,7 @@ public interface GroupRepository extends JpaRepository<Group, UUID> {
 
     List<Group> findByUserId(UUID userId);
 
+    boolean existsByGroupIdAndUserId(String groupId, UUID userId);
+
+    boolean existsByGroupIdAndUserIdAndIdNot(String groupId, UUID user_id, UUID id);
 }

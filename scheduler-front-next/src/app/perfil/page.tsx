@@ -1,5 +1,5 @@
 import { PerfilPage } from "@/components/perfil/PerfilPage";
 
-export default function Page() {
+export default async function Page() {
     return <PerfilPage />;
 }

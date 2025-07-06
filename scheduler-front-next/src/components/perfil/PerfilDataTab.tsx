@@ -26,9 +26,9 @@ export const PerfilDataTab = () => {
     const form = useForm<schemaType>({
         mode: "uncontrolled",
         initialValues: {
-            name: "",
-            email: "",
-            phone: "",
+            name: user ? user.name : "",
+            email: user ? user.email : "",
+            phone: user ? user.phone : "",
         },
         validate: zod4Resolver(schema),
     });
@@ -68,7 +68,6 @@ export const PerfilDataTab = () => {
         <Stack align={"center"}>
             <form onSubmit={form.onSubmit(openConfirmation)}>
                 <Stack w={500}>
-                    {JSON.stringify(sessionUser)}
                     <TextInput
                         size={"lg"}
                         label="Nome"

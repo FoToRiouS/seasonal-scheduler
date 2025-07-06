@@ -1,5 +1,5 @@
 export interface GroupTelegram {
-    id: string;
+    id: string | null;
     name: string;
     groupId: string;
 }

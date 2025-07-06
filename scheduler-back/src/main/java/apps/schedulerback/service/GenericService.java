@@ -22,6 +22,7 @@ public class GenericService<ENTITY, PK, RESPOSITORY extends JpaRepository<ENTITY
     }
 
     public ENTITY save(ENTITY entity) {
+        validate(entity);
         return repository.save(entity);
     }
 

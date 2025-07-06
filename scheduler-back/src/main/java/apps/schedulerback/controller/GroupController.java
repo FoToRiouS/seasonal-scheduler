@@ -2,12 +2,9 @@ package apps.schedulerback.controller;
 
 import apps.schedulerback.model.dto.GroupDTO;
 import apps.schedulerback.model.mappers.GroupMapper;
-import apps.schedulerback.service.UserService;
+import apps.schedulerback.service.GroupService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -16,18 +13,28 @@ import java.util.UUID;
 @RequestMapping("api/groups")
 public class GroupController {
 
-    final UserService userService;
+    final GroupService groupService;
 
     final GroupMapper groupMapper;
 
-    public GroupController(UserService userService, GroupMapper groupMapper) {
-        this.userService = userService;
+    public GroupController(GroupService groupService, GroupMapper groupMapper) {
+        this.groupService = groupService;
         this.groupMapper = groupMapper;
     }
 
     @GetMapping("/list/{userId}")
     public ResponseEntity<List<GroupDTO>> getGroups(@PathVariable UUID userId) {
-        return ResponseEntity.ok(groupMapper.toDto(userService.findByUserId(userId)));
+        return ResponseEntity.ok(groupMapper.toDto(groupService.findGroupsByUserId(userId)));
+    }
+
+    @PostMapping("/{userId}")
+    public ResponseEntity<GroupDTO> create(@RequestBody GroupDTO groupDTO, @PathVariable UUID userId) {
+        return ResponseEntity.ok(groupMapper.toDto(groupService.save(userId, groupDTO)));
+    }
+
+    @PutMapping("/{groupId}")
+    public ResponseEntity<GroupDTO> update(@RequestBody GroupDTO groupDTO, @PathVariable UUID groupId) {
+        return ResponseEntity.ok(groupMapper.toDto(groupService.update(groupId, groupDTO)));
     }
 
 }

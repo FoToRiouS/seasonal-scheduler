@@ -1,9 +1,9 @@
 package apps.schedulerback.service;
 
-import apps.schedulerback.model.Group;
 import apps.schedulerback.model.User;
 import apps.schedulerback.model.domain.ValidationException;
 import apps.schedulerback.model.dto.*;
+import apps.schedulerback.model.mappers.GroupMapper;
 import apps.schedulerback.model.mappers.UserMapper;
 import apps.schedulerback.repository.GroupRepository;
 import apps.schedulerback.repository.UserRepository;
@@ -25,6 +25,8 @@ public class UserService extends GenericService<User, UUID, UserRepository> impl
 
     final UserMapper userMapper;
 
+    final GroupMapper groupMapper;
+
     final PasswordEncoder passwordEncoder;
 
     final AuthenticationManager authenticationManager;
@@ -35,12 +37,13 @@ public class UserService extends GenericService<User, UUID, UserRepository> impl
 
     public UserService(
             UserRepository repository,
-            UserMapper userMapper,
+            UserMapper userMapper, GroupMapper groupMapper,
             @Lazy PasswordEncoder passwordEncoder,
             @Lazy AuthenticationManager authenticationManager,
             JwtService jwtService, GroupRepository groupRepository) {
         super(repository);
         this.userMapper = userMapper;
+        this.groupMapper = groupMapper;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
@@ -113,6 +116,4 @@ public class UserService extends GenericService<User, UUID, UserRepository> impl
     }
 
     public List<User> listAllUsers() { return repository.findAll(); }
-
-    public List<Group> findByUserId(UUID userId) { return groupRepository.findByUserId(userId); }
 }
