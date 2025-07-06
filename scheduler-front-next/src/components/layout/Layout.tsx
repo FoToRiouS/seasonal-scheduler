@@ -1,5 +1,5 @@
 "use client";
-import { Group, Image, Stack } from "@mantine/core";
+import { Avatar, Group, Image, Stack } from "@mantine/core";
 import { MenuItem } from "@/components/layout/MenuItem";
 import React, { createContext, ReactNode, useMemo, useState } from "react";
 import { signOut } from "@/actions/SecurityActions";
@@ -11,6 +11,7 @@ import { useUserSession } from "@/hooks/useUserSession";
 export interface MenuItemDefinition {
     key: string;
     link?: string;
+    prefix?: ReactNode;
     label: string;
     icon?: ReactNode;
     atRight?: boolean;
@@ -50,6 +51,15 @@ export const Layout = ({ children }: LayoutProps) => {
         { key: "calendar", link: "/calendario", label: "Calendário" },
         {
             key: "profile",
+            prefix: (
+                <Avatar
+                    name={user?.name}
+                    size={50}
+                    variant={"filled"}
+                    color={"violet.8"}
+                    src={user?.profileImageSrc}
+                />
+            ),
             label: username,
             atRight: true,
             subItems: [

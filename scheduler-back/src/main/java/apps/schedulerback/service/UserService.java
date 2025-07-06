@@ -115,5 +115,15 @@ public class UserService extends GenericService<User, UUID, UserRepository> impl
         save(user);
     }
 
+    public User updateProfileImage(UUID userId, String profileImageSrc) {
+        User user = findById(userId);
+        if(user == null) {
+            throw new RuntimeException("User not found");
+        }
+
+        user.setProfileImageSrc(profileImageSrc);
+        return save(user);
+    }
+
     public List<User> listAllUsers() { return repository.findAll(); }
 }

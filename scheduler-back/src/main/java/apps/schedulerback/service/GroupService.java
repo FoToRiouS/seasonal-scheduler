@@ -29,9 +29,7 @@ public class GroupService extends GenericService<Group, UUID, GroupRepository> {
         group.setUser(user);
 
         validate(group);
-        if(repository.existsByGroupIdAndUserIdAndIdNot(group.getGroupId(), group.getUser().getId(), null)) {
-            throw new ValidationException("Grupo já cadastrado para o usuário");
-        }
+        validateUniqueGroupId(group);
 
         return repository.save(group);
     }
@@ -43,11 +41,15 @@ public class GroupService extends GenericService<Group, UUID, GroupRepository> {
         group.setGroupId(groupDto.groupId());
 
         validate(group);
+        validateUniqueGroupId(group);
+
+        return repository.save(group);
+    }
+
+    private void validateUniqueGroupId(Group group) {
         if(repository.existsByGroupIdAndUserIdAndIdNot(group.getGroupId(), group.getUser().getId(), group.getId())) {
             throw new ValidationException("Grupo já cadastrado para o usuário");
         }
-
-        return repository.save(group);
     }
 
     public List<Group> findGroupsByUserId(UUID userId) { return repository.findByUserId(userId); }

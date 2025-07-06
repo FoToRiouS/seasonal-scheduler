@@ -64,4 +64,10 @@ public class UserController {
         userService.updatePassword(id, passwordDTO);
         return ResponseEntity.ok(true);
     }
+
+    @PatchMapping("/profile-image/{id}")
+    public ResponseEntity<UserDTO> updatePassword(@PathVariable UUID id, @RequestBody UpdateProfileImageDTO profileImageSrc) {
+        User user = userService.updateProfileImage(id, profileImageSrc.imageSrc());
+        return ResponseEntity.ok(userMapper.toDto(user));
+    }
 }

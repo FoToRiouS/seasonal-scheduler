@@ -1,7 +1,7 @@
 import { GroupTelegram } from "@/interfaces/GroupTelegram";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { resolveServerAction } from "@/service/BackendService";
-import { createGroup, getGroups, updateGroup } from "@/actions/GroupActions";
+import { createGroup, deleteGroup, getGroups, updateGroup } from "@/actions/GroupActions";
 
 export const useGroupsByUser = (userId?: string) => {
     return useQuery<GroupTelegram[]>({
@@ -27,6 +27,17 @@ export const useUpdateGroup = (userId?: string) => {
 
     return useMutation({
         mutationFn: (group: GroupTelegram) => resolveServerAction(updateGroup)(group),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["groups", userId] });
+        },
+    });
+};
+
+export const useDeleteGroup = (userId?: string) => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: resolveServerAction(deleteGroup),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["groups", userId] });
         },

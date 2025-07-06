@@ -7,6 +7,7 @@ public record UserDTO(
         String username,
         String name,
         String email,
-        String phone
+        String phone,
+        String profileImageSrc
 ) {
 }

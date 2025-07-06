@@ -42,6 +42,9 @@ public class User implements UserDetails {
     @Column(name = "phone", nullable = false)
     private String phone;
 
+    @Column(name = "profile_image_src")
+    private String profileImageSrc;
+
     @NotNull
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
@@ -88,6 +91,14 @@ public class User implements UserDetails {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getProfileImageSrc() {
+        return profileImageSrc;
+    }
+
+    public void setProfileImageSrc(String profileImageSrc) {
+        this.profileImageSrc = profileImageSrc;
     }
 
     public Instant getCreatedAt() {

@@ -3,6 +3,7 @@
         "prettier": "3.6.2"
     },
     "scripts": {
-        "format": "prettier . --write"
+        "format": "prettier . --write",
+        "dev:front": "pnpm --dir ./scheduler-front-next run dev"
     }
 }

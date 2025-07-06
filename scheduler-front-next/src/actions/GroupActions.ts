@@ -17,7 +17,7 @@ export const createGroup = async (
         method: "POST",
         body: JSON.stringify(group),
     });
-    return await response.json();
+    return response.json();
 };
 
 export const updateGroup = async (group: GroupTelegram): Promise<GroupTelegram> => {
@@ -25,5 +25,12 @@ export const updateGroup = async (group: GroupTelegram): Promise<GroupTelegram> 
         method: "PUT",
         body: JSON.stringify(group),
     });
-    return await response.json();
+    return response.json();
+};
+
+export const deleteGroup = async (groupId: string): Promise<boolean> => {
+    const response = await fetchAuth(`/api/groups/${groupId}`, {
+        method: "DELETE",
+    });
+    return response.json();
 };

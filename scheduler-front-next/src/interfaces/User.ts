@@ -8,5 +8,6 @@ export interface User {
     name: string;
     email: string;
     phone: string;
+    profileImageSrc: string;
     createdAt: string;
 }

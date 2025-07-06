@@ -1,10 +1,17 @@
 import { UserRegister } from "@/interfaces/UserRegister";
-import { getUser, registerUser, updatePassword, updateProfile } from "@/actions/UserActions";
+import {
+    getUser,
+    registerUser,
+    updatePassword,
+    updateProfile,
+    updateProfileImage,
+} from "@/actions/UserActions";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { resolveServerAction } from "@/service/BackendService";
 import { User } from "@/interfaces/User";
 import { UserUpdateProfile } from "@/interfaces/UserUpdateProfile";
 import { UserUpdatePassword } from "@/interfaces/UserUpdatePassword";
+import { UserUpdateProfileImage } from "@/interfaces/UserUpdateProfileImage";
 
 export const useRegisterUser = () => {
     const queryClient = useQueryClient();
@@ -42,5 +49,18 @@ export const useUpdateProfile = (id?: string) => {
 export const useUpdatePassword = (id?: string) => {
     return useMutation({
         mutationFn: (payload: UserUpdatePassword) => resolveServerAction(updatePassword)(id, payload),
+    });
+};
+
+export const useUpdateProfileImage = (id?: string) => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (imageSrc: UserUpdateProfileImage) =>
+            resolveServerAction(updateProfileImage)(id, imageSrc),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["users"] });
+            queryClient.invalidateQueries({ queryKey: ["user", id] });
+        },
     });
 };

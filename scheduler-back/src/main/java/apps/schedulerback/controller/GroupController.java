@@ -37,4 +37,10 @@ public class GroupController {
         return ResponseEntity.ok(groupMapper.toDto(groupService.update(groupId, groupDTO)));
     }
 
+    @DeleteMapping("/{groupId}")
+    public ResponseEntity<Boolean> delete(@PathVariable UUID groupId) {
+        groupService.deleteById(groupId);
+        return ResponseEntity.ok(true);
+    }
+
 }

@@ -89,7 +89,9 @@ export const ModalGroup = ({ opened, onClose, selectedGroup }: Props) => {
                         <Button type="submit" loading={pendingState}>
                             Salvar
                         </Button>
-                        <Button onClick={onClose}>Cancelar</Button>
+                        <Button onClick={onClose} variant="outline">
+                            Cancelar
+                        </Button>
                     </Group>
                 </Stack>
             </form>

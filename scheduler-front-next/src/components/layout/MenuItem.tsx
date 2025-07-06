@@ -30,9 +30,12 @@ export const MenuItem = ({ item }: Props) => {
     };
 
     const titleElement = (
-        <Title c={"white"} fw={"bold"} order={4}>
-            {item.label}
-        </Title>
+        <Group gap={"xs"}>
+            {item.prefix && item.prefix}
+            <Title c={"white"} fw={"bold"} order={4}>
+                {item.label}
+            </Title>
+        </Group>
     );
 
     return !item.subItems ?

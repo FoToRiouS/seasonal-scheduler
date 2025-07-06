@@ -82,7 +82,7 @@ export const PerfilPasswordTab = () => {
                         key={form.key("confirmPassword")}
                         {...form.getInputProps("confirmPassword")}
                     />
-                    <Button size={"lg"} color={"dark-blue.9"} type={"submit"} mt={"lg"} loading={isPending}>
+                    <Button size={"lg"} type={"submit"} mt={"lg"} loading={isPending}>
                         Atualizar Senha
                     </Button>
                 </Stack>

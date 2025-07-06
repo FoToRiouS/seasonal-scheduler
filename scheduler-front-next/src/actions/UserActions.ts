@@ -6,6 +6,7 @@ import { User } from "@/interfaces/User";
 import { AuthenticationRequest } from "@/interfaces/AuthenticationRequest";
 import { UserUpdateProfile } from "@/interfaces/UserUpdateProfile";
 import { UserUpdatePassword } from "@/interfaces/UserUpdatePassword";
+import { UserUpdateProfileImage } from "@/interfaces/UserUpdateProfileImage";
 
 export const registerUser = async (user: UserRegister): Promise<User> => {
     const response = await fetchNoAuth("/api/user", {
@@ -50,5 +51,17 @@ export const updatePassword = async (
         method: "PATCH",
         body: JSON.stringify(payload),
     });
+    return await res.json();
+};
+
+export const updateProfileImage = async (
+    id: string | undefined,
+    imageSrc: UserUpdateProfileImage,
+): Promise<User> => {
+    const res = await fetchAuth(`/api/user/profile-image/${id}`, {
+        method: "PATCH",
+        body: JSON.stringify(imageSrc),
+    });
+    console.log("RES", res);
     return await res.json();
 };

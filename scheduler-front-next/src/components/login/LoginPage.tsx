@@ -53,7 +53,7 @@ export const LoginPage = () => {
                         key={form.key("password")}
                         {...form.getInputProps("password")}
                     />
-                    <Button size={"lg"} color={"dark-blue.9"} type={"submit"} mt={"lg"}>
+                    <Button size={"lg"} type={"submit"} mt={"lg"}>
                         Entrar
                     </Button>
                 </Stack>

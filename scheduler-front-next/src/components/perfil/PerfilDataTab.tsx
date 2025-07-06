@@ -1,4 +1,4 @@
-import { Button, Stack, Text, TextInput } from "@mantine/core";
+import { Button, Center, Stack, Text, TextInput } from "@mantine/core";
 import { useGetUser, useUpdateProfile } from "@/queries/UserQueries";
 import { useForm } from "@mantine/form";
 import { z } from "zod/v4";
@@ -8,6 +8,7 @@ import { useNotifications } from "@/hooks/useNotifications";
 import { useUserSession } from "@/hooks/useUserSession";
 import { useEffect } from "react";
 import { modals } from "@mantine/modals";
+import { ProfileImage } from "@/components/perfil/ProfileImage";
 
 const schema = z.object({
     name: z.string().min(1, "O nome deve ser preenchido"),
@@ -68,6 +69,9 @@ export const PerfilDataTab = () => {
         <Stack align={"center"}>
             <form onSubmit={form.onSubmit(openConfirmation)}>
                 <Stack w={500}>
+                    <Center py={"xl"}>
+                        <ProfileImage user={user} />
+                    </Center>
                     <TextInput
                         size={"lg"}
                         label="Nome"
@@ -86,7 +90,7 @@ export const PerfilDataTab = () => {
                         key={form.key("phone")}
                         {...form.getInputProps("phone")}
                     />
-                    <Button size={"lg"} color={"dark-blue.9"} type={"submit"} mt={"lg"} loading={isPending}>
+                    <Button size={"lg"} type={"submit"} mt={"lg"} loading={isPending}>
                         Atualizar Informações
                     </Button>
                 </Stack>
