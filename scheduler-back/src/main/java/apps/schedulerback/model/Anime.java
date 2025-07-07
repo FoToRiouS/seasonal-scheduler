@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import java.util.*;
 
 @Entity
-@Table(name = "anime_season")
+@Table(name = "anime_season", uniqueConstraints = @UniqueConstraint(name = "", columnNames = {"id_anime", "user_id"}))
 public class Anime {
 
     @Id
@@ -15,14 +15,12 @@ public class Anime {
     @Column(name = "id_anime", unique = true)
     private long idAnime;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "anime", cascade = {CascadeType.ALL}, orphanRemoval = true)
     private Set<AnimeSeason> animeSeasons;
-
-    @Column(name = "preview_text", length = 900)
-    private String previewText;
-
-    @Column(name = "review_text", length = 900)
-    private String reviewText;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -73,20 +71,12 @@ public class Anime {
         getAnimeSeasons().removeIf(animeSeason -> animeSeason.getSeason().equals(season));
     }
 
-    public String getPreviewText() {
-        return previewText;
+    public User getUser() {
+        return user;
     }
 
-    public void setPreviewText(String previewText) {
-        this.previewText = previewText;
-    }
-
-    public String getReviewText() {
-        return reviewText;
-    }
-
-    public void setReviewText(String reviewText) {
-        this.reviewText = reviewText;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public SortedSet<WatchService> getWatchServices() {

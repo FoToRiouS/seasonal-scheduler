@@ -1,10 +1,10 @@
 package apps.schedulerback.controller;
 
 import apps.schedulerback.model.Anime;
-import apps.schedulerback.model.dto.AnimeSeasonDTO;
-import apps.schedulerback.model.dto.AnimeSeasonSaveDTO;
-import apps.schedulerback.model.dto.AnimeSeasonUpdateDTO;
-import apps.schedulerback.model.mappers.AnimeSeasonMapper;
+import apps.schedulerback.model.dto.AnimeDTO;
+import apps.schedulerback.model.dto.AnimeSaveDTO;
+import apps.schedulerback.model.dto.AnimeUpdateDTO;
+import apps.schedulerback.model.mappers.AnimeMapper;
 import apps.schedulerback.service.AnimeService;
 import jakarta.validation.constraints.NotEmpty;
 import org.springframework.http.ResponseEntity;
@@ -19,15 +19,15 @@ public class AnimeSeasonController {
 
     final AnimeService animeService;
 
-    final AnimeSeasonMapper mapper;
+    final AnimeMapper mapper;
 
-    public AnimeSeasonController(AnimeService animeService, AnimeSeasonMapper mapper) {
+    public AnimeSeasonController(AnimeService animeService, AnimeMapper mapper) {
         this.animeService = animeService;
         this.mapper = mapper;
     }
 
     @GetMapping("/{idAnime}")
-    public ResponseEntity<AnimeSeasonDTO> getByIdAndSeason(@PathVariable long idAnime){
+    public ResponseEntity<AnimeDTO> getByIdAndSeason(@PathVariable long idAnime){
         Anime anime = animeService.getAnimeSeasonByIdAnimeAndSeason(idAnime);
         if(anime == null) {
             return ResponseEntity.ok().build();
@@ -35,14 +35,14 @@ public class AnimeSeasonController {
         return ResponseEntity.ok(mapper.toDto(anime));
     }
 
-    @GetMapping("/{year}/{season}")
-    public ResponseEntity<List<AnimeSeasonDTO>> getByIdAndSeason(@PathVariable String season, @PathVariable long year){
-        List<Anime> list = animeService.getAnimeSeasonBySeason(year, season);
+    @GetMapping("/{userId}/{year}/{season}")
+    public ResponseEntity<List<AnimeDTO>> getByIdAndSeason(@PathVariable String season, @PathVariable long year, @PathVariable UUID userId){
+        List<Anime> list = animeService.getAnimeSeasonBySeason(userId, year, season);
         return ResponseEntity.ok(mapper.toDto(list));
     }
 
     @PostMapping ("/")
-    public ResponseEntity<AnimeSeasonDTO> saveByIdAndSeason(@RequestBody AnimeSeasonSaveDTO saveRequest){
+    public ResponseEntity<AnimeDTO> saveByIdAndSeason(@RequestBody AnimeSaveDTO saveRequest){
         Anime anime = animeService.saveAnimeSeasonByIdAnimeAndSeason(saveRequest);
         if(anime == null) {
             return ResponseEntity.badRequest().body(null);
@@ -51,13 +51,13 @@ public class AnimeSeasonController {
     }
 
     @PutMapping ("/{uuid}")
-    public ResponseEntity<AnimeSeasonDTO> updateAnimeSeason(@PathVariable String uuid, @RequestBody AnimeSeasonUpdateDTO saveRequest){
+    public ResponseEntity<AnimeDTO> updateAnimeSeason(@PathVariable String uuid, @RequestBody AnimeUpdateDTO saveRequest){
         Anime anime = animeService.updateAnimeAndSeason(UUID.fromString(uuid), saveRequest);
         return ResponseEntity.ok(mapper.toDto(anime));
     }
 
     @DeleteMapping ("/{uuid}/{year}/{season}")
-    public ResponseEntity<AnimeSeasonDTO> deleteAnimeSeason(@PathVariable @NotEmpty String uuid, @PathVariable String season, @PathVariable long year){
+    public ResponseEntity<AnimeDTO> deleteAnimeSeason(@PathVariable @NotEmpty String uuid, @PathVariable String season, @PathVariable long year){
         Anime anime = animeService.deleteAnimeSeasonFromSeason(UUID.fromString(uuid), year, season);
         return ResponseEntity.ok(mapper.toDto(anime));
     }

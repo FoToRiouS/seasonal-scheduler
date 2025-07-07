@@ -3,7 +3,7 @@
 import { AnimeMAL } from "@/interfaces/AnimeMAL";
 import { AnimeSeasons, fetchMAL, mapJsonAnimeFromList } from "@/service/MyAnimeListService";
 
-export const getBySeason = async (year: number, season: AnimeSeasons): Promise<AnimeMAL[]> => {
+export const getAnimesMalBySeason = async (year: number, season: AnimeSeasons): Promise<AnimeMAL[]> => {
     const res = await fetchMAL(
         `/anime/season/${year}/${season}?limit=500&fields=alternative_titles,broadcast,media_type,start_season,mean,genres&nsfw=true`,
     );
