@@ -3,5 +3,5 @@ import { AnimeBackend } from "@/interfaces/AnimeBackend";
 
 export interface FetchedAnime {
     animeMal: AnimeMAL;
-    animeBackend: AnimeBackend;
+    animeBackend: AnimeBackend | null;
 }

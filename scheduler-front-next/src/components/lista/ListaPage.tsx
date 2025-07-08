@@ -4,6 +4,12 @@ import { Center, SimpleGrid, Stack } from "@mantine/core";
 import { CardAnime } from "@/components/shared/animes/CardAnime";
 import { useUserSession } from "@/hooks/useUserSession";
 import { useFetchAnimesForList } from "@/queries/FetchedAnimeQueries";
+import { CardAnimeList } from "@/components/shared/animes/CardAnimeList";
+import { useEffect, useMemo } from "react";
+import { useListState } from "@mantine/hooks";
+import { FetchedAnime } from "@/interfaces/FetchedAnime";
+import { AnimeBackend } from "@/interfaces/AnimeBackend";
+import { ListCardAnime } from "@/components/shared/animes/ListCardAnime";
 
 export const ListaPage = () => {
     useSetActivePage("list");
@@ -13,13 +19,11 @@ export const ListaPage = () => {
 
     return (
         <Stack px={100}>
-            <SimpleGrid cols={4}>
-                {fetchedAnimes?.map((anime) => (
-                    <Center key={anime.animeMal.id}>
-                        <CardAnime anime={anime.animeMal} />
-                    </Center>
-                ))}
-            </SimpleGrid>
+            <ListCardAnime fetchedAnimes={fetchedAnimes}>
+                {({ fetchedAnime, index, updateOnList }) => (
+                    <CardAnimeList fetchedAnime={fetchedAnime} index={index} updateOnList={updateOnList} />
+                )}
+            </ListCardAnime>
         </Stack>
     );
 };

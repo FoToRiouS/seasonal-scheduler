@@ -18,6 +18,9 @@ public class WatchService implements Comparable<WatchService> {
     @Column(name = "color" , nullable = false)
     private String color;
 
+    @Column(name = "image_src" , nullable = false)
+    private String imageSrc;
+
     public UUID getId() {
         return id;
     }
@@ -40,6 +43,14 @@ public class WatchService implements Comparable<WatchService> {
 
     public void setColor(String icon) {
         this.color = icon;
+    }
+
+    public String getImageSrc() {
+        return imageSrc;
+    }
+
+    public void setImageSrc(String imageSrc) {
+        this.imageSrc = imageSrc;
     }
 
     @Override

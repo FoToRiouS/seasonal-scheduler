@@ -2,14 +2,13 @@ package apps.schedulerback.service;
 
 import apps.schedulerback.model.Anime;
 import apps.schedulerback.model.Season;
+import apps.schedulerback.model.User;
 import apps.schedulerback.model.WatchService;
 import apps.schedulerback.model.dto.AnimeSaveDTO;
 import apps.schedulerback.model.dto.AnimeUpdateDTO;
 import apps.schedulerback.model.enums.Seasons;
-import apps.schedulerback.repository.AnimeRepository;
-import apps.schedulerback.repository.GroupRepository;
-import apps.schedulerback.repository.SeasonRepository;
-import apps.schedulerback.repository.WatchServiceRepository;
+import apps.schedulerback.repository.*;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -23,11 +22,13 @@ public class AnimeService extends GenericService<Anime, UUID, AnimeRepository> {
     private final SeasonRepository seasonRepository;
 
     private final WatchServiceRepository watchServiceRepository;
+    private final UserRepository userRepository;
 
-    public AnimeService(AnimeRepository repository, SeasonRepository seasonRepository, WatchServiceRepository watchServiceRepository, GroupRepository groupRepository) {
+    public AnimeService(AnimeRepository repository, SeasonRepository seasonRepository, WatchServiceRepository watchServiceRepository, GroupRepository groupRepository, UserRepository userRepository) {
         super(repository);
         this.seasonRepository = seasonRepository;
         this.watchServiceRepository = watchServiceRepository;
+        this.userRepository = userRepository;
     }
 
     public Anime getAnimeSeasonByIdAnimeAndSeason(Long idAnime){
@@ -38,7 +39,10 @@ public class AnimeService extends GenericService<Anime, UUID, AnimeRepository> {
         return repository.findByUser_IdAndAnimeSeasons_Season_YearAndAnimeSeasons_Season_SeasonName(userId, year, Seasons.valueOf(seasonName));
     }
 
+    @Transactional
     public Anime saveAnimeSeasonByIdAnimeAndSeason(AnimeSaveDTO saveRequest){
+        User user = userRepository.findById(UUID.fromString(saveRequest.userId())).orElseThrow();
+
         Season season = seasonRepository.findBySeasonNameAndYear(Seasons.valueOf(saveRequest.season()), saveRequest.year()).orElse(null);
         if(season == null){
             season = new Season(saveRequest.season(), saveRequest.year());
@@ -47,12 +51,13 @@ public class AnimeService extends GenericService<Anime, UUID, AnimeRepository> {
 
         Anime anime = repository.findByIdAnime(saveRequest.idAnime()).orElse(null);
         if(anime == null){
-            anime = new Anime(saveRequest.idAnime());
+            anime = new Anime(saveRequest.idAnime(), user);
         }
         anime.addSeason(season);
         return repository.save(anime);
     }
 
+    @Transactional
     public Anime updateAnimeAndSeason(UUID id, AnimeUpdateDTO saveRequest){
         Anime anime = repository.findById(id).orElseThrow();
         saveRequest.previewText();
@@ -64,6 +69,7 @@ public class AnimeService extends GenericService<Anime, UUID, AnimeRepository> {
         return repository.save(anime);
     }
 
+    @Transactional
     public Anime deleteAnimeSeasonFromSeason(UUID id, Long year, String seasonName) {
         Anime anime = repository.findById(id).orElseThrow();
         Season season = seasonRepository.findBySeasonNameAndYear(Seasons.valueOf(seasonName), year).orElseThrow();

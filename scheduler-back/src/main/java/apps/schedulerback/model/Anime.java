@@ -40,8 +40,9 @@ public class Anime {
 
     public Anime() {}
 
-    public Anime(long idAnime) {
+    public Anime(long idAnime, User user) {
         this.idAnime = idAnime;
+        this.user = user;
     }
 
     public UUID getId() {

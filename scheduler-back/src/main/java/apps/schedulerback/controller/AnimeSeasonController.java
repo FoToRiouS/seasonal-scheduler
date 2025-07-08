@@ -59,6 +59,9 @@ public class AnimeSeasonController {
     @DeleteMapping ("/{uuid}/{year}/{season}")
     public ResponseEntity<AnimeDTO> deleteAnimeSeason(@PathVariable @NotEmpty String uuid, @PathVariable String season, @PathVariable long year){
         Anime anime = animeService.deleteAnimeSeasonFromSeason(UUID.fromString(uuid), year, season);
+        if(anime == null) {
+            return ResponseEntity.noContent().build();
+        }
         return ResponseEntity.ok(mapper.toDto(anime));
     }
 

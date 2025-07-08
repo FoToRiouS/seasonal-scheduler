@@ -1,5 +1,5 @@
 package apps.schedulerback.model.dto;
 
-public record AnimeSaveDTO(long idAnime, String season, long year) {
+public record AnimeSaveDTO(String userId, long idAnime, String season, long year) {
 
 }
