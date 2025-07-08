@@ -12,15 +12,15 @@ import java.util.UUID;
 public interface AnimeRepository extends JpaRepository<Anime, UUID> {
 
     @Override
-    @EntityGraph(attributePaths = {"animeSeasons", "watchServices"})
+    @EntityGraph("animeWithSeasons")
     Optional<Anime> findById(UUID uuid);
 
-    @EntityGraph(attributePaths = {"animeSeasons", "watchServices"})
+    @EntityGraph("animeWithSeasons")
     Optional<Anime> findByIdAnimeAndAnimeSeasons_Season_YearAndAnimeSeasons_Season_SeasonName(long idAnime, long seasonYear, Seasons seasonSeasonName);
 
-    @EntityGraph(attributePaths = {"animeSeasons", "watchServices"})
+    @EntityGraph("animeWithSeasons")
     List<Anime> findByUser_IdAndAnimeSeasons_Season_YearAndAnimeSeasons_Season_SeasonName(UUID user_id, long seasonYear, Seasons season);
 
-    @EntityGraph(attributePaths = {"animeSeasons", "watchServices"})
+    @EntityGraph("animeWithSeasons")
     Optional<Anime> findByIdAnime(long idAnime);
 }

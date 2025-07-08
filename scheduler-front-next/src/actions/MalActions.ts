@@ -1,7 +1,12 @@
 "use server";
 
 import { AnimeMAL } from "@/interfaces/AnimeMAL";
-import { AnimeSeasons, fetchMAL, mapJsonAnimeFromList } from "@/service/MyAnimeListService";
+import {
+    AnimeSeasons,
+    fetchMAL,
+    mapJsonAnimeFromId,
+    mapJsonAnimeFromList,
+} from "@/service/MyAnimeListService";
 
 export const getAnimesMalBySeason = async (year: number, season: AnimeSeasons): Promise<AnimeMAL[]> => {
     const res = await fetchMAL(
@@ -17,4 +22,12 @@ export const getAnimesMalBySeason = async (year: number, season: AnimeSeasons): 
             (a: AnimeMAL) => a.startSeason && a.startSeason.year === year && a.startSeason.season === season,
         )
         .filter((a: AnimeMAL) => a.genres && !a.genres.map((g) => g.name).includes("Hentai"));
+};
+
+export const getAnimeMalById = async (id: number): Promise<AnimeMAL> => {
+    const res = await fetchMAL(
+        `/anime/${id}?fields=alternative_titles,broadcast,media_type,start_season,mean,genres`,
+    );
+    const data = await res.json();
+    return mapJsonAnimeFromId(data);
 };

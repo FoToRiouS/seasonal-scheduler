@@ -52,3 +52,17 @@ export const mapJsonAnimeFromList = (node: any) => {
         genres: node.node.genres,
     };
 };
+
+export const mapJsonAnimeFromId = (node: any) => {
+    return <AnimeMAL>{
+        id: node.id,
+        title: node.title,
+        alternativeTitles: node.alternative_titles,
+        mainPicture: node.main_picture,
+        mean: node.mean,
+        broadcast: node.broadcast,
+        mediaType: node.media_type,
+        startSeason: node.start_season,
+        genres: node.genres,
+    };
+};

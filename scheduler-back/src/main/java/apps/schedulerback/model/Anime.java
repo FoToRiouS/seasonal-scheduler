@@ -6,6 +6,15 @@ import java.util.*;
 
 @Entity
 @Table(name = "anime_season", uniqueConstraints = @UniqueConstraint(name = "", columnNames = {"id_anime", "user_id"}))
+@NamedEntityGraph(name = "animeWithSeasons",
+        attributeNodes = {
+                @NamedAttributeNode(value = "animeSeasons", subgraph = "seasons"),
+                @NamedAttributeNode(value = "watchServices")
+        }, subgraphs = {
+        @NamedSubgraph(name = "seasons", attributeNodes = {
+            @NamedAttributeNode(value = "season")
+        })
+})
 public class Anime {
 
     @Id
