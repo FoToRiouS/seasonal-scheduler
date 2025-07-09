@@ -9,6 +9,7 @@ import { ModalsProvider } from "@mantine/modals";
 import { getUser } from "@/actions/UserActions";
 import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
 import { MantineThemeProvider } from "@/providers/MantineThemeProvider";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 interface Props {
     children: React.ReactNode;
@@ -30,16 +31,18 @@ export default async function RootLayout({ children }: Props) {
             </head>
             <body>
                 <ReactQueryProvider>
-                    <HydrationBoundary state={dehydrate(queryClient)}>
-                        <AuthProvider session={session}>
-                            <MantineThemeProvider>
-                                <Notifications />
-                                <ModalsProvider>
-                                    <Layout>{children}</Layout>
-                                </ModalsProvider>
-                            </MantineThemeProvider>
-                        </AuthProvider>
-                    </HydrationBoundary>
+                    <NuqsAdapter>
+                        <HydrationBoundary state={dehydrate(queryClient)}>
+                            <AuthProvider session={session}>
+                                <MantineThemeProvider>
+                                    <Notifications />
+                                    <ModalsProvider>
+                                        <Layout>{children}</Layout>
+                                    </ModalsProvider>
+                                </MantineThemeProvider>
+                            </AuthProvider>
+                        </HydrationBoundary>
+                    </NuqsAdapter>
                 </ReactQueryProvider>
             </body>
         </html>

@@ -19,7 +19,7 @@ export const useSaveAnimeSeason = () => {
     });
 };
 
-export const useDeleteAnimeSeason = (idBackend?: string, year: number, season: AnimeSeasons) => {
+export const useDeleteAnimeSeason = (idBackend: string | undefined, year: number, season: AnimeSeasons) => {
     return useMutation<AnimeBackend | null, Error>({
         mutationFn: () => resolveServerAction(deleteAnimeSeason)(idBackend, year, season),
     });
