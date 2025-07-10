@@ -1,23 +1,16 @@
 import React from "react";
-import { ActionIcon, Badge, rem } from "@mantine/core";
-import { FaX } from "react-icons/fa6";
+import { Badge, BadgeProps } from "@mantine/core";
 import { getSeasonInPortuguese } from "@/service/MyAnimeListService";
 import { StartSeason } from "@/interfaces/AnimeMAL";
 
 interface BadgeSeasonProps {
     startSeason: StartSeason;
-    close?: () => void;
+    variant?: BadgeProps["variant"];
 }
 
-export const BadgeSeason = ({ startSeason, close }: BadgeSeasonProps) => {
-    const removeButtonBadge = (
-        <ActionIcon size="xs" color="grape" radius="xl" variant="transparent" onClick={close}>
-            <FaX style={{ fontSize: rem(10) }} />
-        </ActionIcon>
-    );
-
+export const BadgeSeason = ({ startSeason, variant }: BadgeSeasonProps) => {
     return (
-        <Badge color="grape" rightSection={removeButtonBadge} pr={3}>
+        <Badge color="violet.8" size="lg" style={{ cursor: "pointer" }} variant={variant}>
             {getSeasonInPortuguese(startSeason.season) + "/" + startSeason.year}
         </Badge>
     );

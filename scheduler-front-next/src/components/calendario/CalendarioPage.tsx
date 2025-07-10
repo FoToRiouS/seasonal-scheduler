@@ -7,6 +7,8 @@ import { CardAnimeSchedule } from "@/components/shared/animes/CardAnimeSchedule"
 import { ListCardAnime } from "@/components/shared/animes/ListCardAnime";
 import { useSeasonContext } from "@/components/shared/animes/provider/useSeasonContext";
 import { AnimeSearchControls } from "@/components/shared/animes/AnimeSearchControls";
+import { useState } from "react";
+import { FetchedAnime } from "@/interfaces/FetchedAnime";
 
 export const CalendarioPage = () => {
     useSetActivePage("calendar");
@@ -14,11 +16,15 @@ export const CalendarioPage = () => {
     const { year, season } = useSeasonContext();
 
     const { data: fetchedAnimes } = useFetchAnimesForCalendar(session?.userId, year, season);
+    const [controlledAnimeList, setControlledAnimeList] = useState<FetchedAnime[]>([]);
 
     return (
         <Stack px={100}>
-            <AnimeSearchControls />
-            <ListCardAnime fetchedAnimes={fetchedAnimes}>
+            <AnimeSearchControls
+                rawAnimesList={fetchedAnimes}
+                setControlledAnimeList={setControlledAnimeList}
+            />
+            <ListCardAnime fetchedAnimes={controlledAnimeList}>
                 {({ fetchedAnime, index, updateOnList }) => (
                     <CardAnimeSchedule
                         fetchedAnime={fetchedAnime}

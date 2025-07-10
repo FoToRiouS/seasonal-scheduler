@@ -7,7 +7,7 @@ import { Template } from "../../shared/components/Template.tsx";
 import { Box, Center, Container, Loader, SimpleGrid } from "@mantine/core";
 import { SearchHeaderAnime } from "./components/SearchHeaderAnime.tsx";
 import { SeasonContextProvider } from "../../shared/contexts/SeasonContextProvider.tsx";
-import { useAnimesUtils } from "../../shared/hooks/utils/useAnimesUtils.ts";
+import { useAnimeOrders } from "../../shared/hooks/utils/useAnimeOrders.ts";
 
 export const ListAnimes = () => {
     const currentYear = new Date().getFullYear();
@@ -18,7 +18,7 @@ export const ListAnimes = () => {
     const [year, setYear] = useState<number | "">(currentYear);
     const [season, setSeason] = useState<AnimeSeasons | null>(currentSeason);
     const [orderStrategy, setOrderStrategy] = useState<"rating" | "name">("name");
-    const { orderByRating, orderByName } = useAnimesUtils();
+    const { orderByRating, orderByName } = useAnimeOrders();
 
     const { data, isLoading } = useAnimesBySeason(+year, season as AnimeSeasons);
 

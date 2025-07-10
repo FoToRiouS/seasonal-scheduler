@@ -1,6 +1,6 @@
 import { IAnime } from "../../interfaces/IAnime.ts";
 
-export const useAnimesUtils = () => {
+export const useAnimeOrders = () => {
     const ratingStrategy = (a: IAnime, b: IAnime) => {
         const ratingA = a!.mean ? a!.mean : 0;
         const ratingB = b!.mean ? b!.mean : 0;

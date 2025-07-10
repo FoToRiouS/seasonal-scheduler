@@ -1,23 +1,57 @@
+"use client";
 import { Group, NumberInput, Select, TextInput } from "@mantine/core";
 import dayjs from "dayjs";
 import { useSeasonContext } from "@/components/shared/animes/provider/useSeasonContext";
 import { FetchedAnime } from "@/interfaces/FetchedAnime";
 import { useEffect, useState } from "react";
+import { AnimeSeasons } from "@/service/MyAnimeListService";
+import { useAnimesUtils } from "@/hooks/useAnimesOrders";
+import { useLocalStorage } from "@mantine/hooks";
+import { OrderStrategySelect } from "@/components/shared/animes/OrderStrategySelect";
 
 interface Props {
-    rawAnimesList: FetchedAnime[];
+    rawAnimesList: FetchedAnime[] | undefined;
     setControlledAnimeList: (animes: FetchedAnime[]) => void;
 }
 
 export const AnimeSearchControls = ({ rawAnimesList, setControlledAnimeList }: Props) => {
     const { year, season, setYear, setSeason } = useSeasonContext();
 
+    const { orderByRating, orderByOriginalName, orderByEnglishName } = useAnimesUtils();
+    const [orderStrategy, setOrderStrategy] = useLocalStorage<"original_name" | "english_name" | "rating">({
+        key: "order_strategy",
+        defaultValue: "rating",
+    });
+
     const [search, setSearch] = useState("");
+
     useEffect(() => {
-        setControlledAnimeList(
-            rawAnimesList.filter((a) => a.animeMal.title.toLowerCase().includes(search.toLowerCase())),
-        );
-    }, [search]);
+        let filtered = rawAnimesList || [];
+        if (search) {
+            filtered = filtered.filter((a) => {
+                return (
+                    a.animeMal.title.toLowerCase().includes(search.toLowerCase()) ||
+                    a.animeMal.alternativeTitles.en.toLowerCase().includes(search.toLowerCase())
+                );
+            });
+        }
+
+        if (filtered) {
+            switch (orderStrategy) {
+                case "original_name":
+                    filtered = orderByOriginalName(filtered);
+                    break;
+                case "english_name":
+                    filtered = orderByEnglishName(filtered);
+                    break;
+                case "rating":
+                    filtered = orderByRating(filtered);
+                    break;
+            }
+        }
+
+        setControlledAnimeList(filtered);
+    }, [search, orderStrategy, rawAnimesList]);
 
     return (
         <Group grow preventGrowOverflow={false}>
@@ -28,7 +62,7 @@ export const AnimeSearchControls = ({ rawAnimesList, setControlledAnimeList }: P
             />
             <Select
                 value={season}
-                onChange={(e) => setSeason(e)}
+                onChange={(e) => setSeason(e as AnimeSeasons)}
                 data={[
                     { value: "winter", label: "Inverno" },
                     { value: "spring", label: "Primavera" },
@@ -44,6 +78,7 @@ export const AnimeSearchControls = ({ rawAnimesList, setControlledAnimeList }: P
                 max={dayjs().year() + 1}
                 maw={100}
             />
+            <OrderStrategySelect orderStrategy={orderStrategy} setOrderStrategy={setOrderStrategy} />
         </Group>
     );
 };

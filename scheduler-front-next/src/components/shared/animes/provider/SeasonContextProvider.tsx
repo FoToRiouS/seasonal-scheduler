@@ -1,5 +1,5 @@
 "use client";
-import React, { createContext, ReactNode } from "react";
+import React, { createContext } from "react";
 import { AnimeSeasons, getCurrentSeason } from "@/service/MyAnimeListService";
 import { parseAsInteger, useQueryState } from "nuqs";
 import dayjs from "dayjs";
@@ -9,7 +9,6 @@ interface SeasonContextProviderProps {
     season: AnimeSeasons;
     setYear: (year: number) => void;
     setSeason: (season: AnimeSeasons) => void;
-    children: ReactNode;
 }
 
 export const SeasonContext = createContext<SeasonContextProviderProps>({} as SeasonContextProviderProps);
