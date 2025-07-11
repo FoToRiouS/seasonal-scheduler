@@ -1,9 +1,15 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { resolveServerAction } from "@/service/BackendService";
-import { deleteAnimeSeason, getAnimesBySeason, saveAnimeSeason } from "@/actions/AnimeActions";
+import {
+    deleteAnimeSeason,
+    getAnimesBySeason,
+    saveAnimeSeason,
+    updateAnimeSeason,
+} from "@/actions/AnimeActions";
 import { AnimeSeasons } from "@/service/MyAnimeListService";
 import { AnimeBackend } from "@/interfaces/AnimeBackend";
 import { AnimeSeasonSaveDTO } from "@/interfaces/AnimeSeasonSaveDTO";
+import { AnimeSeasonUpdateDTO } from "@/interfaces/AnimeSeasonUpdateDTO";
 
 export const useGetAnimesBySeason = (userId: string | undefined, year: number, season: AnimeSeasons) => {
     return useQuery<AnimeBackend[]>({
@@ -16,6 +22,12 @@ export const useGetAnimesBySeason = (userId: string | undefined, year: number, s
 export const useSaveAnimeSeason = () => {
     return useMutation<AnimeBackend, Error, AnimeSeasonSaveDTO>({
         mutationFn: resolveServerAction(saveAnimeSeason),
+    });
+};
+
+export const useUpdateAnimeSeason = () => {
+    return useMutation<AnimeBackend, Error, AnimeSeasonUpdateDTO>({
+        mutationFn: resolveServerAction(updateAnimeSeason),
     });
 };
 

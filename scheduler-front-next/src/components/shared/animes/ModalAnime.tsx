@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import {
     ActionIcon,
     Box,
@@ -13,10 +13,9 @@ import {
     Stack,
     Text,
 } from "@mantine/core";
-import { notifications } from "@mantine/notifications";
 import { modals } from "@mantine/modals";
 import { useWatchServiceList } from "@/queries/WatchServiceQueries";
-import { useDeleteAnimeSeason } from "@/queries/AnimeQueries";
+import { useDeleteAnimeSeason, useUpdateAnimeSeason } from "@/queries/AnimeQueries";
 import { FetchedAnime } from "@/interfaces/FetchedAnime";
 import { getDayOfExhibition, getSeasonInPortuguese } from "@/service/MyAnimeListService";
 import { StartSeason } from "@/interfaces/AnimeMAL";
@@ -25,13 +24,19 @@ import { RatingAnime } from "@/components/shared/animes/RatingAnime";
 import { BadgeSeason } from "@/components/shared/animes/BadgeSeason";
 import { TextareaWithCounter } from "@/components/shared/TextareaWithCounter";
 import { InputGroupAnimeSeason } from "@/components/shared/animes/InputGroupAnimeSeason";
-import { useForm } from "@mantine/form";
 import { useSeasonContext } from "@/components/shared/animes/provider/useSeasonContext";
+import { AnimeSeason } from "@/interfaces/AnimeSeason";
+import { AnimeSeasonUpdateDTO } from "@/interfaces/AnimeSeasonUpdateDTO";
+import { useNotifications } from "@/hooks/useNotifications";
+import { AnimeBackend } from "@/interfaces/AnimeBackend";
+import { SelectWatchServices } from "@/components/shared/animes/SelectWatchServices";
 
 interface IModalAnimeProps {
     isOpen: boolean;
     onClose: () => void;
     fetchedAnime: FetchedAnime;
+    index: number;
+    updateOnList: (index: number, animeBack: AnimeBackend | null) => void;
 }
 
 interface FormValues {
@@ -41,44 +46,65 @@ interface FormValues {
     services: string[];
 }
 
-export const ModalAnime = ({ isOpen, onClose, fetchedAnime }: IModalAnimeProps) => {
+export const ModalAnime = ({ isOpen, onClose, fetchedAnime, index, updateOnList }: IModalAnimeProps) => {
+    const { showSuccess, showError } = useNotifications();
     const { season, year } = useSeasonContext();
     const { animeBackend, animeMal } = fetchedAnime;
 
-    const form = useForm<FormValues>({
-        mode: "uncontrolled",
-        initialValues: {
-            startSeason: {} as StartSeason,
-            review: "",
-            preview: "",
-            services: [],
-        },
-    });
-
-    const selectedAnimeSeason = useMemo(
-        () => animeBackend?.animeSeasons.find((as) => as.season.season === season && as.season.year === year),
-        [animeMal],
+    const [animeBackendToUpdate, setAnimeBackendToUpdate] = useState(animeBackend!);
+    const [selectedAnimeSeason, setSelectedAnimeSeason] = useState<AnimeSeason>();
+    const [selectedWatchServices, setSelectedWatchServices] = useState(
+        animeBackend?.watchServices.map((ws) => ws.id)!,
     );
 
     useEffect(() => {
-        if (isOpen && fetchedAnime) {
-            const selectedAnimeSeason = animeBackend?.animeSeasons.find(
-                (as) => as.season.season === season && as.season.year === year,
-            );
-
-            form.setValues({
-                startSeason: selectedAnimeSeason?.season,
-                review: selectedAnimeSeason?.reviewText || "",
-                preview: selectedAnimeSeason?.previewText || "",
-                services: animeBackend?.watchServices.map((ws) => ws.id) || [],
-            });
+        const selectedAnimeSeason = animeBackend?.animeSeasons.find(
+            (as) => as.season.season === season && as.season.year === year,
+        );
+        if (selectedAnimeSeason) {
+            setSelectedAnimeSeason(selectedAnimeSeason);
         }
-    }, [isOpen, fetchedAnime]);
+    }, []);
+
+    const handleChangePreviewText = (text: string) => {
+        setSelectedAnimeSeason(
+            (prev) =>
+                prev && {
+                    ...prev,
+                    previewText: text,
+                },
+        );
+    };
+
+    const handleChangeReviewText = (text: string) => {
+        setSelectedAnimeSeason((prev) => {
+            if (prev) {
+                return {
+                    ...prev,
+                    reviewText: text,
+                };
+            }
+        });
+    };
+
+    useEffect(() => {
+        setAnimeBackendToUpdate((prev) => ({
+            ...prev,
+            animeSeasons: prev.animeSeasons.map((as) =>
+                (
+                    as.season.season === selectedAnimeSeason?.season.season &&
+                    as.season.year === selectedAnimeSeason?.season.year
+                ) ?
+                    selectedAnimeSeason!
+                :   as,
+            ),
+        }));
+    }, [selectedAnimeSeason]);
 
     const { data: watchServices } = useWatchServiceList();
 
-    // const { mutate: update, isLoading: isUpdating, isSuccess } = useUpdateAnimeSeason(anime!.id);
-    const { mutate: deleteAnimeSeason } = useDeleteAnimeSeason(animeBackend?.id, year, season);
+    const { mutate: update, isPending: isUpdating } = useUpdateAnimeSeason();
+    const { mutate: deleteAnimeSeason } = useDeleteAnimeSeason(animeBackendToUpdate?.id, year, season);
 
     const handleDeleteSeason = (startSeason: StartSeason) => {
         modals.openConfirmModal({
@@ -96,24 +122,20 @@ export const ModalAnime = ({ isOpen, onClose, fetchedAnime }: IModalAnimeProps) 
         });
     };
 
-    const onUpdateSuccess = () => {
-        notifications.show({
-            title: "Salvo com sucesso",
-            message: "Informações foram salvas com sucesso!",
-            color: "green",
-            autoClose: 5000,
+    const handleUpdateAnimeSeason = () => {
+        const animeSeasonUpdate: AnimeSeasonUpdateDTO = {
+            animeBackId: animeBackend!.id,
+            services: selectedWatchServices,
+            animeSeasons: animeBackendToUpdate.animeSeasons,
+        };
+        update(animeSeasonUpdate, {
+            onSuccess: (data) => {
+                showSuccess("Informações foram salvas com sucesso!");
+                updateOnList(index, data);
+                onClose();
+            },
         });
     };
-
-    // const handleUpdateAnimeSeason = () => {
-    //     const animeSeasonUpdate: IAnimeSeasonUpdateDTO = {
-    //         id: animeSeason?.id as string,
-    //         previewText: preview,
-    //         reviewText: review,
-    //         services: services,
-    //     };
-    //     update(animeSeasonUpdate);
-    // };
 
     return (
         <>
@@ -171,15 +193,16 @@ export const ModalAnime = ({ isOpen, onClose, fetchedAnime }: IModalAnimeProps) 
                                 </Group>
                             :   undefined}
 
-                            {animeBackend && (
+                            {animeBackendToUpdate && (
                                 <>
                                     <Divider my={5} />
-                                    {animeBackend.animeSeasons && (
+                                    {animeBackendToUpdate.animeSeasons && (
                                         <Group justify="center">
-                                            {animeBackend.animeSeasons.map((s) => (
+                                            {animeBackendToUpdate.animeSeasons.map((s) => (
                                                 <BadgeSeason
                                                     key={s.season.season + s.season.year}
                                                     startSeason={s.season}
+                                                    onClick={() => setSelectedAnimeSeason(s)}
                                                     variant={
                                                         (
                                                             selectedAnimeSeason?.season.season ===
@@ -196,20 +219,21 @@ export const ModalAnime = ({ isOpen, onClose, fetchedAnime }: IModalAnimeProps) 
                                     <TextareaWithCounter
                                         maxCounter={900}
                                         label="Preview"
-                                        {...form.getInputProps("preview")}
-                                        key={form.key("preview")}
+                                        value={selectedAnimeSeason?.previewText}
+                                        onChange={(e) => handleChangePreviewText(e.currentTarget.value)}
                                     />
                                     {/*<Textarea label="Preview" value={preview} onChange={e => setPreview(e.currentTarget.value)}/>*/}
                                     <TextareaWithCounter
                                         maxCounter={900}
                                         label="Review"
-                                        {...form.getInputProps("review")}
-                                        key={form.key("review")}
+                                        value={selectedAnimeSeason?.reviewText}
+                                        onChange={(e) => handleChangeReviewText(e.currentTarget.value)}
                                     />
+                                    <SelectWatchServices />
                                     <Chip.Group
                                         multiple
-                                        key={form.key("services")}
-                                        {...form.getInputProps("services")}
+                                        value={selectedWatchServices}
+                                        onChange={setSelectedWatchServices}
                                     >
                                         <SimpleGrid cols={2}>
                                             {watchServices
@@ -248,7 +272,7 @@ export const ModalAnime = ({ isOpen, onClose, fetchedAnime }: IModalAnimeProps) 
                                             initialYear={year}
                                             initialSeason={season}
                                         />
-                                        <Button variant="filled" mt="auto">
+                                        <Button variant="filled" mt="auto" onClick={handleUpdateAnimeSeason}>
                                             "Salvar Alterações"
                                         </Button>
                                     </Stack>

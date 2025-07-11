@@ -3,6 +3,7 @@ import { fetchAuth } from "@/service/BackendService";
 import { AnimeSeasons } from "@/service/MyAnimeListService";
 import { AnimeBackend } from "@/interfaces/AnimeBackend";
 import { AnimeSeasonSaveDTO } from "@/interfaces/AnimeSeasonSaveDTO";
+import { AnimeSeasonUpdateDTO } from "@/interfaces/AnimeSeasonUpdateDTO";
 
 export const getAnimesBySeason = async (
     userId: string,
@@ -16,6 +17,14 @@ export const getAnimesBySeason = async (
 export const saveAnimeSeason = async (payload: AnimeSeasonSaveDTO): Promise<AnimeBackend> => {
     const res = await fetchAuth(`/api/animeseason/`, {
         method: "POST",
+        body: JSON.stringify(payload),
+    });
+    return await res.json();
+};
+
+export const updateAnimeSeason = async (payload: AnimeSeasonUpdateDTO): Promise<AnimeBackend> => {
+    const res = await fetchAuth(`/api/animeseason/${payload.animeBackId}`, {
+        method: "PUT",
         body: JSON.stringify(payload),
     });
     return await res.json();

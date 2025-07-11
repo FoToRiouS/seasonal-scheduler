@@ -33,7 +33,13 @@ export const CardAnimeSchedule = ({ fetchedAnime, index, updateOnList }: Default
                     </Button>
                 </Group>
             </CardAnime>
-            <ModalAnime isOpen={opened} onClose={close} fetchedAnime={fetchedAnime} />
+            <ModalAnime
+                isOpen={opened}
+                onClose={close}
+                fetchedAnime={fetchedAnime}
+                updateOnList={updateOnList}
+                index={index}
+            />
         </>
     );
 };

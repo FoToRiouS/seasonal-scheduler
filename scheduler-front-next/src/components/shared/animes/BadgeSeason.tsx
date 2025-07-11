@@ -6,11 +6,12 @@ import { StartSeason } from "@/interfaces/AnimeMAL";
 interface BadgeSeasonProps {
     startSeason: StartSeason;
     variant?: BadgeProps["variant"];
+    onClick?: () => void;
 }
 
-export const BadgeSeason = ({ startSeason, variant }: BadgeSeasonProps) => {
+export const BadgeSeason = ({ startSeason, variant, onClick }: BadgeSeasonProps) => {
     return (
-        <Badge color="violet.8" size="lg" style={{ cursor: "pointer" }} variant={variant}>
+        <Badge color="violet.8" size="lg" style={{ cursor: "pointer" }} variant={variant} onClick={onClick}>
             {getSeasonInPortuguese(startSeason.season) + "/" + startSeason.year}
         </Badge>
     );

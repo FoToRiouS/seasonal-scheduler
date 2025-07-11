@@ -1,7 +1,8 @@
 package apps.schedulerback.model.dto;
 
+import java.util.List;
 import java.util.Set;
 
-public record AnimeUpdateDTO(String previewText, String reviewText, Set<String> services) {
+public record AnimeUpdateDTO(List<AnimeSeasonDTO> animeSeasons, Set<String> services) {
 
 }

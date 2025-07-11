@@ -1,10 +1,8 @@
 package apps.schedulerback.service;
 
-import apps.schedulerback.model.Anime;
-import apps.schedulerback.model.Season;
-import apps.schedulerback.model.User;
-import apps.schedulerback.model.WatchService;
+import apps.schedulerback.model.*;
 import apps.schedulerback.model.dto.AnimeSaveDTO;
+import apps.schedulerback.model.dto.AnimeSeasonDTO;
 import apps.schedulerback.model.dto.AnimeUpdateDTO;
 import apps.schedulerback.model.enums.Seasons;
 import apps.schedulerback.repository.*;
@@ -13,8 +11,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.TreeSet;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class AnimeService extends GenericService<Anime, UUID, AnimeRepository> {
@@ -60,12 +59,25 @@ public class AnimeService extends GenericService<Anime, UUID, AnimeRepository> {
     @Transactional
     public Anime updateAnimeAndSeason(UUID id, AnimeUpdateDTO saveRequest){
         Anime anime = repository.findById(id).orElseThrow();
-        saveRequest.previewText();
-        saveRequest.reviewText();
+
+        Map<String, AnimeSeasonDTO> seasonDtoMap = saveRequest.animeSeasons().stream()
+                .collect(Collectors.toMap(
+                        dto -> dto.season().season() + "-" + dto.season().year(),
+                        dto -> dto
+                ));
+
+        for (AnimeSeason as : anime.getAnimeSeasons()) {
+            String key = as.getSeason().getSeasonName().toString() + "-" + as.getSeason().getYear();
+            AnimeSeasonDTO animeSeasonDTO = seasonDtoMap.get(key);
+
+            if (animeSeasonDTO != null) {
+                as.setPreviewText(animeSeasonDTO.previewText());
+                as.setReviewText(animeSeasonDTO.reviewText());
+            }
+        }
 
         Collection<UUID> listServices = saveRequest.services().stream().map(UUID::fromString).toList();
-        anime.setWatchServices(new TreeSet<>(watchServiceRepository.findAllById(listServices)));
-        anime. getWatchServices().addAll(watchServiceRepository.findAllById(listServices));
+        anime.getWatchServices().addAll(watchServiceRepository.findAllById(listServices));
         return repository.save(anime);
     }
 

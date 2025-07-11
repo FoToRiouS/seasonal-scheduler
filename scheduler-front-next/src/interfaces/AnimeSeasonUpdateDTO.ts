@@ -1,6 +1,7 @@
+import { AnimeSeason } from "@/interfaces/AnimeSeason";
+
 export interface AnimeSeasonUpdateDTO {
-    id: string;
-    previewText: string;
-    reviewText: string;
+    animeBackId: string;
+    animeSeasons: AnimeSeason[];
     services: string[];
 }
