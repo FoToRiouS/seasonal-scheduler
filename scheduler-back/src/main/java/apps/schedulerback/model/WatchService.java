@@ -15,8 +15,8 @@ public class WatchService implements Comparable<WatchService> {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "color" , nullable = false)
-    private String color;
+    @Column(name = "name_id" , nullable = false)
+    private String nameId;
 
     @Column(name = "image_src" , nullable = false)
     private String imageSrc;
@@ -37,12 +37,12 @@ public class WatchService implements Comparable<WatchService> {
         this.name = name;
     }
 
-    public String getColor() {
-        return color;
+    public String getNameId() {
+        return nameId;
     }
 
-    public void setColor(String icon) {
-        this.color = icon;
+    public void setNameId(String nameId) {
+        this.nameId = nameId;
     }
 
     public String getImageSrc() {

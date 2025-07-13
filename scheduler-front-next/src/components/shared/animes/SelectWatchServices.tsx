@@ -1,92 +1,61 @@
-import { useState } from "react";
-import { CheckIcon, Combobox, Group, Pill, PillsInput, useCombobox } from "@mantine/core";
+import React from "react";
+import { Chip, SimpleGrid, Stack, Text } from "@mantine/core";
 import { useWatchServiceList } from "@/queries/WatchServiceQueries";
-import classes from "./SelectWatchServices.module.css";
 
-export const SelectWatchServices = () => {
+interface Props {
+    selectedWatchServices: string[];
+    setSelectedWatchServices: (value: string[]) => void;
+}
+
+const ColorSchema: { [key: string]: string } = {
+    crunchyroll: "#F47521",
+    netflix: "#E50914",
+    other: "#6A6A6A",
+    "disney-plus": "#113CCF",
+    "amazon-prime": "#00A8E1",
+    "hbo-max": "#8C00FF",
+};
+
+export const SelectWatchServices = ({ selectedWatchServices, setSelectedWatchServices }: Props) => {
     const { data: watchServices } = useWatchServiceList();
 
-    const combobox = useCombobox({
-        onDropdownClose: () => combobox.resetSelectedOption(),
-        onDropdownOpen: () => combobox.updateSelectedOptionIndex("active"),
-    });
-
-    const [search, setSearch] = useState("");
-    const [value, setValue] = useState<string[]>([]);
-
-    const handleValueSelect = (val: string) =>
-        setValue((current) => (current.includes(val) ? current.filter((v) => v !== val) : [...current, val]));
-
-    const handleValueRemove = (val: string) => setValue((current) => current.filter((v) => v !== val));
-
-    const values = value.map((item) => {
-        const watchService = watchServices?.find((ws) => ws.id === item);
-        return (
-            <Pill
-                key={item}
-                withRemoveButton
-                onRemove={() => handleValueRemove(item)}
-                className={`${watchService?.name.toLowerCase()}`}
-            >
-                {watchService?.name}
-            </Pill>
-        );
-    });
-
-    const options =
-        watchServices ?
-            watchServices
-                .filter((item) => item.name.toLowerCase().includes(search.trim().toLowerCase()))
-                .map((item) => (
-                    <Combobox.Option value={item.id} key={item.id} active={value.includes(item.id)}>
-                        <Group gap="sm">
-                            {value.includes(item.id) ?
-                                <CheckIcon size={12} />
-                            :   null}
-                            <span>{item.name}</span>
-                        </Group>
-                    </Combobox.Option>
-                ))
-        :   [];
-
     return (
-        <Combobox store={combobox} onOptionSubmit={handleValueSelect}>
-            <Combobox.DropdownTarget>
-                <PillsInput onClick={() => combobox.openDropdown()}>
-                    <Pill.Group className={classes.pillGroup}>
-                        {values}
-
-                        <Combobox.EventsTarget>
-                            <PillsInput.Field
-                                onFocus={() => combobox.openDropdown()}
-                                onBlur={() => combobox.closeDropdown()}
-                                value={search}
-                                placeholder="Search values"
-                                onChange={(event) => {
-                                    combobox.updateSelectedOptionIndex();
-                                    setSearch(event.currentTarget.value);
-                                }}
-                                onKeyDown={(event) => {
-                                    if (
-                                        event.key === "Backspace" &&
-                                        search.length === 0 &&
-                                        value.length > 0
-                                    ) {
-                                        event.preventDefault();
-                                        handleValueRemove(value[value.length - 1]);
-                                    }
-                                }}
-                            />
-                        </Combobox.EventsTarget>
-                    </Pill.Group>
-                </PillsInput>
-            </Combobox.DropdownTarget>
-
-            <Combobox.Dropdown>
-                <Combobox.Options>
-                    {options.length > 0 ? options : <Combobox.Empty>Nada Encontrado...</Combobox.Empty>}
-                </Combobox.Options>
-            </Combobox.Dropdown>
-        </Combobox>
+        <Stack gap={5}>
+            <Text size="sm" fw={500}>
+                Onde Assistir
+            </Text>
+            <Chip.Group multiple value={selectedWatchServices} onChange={setSelectedWatchServices}>
+                <SimpleGrid cols={3}>
+                    {watchServices
+                        ?.sort((w1, w2) => {
+                            if (w1.name < w2.name) {
+                                return -1;
+                            }
+                            if (w1.name > w2.name) {
+                                return 1;
+                            }
+                            return 0;
+                        })
+                        .map((w) => {
+                            return (
+                                <Chip
+                                    key={w.id}
+                                    value={w.id}
+                                    variant="filled"
+                                    color={ColorSchema[w.nameId]}
+                                    styles={{
+                                        label: {
+                                            width: "100%",
+                                            justifyContent: "center",
+                                        },
+                                    }}
+                                >
+                                    {w.name}
+                                </Chip>
+                            );
+                        })}
+                </SimpleGrid>
+            </Chip.Group>
+        </Stack>
     );
 };

@@ -3,11 +3,12 @@ import { Group, NumberInput, Select, TextInput } from "@mantine/core";
 import dayjs from "dayjs";
 import { useSeasonContext } from "@/components/shared/animes/provider/useSeasonContext";
 import { FetchedAnime } from "@/interfaces/FetchedAnime";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { AnimeSeasons } from "@/service/MyAnimeListService";
 import { useAnimesUtils } from "@/hooks/useAnimesOrders";
-import { useLocalStorage } from "@mantine/hooks";
+import { useDebouncedValue, useLocalStorage } from "@mantine/hooks";
 import { OrderStrategySelect } from "@/components/shared/animes/OrderStrategySelect";
+import { useQueryState } from "nuqs";
 
 interface Props {
     rawAnimesList: FetchedAnime[] | undefined;
@@ -23,15 +24,17 @@ export const AnimeSearchControls = ({ rawAnimesList, setControlledAnimeList }: P
         defaultValue: "rating",
     });
 
-    const [search, setSearch] = useState("");
+    const [search, setSearch] = useQueryState("search", { defaultValue: "" });
+    const [debouncedSearch] = useDebouncedValue(search, 200);
 
     useEffect(() => {
         let filtered = rawAnimesList || [];
-        if (search) {
+
+        if (debouncedSearch) {
             filtered = filtered.filter((a) => {
                 return (
-                    a.animeMal.title.toLowerCase().includes(search.toLowerCase()) ||
-                    a.animeMal.alternativeTitles.en.toLowerCase().includes(search.toLowerCase())
+                    a.animeMal.title.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+                    a.animeMal.alternativeTitles.en.toLowerCase().includes(debouncedSearch.toLowerCase())
                 );
             });
         }
@@ -51,7 +54,7 @@ export const AnimeSearchControls = ({ rawAnimesList, setControlledAnimeList }: P
         }
 
         setControlledAnimeList(filtered);
-    }, [search, orderStrategy, rawAnimesList]);
+    }, [debouncedSearch, orderStrategy, rawAnimesList]);
 
     return (
         <Group grow preventGrowOverflow={false}>
