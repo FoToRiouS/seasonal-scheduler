@@ -90,9 +90,8 @@ public class AnimeService extends GenericService<Anime, UUID, AnimeRepository> {
             repository.delete(anime);
             return null;
         } else {
-            repository.save(anime);
+            return repository.save(anime);
         }
-        return anime;
     }
 
     public Collection<Season> listAllSeasons(){

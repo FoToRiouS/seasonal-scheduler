@@ -6,7 +6,12 @@ import { ServicesAnime } from "@/components/shared/animes/ServicesAnime";
 import { useDisclosure } from "@mantine/hooks";
 import { ModalAnime } from "@/components/shared/animes/ModalAnime";
 
-export const CardAnimeSchedule = ({ fetchedAnime, index, updateOnList }: DefaultCardAnimeProps) => {
+export const CardAnimeSchedule = ({
+    fetchedAnime,
+    index,
+    updateOnList,
+    removeFromList,
+}: DefaultCardAnimeProps) => {
     const { animeMal, animeBackend } = fetchedAnime;
     const [opened, { open, close }] = useDisclosure(false);
 
@@ -38,6 +43,7 @@ export const CardAnimeSchedule = ({ fetchedAnime, index, updateOnList }: Default
                 onClose={close}
                 fetchedAnime={fetchedAnime}
                 updateOnList={updateOnList}
+                removeFromList={removeFromList}
                 index={index}
             />
         </>

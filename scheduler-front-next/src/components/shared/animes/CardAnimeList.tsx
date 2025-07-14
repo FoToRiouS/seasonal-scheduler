@@ -7,6 +7,7 @@ import { modals } from "@mantine/modals";
 import { useDeleteAnimeSeason, useSaveAnimeSeason } from "@/queries/AnimeQueries";
 import { useNotifications } from "@/hooks/useNotifications";
 import { useUserSession } from "@/hooks/useUserSession";
+import { useSeasonContext } from "@/components/shared/animes/provider/useSeasonContext";
 
 interface ActionIconProps {
     onClick: () => void;
@@ -14,11 +15,12 @@ interface ActionIconProps {
 
 export const CardAnimeList = ({ fetchedAnime, index, updateOnList }: DefaultCardAnimeProps) => {
     const { showSuccess, showError } = useNotifications();
+    const { year, season } = useSeasonContext();
     const { session } = useUserSession();
     const { animeMal, animeBackend } = fetchedAnime;
 
     const { mutate: saveAnimeSeason } = useSaveAnimeSeason();
-    const { mutate: deleteAnimeSeason } = useDeleteAnimeSeason(animeBackend?.id, 2025, "summer");
+    const { mutate: deleteAnimeSeason } = useDeleteAnimeSeason(animeBackend?.id);
 
     const handleAddAnime = () => {
         modals.openConfirmModal({
@@ -61,13 +63,16 @@ export const CardAnimeList = ({ fetchedAnime, index, updateOnList }: DefaultCard
             labels: { confirm: "Sim", cancel: "Não" },
             confirmProps: { color: "red.8" },
             onConfirm: () => {
-                deleteAnimeSeason(undefined, {
-                    onSuccess: (data) => {
-                        updateOnList(index, data);
-                        showSuccess("Anime excluído do calendário!");
+                deleteAnimeSeason(
+                    { season: season, year: year },
+                    {
+                        onSuccess: (data) => {
+                            updateOnList(index, data);
+                            showSuccess("Anime excluído do calendário!");
+                        },
+                        onError: showError,
                     },
-                    onError: showError,
-                });
+                );
             },
         });
     };

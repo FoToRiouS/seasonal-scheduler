@@ -10,6 +10,7 @@ import { AnimeSeasons } from "@/service/MyAnimeListService";
 import { AnimeBackend } from "@/interfaces/AnimeBackend";
 import { AnimeSeasonSaveDTO } from "@/interfaces/AnimeSeasonSaveDTO";
 import { AnimeSeasonUpdateDTO } from "@/interfaces/AnimeSeasonUpdateDTO";
+import { StartSeason } from "@/interfaces/AnimeMAL";
 
 export const useGetAnimesBySeason = (userId: string | undefined, year: number, season: AnimeSeasons) => {
     return useQuery<AnimeBackend[]>({
@@ -31,8 +32,9 @@ export const useUpdateAnimeSeason = () => {
     });
 };
 
-export const useDeleteAnimeSeason = (idBackend: string | undefined, year: number, season: AnimeSeasons) => {
-    return useMutation<AnimeBackend | null, Error>({
-        mutationFn: () => resolveServerAction(deleteAnimeSeason)(idBackend, year, season),
+export const useDeleteAnimeSeason = (idBackend: string | undefined) => {
+    return useMutation<AnimeBackend | null, Error, StartSeason>({
+        mutationFn: (season: StartSeason) =>
+            resolveServerAction(deleteAnimeSeason)(idBackend, season.year, season.season),
     });
 };

@@ -11,7 +11,7 @@ interface BadgeSeasonProps {
 
 export const BadgeSeason = ({ startSeason, variant, onClick }: BadgeSeasonProps) => {
     return (
-        <Badge color="violet.8" size="lg" style={{ cursor: "pointer" }} variant={variant} onClick={onClick}>
+        <Badge color="violet.8" size="md" style={{ cursor: "pointer" }} variant={variant} onClick={onClick}>
             {getSeasonInPortuguese(startSeason.season) + "/" + startSeason.year}
         </Badge>
     );

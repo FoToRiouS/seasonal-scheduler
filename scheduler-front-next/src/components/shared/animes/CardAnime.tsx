@@ -1,6 +1,5 @@
 import { AnimeMAL } from "@/interfaces/AnimeMAL";
 import {
-    Box,
     Card as CardMantine,
     Group,
     Image as ImageMantine,
@@ -14,6 +13,7 @@ export interface DefaultCardAnimeProps {
     fetchedAnime: FetchedAnime;
     index: number;
     updateOnList: (index: number, animeBack: AnimeBackend | null) => void;
+    removeFromList: (index: number) => void;
 }
 
 interface WithAnimeMal {

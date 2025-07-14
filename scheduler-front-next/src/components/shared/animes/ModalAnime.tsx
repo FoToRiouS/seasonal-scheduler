@@ -24,6 +24,7 @@ interface IModalAnimeProps {
     fetchedAnime: FetchedAnime;
     index: number;
     updateOnList: (index: number, animeBack: AnimeBackend | null) => void;
+    removeFromList: (index: number) => void;
 }
 
 interface FormValues {
@@ -33,7 +34,14 @@ interface FormValues {
     services: string[];
 }
 
-export const ModalAnime = ({ isOpen, onClose, fetchedAnime, index, updateOnList }: IModalAnimeProps) => {
+export const ModalAnime = ({
+    isOpen,
+    onClose,
+    fetchedAnime,
+    index,
+    updateOnList,
+    removeFromList,
+}: IModalAnimeProps) => {
     const { showSuccess, showError } = useNotifications();
     const { season, year } = useSeasonContext();
     const { animeBackend, animeMal } = fetchedAnime;
@@ -43,6 +51,9 @@ export const ModalAnime = ({ isOpen, onClose, fetchedAnime, index, updateOnList 
     const [selectedWatchServices, setSelectedWatchServices] = useState(
         animeBackend?.watchServices.map((ws) => ws.id)!,
     );
+
+    const { mutate: update, isPending: isUpdating } = useUpdateAnimeSeason();
+    const { mutate: deleteAnimeSeason } = useDeleteAnimeSeason(animeBackendToUpdate?.id);
 
     const formTexts = useForm({
         mode: "uncontrolled",
@@ -60,6 +71,27 @@ export const ModalAnime = ({ isOpen, onClose, fetchedAnime, index, updateOnList 
             setSelectedAnimeSeason(selectedAnimeSeason);
         }
     }, []);
+
+    useEffect(() => {
+        if (animeBackend) {
+            // Atualiza o estado com as informações do animeBackend, provavelmente depois de adicionar uma nova temporada,
+            // evitando que se percam informações que nao foram salvas
+            setAnimeBackendToUpdate((prev) => ({
+                ...prev,
+                animeSeasons: animeBackend.animeSeasons.map((as) => {
+                    // Tenta encontrar um animeSeason correspondente em prev
+                    const foundInPrev = prev.animeSeasons.find(
+                        (prevSeason) =>
+                            prevSeason.season.season === as.season.season &&
+                            prevSeason.season.year === as.season.year,
+                    );
+
+                    // Se encontrado, retorna o de prev, caso contrário, retorna 'as'
+                    return foundInPrev ? foundInPrev : as;
+                }),
+            }));
+        }
+    }, [animeBackend]);
 
     const getUpdatedAnimeSeason = (): AnimeSeason | undefined => {
         if (selectedAnimeSeason) {
@@ -100,9 +132,6 @@ export const ModalAnime = ({ isOpen, onClose, fetchedAnime, index, updateOnList 
         });
     }, [selectedAnimeSeason]);
 
-    const { mutate: update, isPending: isUpdating } = useUpdateAnimeSeason();
-    const { mutate: deleteAnimeSeason } = useDeleteAnimeSeason(animeBackendToUpdate?.id, year, season);
-
     const handleDeleteSeason = (startSeason: StartSeason) => {
         modals.openConfirmModal({
             title: "Retirar da lista",
@@ -115,7 +144,28 @@ export const ModalAnime = ({ isOpen, onClose, fetchedAnime, index, updateOnList 
             ),
             labels: { confirm: "Retirar", cancel: "Cancelar" },
             confirmProps: { color: "red" },
-            onConfirm: () => deleteAnimeSeason(undefined),
+            onConfirm: () =>
+                deleteAnimeSeason(selectedAnimeSeason?.season!, {
+                    onSuccess: (data) => {
+                        const needRemove =
+                            selectedAnimeSeason?.season.year === year &&
+                            selectedAnimeSeason.season.season === season;
+                        if (data) {
+                            showSuccess(
+                                `Anime excluído do calendário ${getSeasonInPortuguese(selectedAnimeSeason?.season?.season!)}/${selectedAnimeSeason?.season.year}!`,
+                            );
+                            if (needRemove) {
+                                removeFromList(index);
+                            } else {
+                                updateOnList(index, data);
+                            }
+                        } else {
+                            onClose();
+                            removeFromList(index);
+                        }
+                    },
+                    onError: showError,
+                }),
         });
     };
 
@@ -223,7 +273,6 @@ export const ModalAnime = ({ isOpen, onClose, fetchedAnime, index, updateOnList 
                                         {...formTexts.getInputProps("preview")}
                                         rows={3}
                                     />
-                                    {/*<Textarea label="Preview" value={preview} onChange={e => setPreview(e.currentTarget.value)}/>*/}
                                     <TextareaWithCounter
                                         maxCounter={900}
                                         label="Review"
@@ -231,20 +280,36 @@ export const ModalAnime = ({ isOpen, onClose, fetchedAnime, index, updateOnList 
                                         {...formTexts.getInputProps("review")}
                                         rows={3}
                                     />
+                                    <Group>
+                                        <Button
+                                            onClick={() => handleDeleteSeason(selectedAnimeSeason?.season!)}
+                                            disabled={!selectedAnimeSeason?.season}
+                                        >
+                                            Excluir temporada
+                                        </Button>
+                                    </Group>
+                                    <Divider my={5} />
                                     <SelectWatchServices
                                         selectedWatchServices={selectedWatchServices}
                                         setSelectedWatchServices={setSelectedWatchServices}
                                     />
-                                    <Stack mt="auto" gap="xs">
+                                    <Group mt="auto" gap="xs" grow preventGrowOverflow={false}>
                                         <InputGroupAnimeSeason
                                             anime={animeMal}
                                             initialYear={year}
                                             initialSeason={season}
+                                            updateOnList={updateOnList}
+                                            index={index}
                                         />
-                                        <Button variant="filled" mt="auto" onClick={handleUpdateAnimeSeason}>
+                                        <Button
+                                            variant="filled"
+                                            mt="auto"
+                                            onClick={handleUpdateAnimeSeason}
+                                            loading={isUpdating}
+                                        >
                                             Salvar Alterações
                                         </Button>
-                                    </Stack>
+                                    </Group>
                                 </>
                             )}
                         </Stack>

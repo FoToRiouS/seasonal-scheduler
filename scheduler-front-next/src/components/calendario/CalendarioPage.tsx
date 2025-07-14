@@ -25,11 +25,12 @@ export const CalendarioPage = () => {
                 setControlledAnimeList={setControlledAnimeList}
             />
             <ListCardAnime fetchedAnimes={controlledAnimeList}>
-                {({ fetchedAnime, index, updateOnList }) => (
+                {({ fetchedAnime, index, updateOnList, removeFromList }) => (
                     <CardAnimeSchedule
                         fetchedAnime={fetchedAnime}
                         index={index}
                         updateOnList={updateOnList}
+                        removeFromList={removeFromList}
                     />
                 )}
             </ListCardAnime>
