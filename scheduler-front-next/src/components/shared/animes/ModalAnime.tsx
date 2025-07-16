@@ -1,15 +1,26 @@
 import React, { useEffect, useState } from "react";
-import { ActionIcon, Box, Button, Divider, Grid, Group, Image, Modal, Stack, Text } from "@mantine/core";
-import { modals } from "@mantine/modals";
-import { useDeleteAnimeSeason, useUpdateAnimeSeason } from "@/queries/AnimeQueries";
+import {
+    ActionIcon,
+    Box,
+    Button,
+    Divider,
+    Grid,
+    Group,
+    Image,
+    Menu,
+    Modal,
+    Stack,
+    Text,
+} from "@mantine/core";
+import { useUpdateAnimeSeason } from "@/queries/AnimeQueries";
 import { FetchedAnime } from "@/interfaces/FetchedAnime";
-import { getDayOfExhibition, getSeasonInPortuguese } from "@/service/MyAnimeListService";
+import { getDayOfExhibition } from "@/service/MyAnimeListService";
 import { StartSeason } from "@/interfaces/AnimeMAL";
-import { FaX } from "react-icons/fa6";
+import { FaGear, FaX } from "react-icons/fa6";
 import { RatingAnime } from "@/components/shared/animes/RatingAnime";
 import { BadgeSeason } from "@/components/shared/animes/BadgeSeason";
 import { TextareaWithCounter } from "@/components/shared/TextareaWithCounter";
-import { InputGroupAnimeSeason } from "@/components/shared/animes/InputGroupAnimeSeason";
+import { ModalAddSeason } from "@/components/shared/animes/ModalAddSeason";
 import { useSeasonContext } from "@/components/shared/animes/provider/useSeasonContext";
 import { AnimeSeason } from "@/interfaces/AnimeSeason";
 import { AnimeSeasonUpdateDTO } from "@/interfaces/AnimeSeasonUpdateDTO";
@@ -17,6 +28,8 @@ import { useNotifications } from "@/hooks/useNotifications";
 import { AnimeBackend } from "@/interfaces/AnimeBackend";
 import { SelectWatchServices } from "@/components/shared/animes/SelectWatchServices";
 import { useForm } from "@mantine/form";
+import { useDisclosure } from "@mantine/hooks";
+import { ModalRemoveSeason } from "@/components/shared/animes/ModalRemoveSeason";
 
 interface IModalAnimeProps {
     isOpen: boolean;
@@ -46,6 +59,11 @@ export const ModalAnime = ({
     const { season, year } = useSeasonContext();
     const { animeBackend, animeMal } = fetchedAnime;
 
+    const [openedModalAddSeason, { open: openModalAddSeason, close: closeModalAddSeason }] =
+        useDisclosure(false);
+    const [openedModalRemoveSeason, { open: openModalRemoveSeason, close: closeModalRemoveSeason }] =
+        useDisclosure(false);
+
     const [animeBackendToUpdate, setAnimeBackendToUpdate] = useState(animeBackend!);
     const [selectedAnimeSeason, setSelectedAnimeSeason] = useState<AnimeSeason>();
     const [selectedWatchServices, setSelectedWatchServices] = useState(
@@ -53,7 +71,6 @@ export const ModalAnime = ({
     );
 
     const { mutate: update, isPending: isUpdating } = useUpdateAnimeSeason();
-    const { mutate: deleteAnimeSeason } = useDeleteAnimeSeason(animeBackendToUpdate?.id);
 
     const formTexts = useForm({
         mode: "uncontrolled",
@@ -131,43 +148,6 @@ export const ModalAnime = ({
             review: selectedAnimeSeason?.reviewText,
         });
     }, [selectedAnimeSeason]);
-
-    const handleDeleteSeason = (startSeason: StartSeason) => {
-        modals.openConfirmModal({
-            title: "Retirar da lista",
-            centered: true,
-            children: (
-                <Text size="sm">
-                    Tem certeza que deseja retirar {animeMal.title} do calendário de{" "}
-                    {getSeasonInPortuguese(startSeason.season)} de {startSeason.year} ?
-                </Text>
-            ),
-            labels: { confirm: "Retirar", cancel: "Cancelar" },
-            confirmProps: { color: "red" },
-            onConfirm: () =>
-                deleteAnimeSeason(selectedAnimeSeason?.season!, {
-                    onSuccess: (data) => {
-                        const needRemove =
-                            selectedAnimeSeason?.season.year === year &&
-                            selectedAnimeSeason.season.season === season;
-                        if (data) {
-                            showSuccess(
-                                `Anime excluído do calendário ${getSeasonInPortuguese(selectedAnimeSeason?.season?.season!)}/${selectedAnimeSeason?.season.year}!`,
-                            );
-                            if (needRemove) {
-                                removeFromList(index);
-                            } else {
-                                updateOnList(index, data);
-                            }
-                        } else {
-                            onClose();
-                            removeFromList(index);
-                        }
-                    },
-                    onError: showError,
-                }),
-        });
-    };
 
     const handleUpdateAnimeSeason = () => {
         //Precisa ser feito, para evitar que os textos sejam atualizados memso sem trocar a temporada selecionada
@@ -280,27 +260,27 @@ export const ModalAnime = ({
                                         {...formTexts.getInputProps("review")}
                                         rows={3}
                                     />
-                                    <Group>
-                                        <Button
-                                            onClick={() => handleDeleteSeason(selectedAnimeSeason?.season!)}
-                                            disabled={!selectedAnimeSeason?.season}
-                                        >
-                                            Excluir temporada
-                                        </Button>
-                                    </Group>
                                     <Divider my={5} />
                                     <SelectWatchServices
                                         selectedWatchServices={selectedWatchServices}
                                         setSelectedWatchServices={setSelectedWatchServices}
                                     />
                                     <Group mt="auto" gap="xs" grow preventGrowOverflow={false}>
-                                        <InputGroupAnimeSeason
-                                            anime={animeMal}
-                                            initialYear={year}
-                                            initialSeason={season}
-                                            updateOnList={updateOnList}
-                                            index={index}
-                                        />
+                                        <Menu position={"top"}>
+                                            <Menu.Target>
+                                                <ActionIcon color={"violet.8"} h={"100%"} maw={50}>
+                                                    <FaGear />
+                                                </ActionIcon>
+                                            </Menu.Target>
+                                            <Menu.Dropdown>
+                                                <Menu.Item onClick={openModalRemoveSeason}>
+                                                    Excluir Temporada
+                                                </Menu.Item>
+                                                <Menu.Item onClick={openModalAddSeason}>
+                                                    Adicionar Temporada
+                                                </Menu.Item>
+                                            </Menu.Dropdown>
+                                        </Menu>
                                         <Button
                                             variant="filled"
                                             mt="auto"
@@ -316,6 +296,25 @@ export const ModalAnime = ({
                     </Grid.Col>
                 </Grid>
             </Modal>
+            <ModalAddSeason
+                opened={openedModalAddSeason}
+                onClose={closeModalAddSeason}
+                anime={animeMal}
+                updateOnList={updateOnList}
+                index={index}
+            />
+            <ModalRemoveSeason
+                opened={openedModalRemoveSeason}
+                onClose={closeModalRemoveSeason}
+                fetchedAnime={fetchedAnime}
+                removeFromList={removeFromList}
+                updateOnList={updateOnList}
+                index={index}
+                afterDeleteOptions={{
+                    removeAfterDelete: true,
+                    onCompleteDeletion: onClose,
+                }}
+            />
         </>
     );
 };
