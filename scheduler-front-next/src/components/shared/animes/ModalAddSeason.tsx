@@ -9,6 +9,8 @@ import { useNotifications } from "@/hooks/useNotifications";
 import { AnimeBackend } from "@/interfaces/AnimeBackend";
 import { useForm } from "@mantine/form";
 import { useSeasonContext } from "@/components/shared/animes/provider/useSeasonContext";
+import { z } from "zod/v4";
+import { zod4Resolver } from "mantine-form-zod-resolver";
 
 interface Props {
     opened: boolean;
@@ -18,6 +20,11 @@ interface Props {
     updateOnList: (index: number, animeBack: AnimeBackend | null) => void;
 }
 
+const schema = z.object({
+    year: z.number().min(1900, "Obrigatório"),
+    season: z.string().min(1, "Obrigatório"),
+});
+
 export const ModalAddSeason: React.FC<Props> = ({ anime, index, updateOnList, opened, onClose }) => {
     const { showSuccess, showError } = useNotifications();
     const { year, season } = useSeasonContext();
@@ -25,10 +32,12 @@ export const ModalAddSeason: React.FC<Props> = ({ anime, index, updateOnList, op
     const currentYear = new Date().getFullYear();
 
     const form = useForm({
+        mode: "uncontrolled",
         initialValues: {
             year: year,
             season: season,
         },
+        validate: zod4Resolver(schema),
     });
 
     const { mutate: save, isPending: isSaving } = useSaveAnimeSeason();

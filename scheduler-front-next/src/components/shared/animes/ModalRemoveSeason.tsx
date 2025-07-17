@@ -9,6 +9,8 @@ import { useForm } from "@mantine/form";
 import { FetchedAnime } from "@/interfaces/FetchedAnime";
 import { modals } from "@mantine/modals";
 import { useSeasonContext } from "@/components/shared/animes/provider/useSeasonContext";
+import { z } from "zod/v4";
+import { zod4Resolver } from "mantine-form-zod-resolver";
 
 interface Props {
     opened: boolean;
@@ -17,15 +19,18 @@ interface Props {
     fetchedAnime: FetchedAnime;
     index: number;
     updateOnList: (index: number, animeBack: AnimeBackend | null) => void;
-    removeFromList: (index: number) => void;
     afterDeleteOptions?: AfterDelete;
 }
 
 interface AfterDelete {
-    removeAfterDelete?: boolean;
+    removeFromList: (index: number) => void;
     onAfterDelete?: () => void;
     onCompleteDeletion?: () => void;
 }
+
+const schema = z.object({
+    animeSeason: z.string().min(1, "Selecione uma temporada"),
+});
 
 export const ModalRemoveSeason: React.FC<Props> = ({
     fetchedAnime,
@@ -33,7 +38,6 @@ export const ModalRemoveSeason: React.FC<Props> = ({
     updateOnList,
     opened,
     onClose,
-    removeFromList,
     afterDeleteOptions,
 }) => {
     const { showSuccess, showError } = useNotifications();
@@ -50,9 +54,11 @@ export const ModalRemoveSeason: React.FC<Props> = ({
     );
 
     const form = useForm({
+        mode: "uncontrolled",
         initialValues: {
             animeSeason: "",
         },
+        validate: zod4Resolver(schema),
     });
 
     const { mutate: deleteAnimeSeason } = useDeleteAnimeSeason(animeBackend?.id);
@@ -83,17 +89,18 @@ export const ModalRemoveSeason: React.FC<Props> = ({
                                 `Anime excluído do calendário ${getSeasonInPortuguese(startSeason.season)}/${startSeason.year}!`,
                             );
                             if (needRemove) {
-                                removeAnimeFromList();
+                                removeAnimeFromList(data);
                             } else {
                                 updateOnList(index, data);
                             }
                         } else {
-                            onClose();
-                            removeAnimeFromList();
+                            removeAnimeFromList(data);
                             if (afterDeleteOptions?.onCompleteDeletion) {
                                 afterDeleteOptions.onCompleteDeletion();
                             }
                         }
+
+                        onClose();
                         if (afterDeleteOptions?.onAfterDelete) {
                             afterDeleteOptions.onAfterDelete();
                         }
@@ -103,14 +110,16 @@ export const ModalRemoveSeason: React.FC<Props> = ({
         });
     };
 
-    const removeAnimeFromList = () => {
-        if (afterDeleteOptions && afterDeleteOptions.removeAfterDelete) {
-            removeFromList(index);
+    const removeAnimeFromList = (animeBack: AnimeBackend | null) => {
+        if (afterDeleteOptions && afterDeleteOptions.removeFromList) {
+            afterDeleteOptions.removeFromList(index);
+        } else {
+            updateOnList(index, animeBack);
         }
     };
 
     return (
-        <Modal opened={opened} onClose={onClose} size={"xs"} title={"Adicionar temporada"}>
+        <Modal opened={opened} onClose={onClose} size={"xs"} title={"Excluir temporada"}>
             <form onSubmit={form.onSubmit((values) => handleDeleteSeason(values.animeSeason))}>
                 <Stack gap="xs">
                     <Select

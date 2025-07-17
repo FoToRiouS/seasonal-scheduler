@@ -307,11 +307,10 @@ export const ModalAnime = ({
                 opened={openedModalRemoveSeason}
                 onClose={closeModalRemoveSeason}
                 fetchedAnime={fetchedAnime}
-                removeFromList={removeFromList}
                 updateOnList={updateOnList}
                 index={index}
                 afterDeleteOptions={{
-                    removeAfterDelete: true,
+                    removeFromList: removeFromList,
                     onCompleteDeletion: onClose,
                 }}
             />

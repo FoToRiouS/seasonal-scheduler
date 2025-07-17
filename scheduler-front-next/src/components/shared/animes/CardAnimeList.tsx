@@ -1,16 +1,31 @@
-import { ActionIcon, Box, Center, Group, Tooltip } from "@mantine/core";
+import { ActionIcon, Box, Center, Group, List, Menu, ThemeIcon, Tooltip } from "@mantine/core";
 import { CardAnime, DefaultCardAnimeProps } from "@/components/shared/animes/CardAnime";
 import { RatingAnime } from "./RatingAnime";
-import { FaCheck, FaPlus, FaX } from "react-icons/fa6";
-import { useState } from "react";
+import { FaCheck, FaGear, FaPlus } from "react-icons/fa6";
+import React, { useMemo } from "react";
 import { modals } from "@mantine/modals";
 import { useDeleteAnimeSeason, useSaveAnimeSeason } from "@/queries/AnimeQueries";
 import { useNotifications } from "@/hooks/useNotifications";
 import { useUserSession } from "@/hooks/useUserSession";
 import { useSeasonContext } from "@/components/shared/animes/provider/useSeasonContext";
+import { ModalAddSeason } from "@/components/shared/animes/ModalAddSeason";
+import { useDisclosure } from "@mantine/hooks";
+import { ModalRemoveSeason } from "@/components/shared/animes/ModalRemoveSeason";
+import { AnimeBackend } from "@/interfaces/AnimeBackend";
+import { getSeasonInPortuguese } from "@/service/MyAnimeListService";
 
-interface ActionIconProps {
-    onClick: () => void;
+interface ActionIconAddProps {
+    onClickCurrent: () => void;
+    onClickOther: () => void;
+}
+
+interface ActionIconExistProps {
+    onClickAdd: () => void;
+    onClickRemove: () => void;
+}
+
+interface IconSeasonsProps {
+    animeBackend: AnimeBackend;
 }
 
 export const CardAnimeList = ({ fetchedAnime, index, updateOnList }: DefaultCardAnimeProps) => {
@@ -19,10 +34,15 @@ export const CardAnimeList = ({ fetchedAnime, index, updateOnList }: DefaultCard
     const { session } = useUserSession();
     const { animeMal, animeBackend } = fetchedAnime;
 
+    const [openedModalAddSeason, { open: openModalAddSeason, close: closeModalAddSeason }] =
+        useDisclosure(false);
+    const [openedModalRemoveSeason, { open: openModalRemoveSeason, close: closeModalRemoveSeason }] =
+        useDisclosure(false);
+
     const { mutate: saveAnimeSeason } = useSaveAnimeSeason();
     const { mutate: deleteAnimeSeason } = useDeleteAnimeSeason(animeBackend?.id);
 
-    const handleAddAnime = () => {
+    const handleAddCurrent = () => {
         modals.openConfirmModal({
             title: "Adicionar anime ao calendário",
             children: (
@@ -78,52 +98,103 @@ export const CardAnimeList = ({ fetchedAnime, index, updateOnList }: DefaultCard
     };
 
     return (
-        <CardAnime>
-            <CardAnime.Image anime={animeMal} />
-            <CardAnime.Title anime={animeMal} />
-            <Group mt="auto" justify="flex-end">
-                {animeMal.mean && (
-                    <Center mr="auto" h="100%">
-                        <RatingAnime rating={animeMal.mean} />
-                    </Center>
-                )}
-                {session ?
-                    animeBackend ?
-                        <ActionIconExist onClick={handleRemoveAnime} />
-                    :   <ActionIconAdd onClick={handleAddAnime} />
-                :   <></>}
-            </Group>
-        </CardAnime>
+        <>
+            <CardAnime>
+                <CardAnime.Image anime={animeMal} />
+                <CardAnime.Title anime={animeMal} />
+                <Group mt="auto" justify="space-between">
+                    {animeMal.mean ?
+                        <Center h="100%">
+                            <RatingAnime rating={animeMal.mean} />
+                        </Center>
+                    :   <div></div>}
+                    {session ?
+                        animeBackend ?
+                            <>
+                                <IconSeasons animeBackend={animeBackend} />
+                                <ActionIconExist
+                                    onClickAdd={openModalAddSeason}
+                                    onClickRemove={openModalRemoveSeason}
+                                />
+                            </>
+                        :   <ActionIconAdd
+                                onClickOther={openModalAddSeason}
+                                onClickCurrent={handleAddCurrent}
+                            />
+
+                    :   <></>}
+                </Group>
+            </CardAnime>
+            <ModalAddSeason
+                opened={openedModalAddSeason}
+                onClose={closeModalAddSeason}
+                anime={animeMal}
+                updateOnList={updateOnList}
+                index={index}
+            />
+            <ModalRemoveSeason
+                opened={openedModalRemoveSeason}
+                onClose={closeModalRemoveSeason}
+                fetchedAnime={fetchedAnime}
+                updateOnList={updateOnList}
+                index={index}
+            />
+        </>
     );
 };
 
-const ActionIconAdd = ({ onClick }: ActionIconProps) => {
+const ActionIconAdd = ({ onClickCurrent, onClickOther }: ActionIconAddProps) => {
     return (
-        <Tooltip label={"Adicionar anime ao calendário"}>
-            <ActionIcon radius={"xl"} size={"xl"} color={"violet.8"} onClick={onClick}>
-                <FaPlus />
-            </ActionIcon>
-        </Tooltip>
+        <Menu position={"top-end"}>
+            <Menu.Target>
+                <ActionIcon radius={"xl"} size={"xl"} color={"violet.8"}>
+                    <FaPlus />
+                </ActionIcon>
+            </Menu.Target>
+            <Menu.Dropdown>
+                <Menu.Item onClick={onClickOther}>Adicionar a outra temporada</Menu.Item>
+                <Menu.Item onClick={onClickCurrent}>Adicionar a temporada atual</Menu.Item>
+            </Menu.Dropdown>
+        </Menu>
     );
 };
 
-const ActionIconExist = ({ onClick }: ActionIconProps) => {
-    const [onHover, setOnHover] = useState(false);
+const ActionIconExist = ({ onClickAdd, onClickRemove }: ActionIconExistProps) => {
+    return (
+        <Menu position={"top-end"}>
+            <Menu.Target>
+                <ActionIcon radius={"xl"} size={"xl"} color={"violet.8"}>
+                    <FaGear />
+                </ActionIcon>
+            </Menu.Target>
+            <Menu.Dropdown>
+                <Menu.Item onClick={onClickAdd}>Adicionar a outra temporada</Menu.Item>
+                <Menu.Item onClick={onClickRemove}>Remover temporada</Menu.Item>
+            </Menu.Dropdown>
+        </Menu>
+    );
+};
+
+const IconSeasons = ({ animeBackend }: IconSeasonsProps) => {
+    const seasonsList = useMemo(
+        () => (
+            <List>
+                {animeBackend.animeSeasons.map((s) => (
+                    <List.Item
+                        key={s.season.season + s.season.year}
+                        fz={14}
+                    >{`${getSeasonInPortuguese(s.season.season)}/${s.season.year}`}</List.Item>
+                ))}
+            </List>
+        ),
+        [animeBackend],
+    );
 
     return (
-        <Tooltip label={"Remover anime do calendário"}>
-            <ActionIcon
-                radius={"xl"}
-                size={"xl"}
-                color={onHover ? "red.8" : "green.8"}
-                onMouseEnter={() => setOnHover(true)}
-                onMouseLeave={() => setOnHover(false)}
-                onClick={onClick}
-            >
-                {onHover ?
-                    <FaX />
-                :   <FaCheck />}
-            </ActionIcon>
+        <Tooltip label={seasonsList} position={"top"}>
+            <ThemeIcon radius={"xl"} size={"xl"} color={"green.8"} style={{ cursor: "help" }}>
+                <FaCheck />
+            </ThemeIcon>
         </Tooltip>
     );
 };
