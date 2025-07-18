@@ -11,6 +11,7 @@ import { modals } from "@mantine/modals";
 import { useSeasonContext } from "@/components/shared/animes/provider/useSeasonContext";
 import { z } from "zod/v4";
 import { zod4Resolver } from "mantine-form-zod-resolver";
+import { useAnimesUtils } from "@/hooks/useAnimesOrders";
 
 interface Props {
     opened: boolean;
@@ -43,10 +44,11 @@ export const ModalRemoveSeason: React.FC<Props> = ({
     const { showSuccess, showError } = useNotifications();
     const { year, season } = useSeasonContext();
     const { animeMal, animeBackend } = fetchedAnime;
+    const { orderByAnimeSeason } = useAnimesUtils();
 
     const animeSeasonsOptions: ComboboxData | undefined = useMemo(
         () =>
-            animeBackend?.animeSeasons.map((s) => ({
+            orderByAnimeSeason(animeBackend?.animeSeasons).map((s) => ({
                 value: `${s.season.year}#${s.season.season}`,
                 label: getSeasonInPortuguese(s.season.season) + "/" + s.season.year,
             })),

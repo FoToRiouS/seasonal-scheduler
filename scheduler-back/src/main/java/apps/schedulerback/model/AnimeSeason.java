@@ -3,6 +3,8 @@ package apps.schedulerback.model;
 import apps.schedulerback.model.pk.AnimeSeasonID;
 import jakarta.persistence.*;
 
+import java.util.Objects;
+
 @Entity
 @Table(name = "anime_season_season")
 public class AnimeSeason {
@@ -74,5 +76,17 @@ public class AnimeSeason {
 
     public void setReviewText(String reviewText) {
         this.reviewText = reviewText;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        AnimeSeason that = (AnimeSeason) o;
+        return Objects.equals(anime, that.anime) && Objects.equals(season, that.season);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(anime, season);
     }
 }

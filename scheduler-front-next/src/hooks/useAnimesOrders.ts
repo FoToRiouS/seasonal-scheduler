@@ -1,4 +1,13 @@
 import { FetchedAnime } from "@/interfaces/FetchedAnime";
+import { AnimeSeasons } from "@/service/MyAnimeListService";
+import { AnimeSeason } from "@/interfaces/AnimeSeason";
+
+const seasonOrder: Record<AnimeSeasons, number> = {
+    winter: 0,
+    spring: 1,
+    summer: 2,
+    fall: 3,
+};
 
 export const useAnimesUtils = () => {
     const ratingStrategy = (a: FetchedAnime, b: FetchedAnime) => {
@@ -20,6 +29,16 @@ export const useAnimesUtils = () => {
         return aName.localeCompare(bName);
     };
 
+    const animeSeasonStrategy = (a: AnimeSeason, b: AnimeSeason) => {
+        // Primeiro, compare os anos
+        if (a.season.year !== b.season.year) {
+            return a.season.year - b.season.year; // Ordena por ano ascendente
+        }
+
+        // Se os anos forem iguais, compare pela ordem da estação
+        return seasonOrder[a.season.season] - seasonOrder[b.season.season];
+    };
+
     const orderByRating = (animesSeason: FetchedAnime[]) => {
         return [...animesSeason].sort(ratingStrategy);
     };
@@ -32,9 +51,14 @@ export const useAnimesUtils = () => {
         return [...animesSeason].sort(englishNameStrategy);
     };
 
+    const orderByAnimeSeason = (animesSeason: AnimeSeason[] | undefined) => {
+        return animesSeason ? [...animesSeason].sort(animeSeasonStrategy) : [];
+    };
+
     return {
         orderByRating,
         orderByOriginalName,
         orderByEnglishName,
+        orderByAnimeSeason,
     };
 };

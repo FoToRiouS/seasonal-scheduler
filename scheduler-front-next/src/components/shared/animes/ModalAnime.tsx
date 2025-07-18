@@ -30,6 +30,7 @@ import { SelectWatchServices } from "@/components/shared/animes/SelectWatchServi
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import { ModalRemoveSeason } from "@/components/shared/animes/ModalRemoveSeason";
+import { useAnimesUtils } from "@/hooks/useAnimesOrders";
 
 interface IModalAnimeProps {
     isOpen: boolean;
@@ -58,6 +59,7 @@ export const ModalAnime = ({
     const { showSuccess, showError } = useNotifications();
     const { season, year } = useSeasonContext();
     const { animeBackend, animeMal } = fetchedAnime;
+    const { orderByAnimeSeason } = useAnimesUtils();
 
     const [openedModalAddSeason, { open: openModalAddSeason, close: closeModalAddSeason }] =
         useDisclosure(false);
@@ -107,6 +109,15 @@ export const ModalAnime = ({
                     return foundInPrev ? foundInPrev : as;
                 }),
             }));
+
+            const stillExistsSelected = animeBackend.animeSeasons.some(
+                (as) =>
+                    as.season.season === selectedAnimeSeason?.season.season &&
+                    as.season.year === selectedAnimeSeason?.season.year,
+            );
+            if (!stillExistsSelected) {
+                setSelectedAnimeSeason(animeBackend.animeSeasons[0]);
+            }
         }
     }, [animeBackend]);
 
@@ -228,22 +239,25 @@ export const ModalAnime = ({
                                     <Divider my={5} />
                                     {animeBackendToUpdate.animeSeasons && (
                                         <Group justify="center">
-                                            {animeBackendToUpdate.animeSeasons.map((s) => (
-                                                <BadgeSeason
-                                                    key={s.season.season + s.season.year}
-                                                    startSeason={s.season}
-                                                    onClick={() => handleSelectAnimeSeason(s)}
-                                                    variant={
-                                                        (
-                                                            selectedAnimeSeason?.season.season ===
-                                                                s.season.season &&
-                                                            selectedAnimeSeason?.season.year === s.season.year
-                                                        ) ?
-                                                            "filled"
-                                                        :   "outline"
-                                                    }
-                                                />
-                                            ))}
+                                            {orderByAnimeSeason(animeBackendToUpdate.animeSeasons).map(
+                                                (s) => (
+                                                    <BadgeSeason
+                                                        key={s.season.season + s.season.year}
+                                                        startSeason={s.season}
+                                                        onClick={() => handleSelectAnimeSeason(s)}
+                                                        variant={
+                                                            (
+                                                                selectedAnimeSeason?.season.season ===
+                                                                    s.season.season &&
+                                                                selectedAnimeSeason?.season.year ===
+                                                                    s.season.year
+                                                            ) ?
+                                                                "filled"
+                                                            :   "outline"
+                                                        }
+                                                    />
+                                                ),
+                                            )}
                                         </Group>
                                     )}
                                     <TextareaWithCounter
