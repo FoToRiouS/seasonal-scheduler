@@ -3,13 +3,13 @@ import { useSetActivePage } from "@/hooks/useSetActivePage";
 import { Stack } from "@mantine/core";
 import { useUserSession } from "@/hooks/useUserSession";
 import { useFetchAnimesForList } from "@/queries/FetchedAnimeQueries";
-import { CardAnimeList } from "@/components/shared/animes/CardAnimeList";
+import { CardAnimeList } from "@/components/animes/cards/CardAnimeList";
 import { useState } from "react";
 import { FetchedAnime } from "@/interfaces/FetchedAnime";
-import { ListCardAnime } from "@/components/shared/animes/ListCardAnime";
+import { ListCardAnime } from "@/components/animes/cards/ListCardAnime";
 import { AnimeSeasons } from "@/service/MyAnimeListService";
-import { AnimeSearchControls } from "@/components/shared/animes/AnimeSearchControls";
-import { useSeasonContext } from "@/components/shared/animes/provider/useSeasonContext";
+import { AnimeSearchControls } from "@/components/animes/shared/AnimeSearchControls";
+import { useSeasonContext } from "@/components/animes/provider/useSeasonContext";
 
 export const ListaPage = () => {
     useSetActivePage("list");

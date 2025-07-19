@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Flex, FlexProps, Group, Text } from "@mantine/core";
+import { Box, FlexProps, Group, Text } from "@mantine/core";
 import { FaStar } from "react-icons/fa6";
 
 interface RatingAnimeProps extends FlexProps {

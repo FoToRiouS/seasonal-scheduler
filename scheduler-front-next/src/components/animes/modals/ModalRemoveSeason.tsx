@@ -8,7 +8,7 @@ import { AnimeBackend } from "@/interfaces/AnimeBackend";
 import { useForm } from "@mantine/form";
 import { FetchedAnime } from "@/interfaces/FetchedAnime";
 import { modals } from "@mantine/modals";
-import { useSeasonContext } from "@/components/shared/animes/provider/useSeasonContext";
+import { useSeasonContext } from "@/components/animes/provider/useSeasonContext";
 import { z } from "zod/v4";
 import { zod4Resolver } from "mantine-form-zod-resolver";
 import { useAnimesUtils } from "@/hooks/useAnimesOrders";

@@ -17,19 +17,19 @@ import { FetchedAnime } from "@/interfaces/FetchedAnime";
 import { getDayOfExhibition } from "@/service/MyAnimeListService";
 import { StartSeason } from "@/interfaces/AnimeMAL";
 import { FaGear, FaX } from "react-icons/fa6";
-import { RatingAnime } from "@/components/shared/animes/RatingAnime";
-import { BadgeSeason } from "@/components/shared/animes/BadgeSeason";
+import { RatingAnime } from "@/components/animes/shared/RatingAnime";
+import { BadgeSeason } from "@/components/animes/shared/BadgeSeason";
 import { TextareaWithCounter } from "@/components/shared/TextareaWithCounter";
-import { ModalAddSeason } from "@/components/shared/animes/ModalAddSeason";
-import { useSeasonContext } from "@/components/shared/animes/provider/useSeasonContext";
+import { ModalAddSeason } from "@/components/animes/modals/ModalAddSeason";
+import { useSeasonContext } from "@/components/animes/provider/useSeasonContext";
 import { AnimeSeason } from "@/interfaces/AnimeSeason";
 import { AnimeSeasonUpdateDTO } from "@/interfaces/AnimeSeasonUpdateDTO";
 import { useNotifications } from "@/hooks/useNotifications";
 import { AnimeBackend } from "@/interfaces/AnimeBackend";
-import { SelectWatchServices } from "@/components/shared/animes/SelectWatchServices";
+import { SelectWatchServices } from "@/components/animes/shared/SelectWatchServices";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
-import { ModalRemoveSeason } from "@/components/shared/animes/ModalRemoveSeason";
+import { ModalRemoveSeason } from "@/components/animes/modals/ModalRemoveSeason";
 import { useAnimesUtils } from "@/hooks/useAnimesOrders";
 
 interface IModalAnimeProps {

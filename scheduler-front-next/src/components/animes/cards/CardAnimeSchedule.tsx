@@ -1,10 +1,10 @@
-import { CardAnime, DefaultCardAnimeProps } from "@/components/shared/animes/CardAnime";
+import { CardAnime, DefaultCardAnimeProps } from "@/components/animes/cards/CardAnime";
 import { Button, Center, Group } from "@mantine/core";
-import { RatingAnime } from "@/components/shared/animes/RatingAnime";
+import { RatingAnime } from "@/components/animes/shared/RatingAnime";
 import { FaEye } from "react-icons/fa6";
-import { ServicesAnime } from "@/components/shared/animes/ServicesAnime";
+import { ServicesAnime } from "@/components/animes/shared/ServicesAnime";
 import { useDisclosure } from "@mantine/hooks";
-import { ModalAnime } from "@/components/shared/animes/ModalAnime";
+import { ModalAnime } from "@/components/animes/modals/ModalAnime";
 
 export const CardAnimeSchedule = ({
     fetchedAnime,

@@ -1,13 +1,13 @@
 "use client";
 import { Group, NumberInput, Select, TextInput } from "@mantine/core";
 import dayjs from "dayjs";
-import { useSeasonContext } from "@/components/shared/animes/provider/useSeasonContext";
+import { useSeasonContext } from "@/components/animes/provider/useSeasonContext";
 import { FetchedAnime } from "@/interfaces/FetchedAnime";
 import { useEffect } from "react";
 import { AnimeSeasons } from "@/service/MyAnimeListService";
 import { useAnimesUtils } from "@/hooks/useAnimesOrders";
 import { useDebouncedValue, useLocalStorage } from "@mantine/hooks";
-import { OrderStrategySelect } from "@/components/shared/animes/OrderStrategySelect";
+import { OrderStrategySelect } from "@/components/animes/shared/OrderStrategySelect";
 import { useQueryState } from "nuqs";
 
 interface Props {

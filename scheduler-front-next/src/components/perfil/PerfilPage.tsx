@@ -5,8 +5,10 @@ import { PerfilPasswordTab } from "@/components/perfil/PerfilPasswordTab";
 import { PerfilGroupsTab } from "@/components/perfil/PerfilGroupsTab";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useMemo } from "react";
+import { useSetActivePage } from "@/hooks/useSetActivePage";
 
 export const PerfilPage = () => {
+    useSetActivePage("profile");
     const searchParams = useSearchParams();
     const pathname = usePathname();
     const router = useRouter();

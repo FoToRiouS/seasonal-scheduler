@@ -3,7 +3,7 @@ import { ReactNode, useEffect } from "react";
 import { useListState } from "@mantine/hooks";
 import { AnimeBackend } from "@/interfaces/AnimeBackend";
 import { Center, SimpleGrid } from "@mantine/core";
-import { DefaultCardAnimeProps } from "@/components/shared/animes/CardAnime";
+import { DefaultCardAnimeProps } from "@/components/animes/cards/CardAnime";
 
 interface Props {
     fetchedAnimes: FetchedAnime[] | undefined;

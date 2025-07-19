@@ -1,16 +1,16 @@
 import { ActionIcon, Box, Center, Group, List, Menu, ThemeIcon, Tooltip } from "@mantine/core";
-import { CardAnime, DefaultCardAnimeProps } from "@/components/shared/animes/CardAnime";
-import { RatingAnime } from "./RatingAnime";
+import { CardAnime, DefaultCardAnimeProps } from "@/components/animes/cards/CardAnime";
+import { RatingAnime } from "../shared/RatingAnime";
 import { FaCheck, FaGear, FaPlus } from "react-icons/fa6";
 import React, { useMemo } from "react";
 import { modals } from "@mantine/modals";
 import { useDeleteAnimeSeason, useSaveAnimeSeason } from "@/queries/AnimeQueries";
 import { useNotifications } from "@/hooks/useNotifications";
 import { useUserSession } from "@/hooks/useUserSession";
-import { useSeasonContext } from "@/components/shared/animes/provider/useSeasonContext";
-import { ModalAddSeason } from "@/components/shared/animes/ModalAddSeason";
+import { useSeasonContext } from "@/components/animes/provider/useSeasonContext";
+import { ModalAddSeason } from "@/components/animes/modals/ModalAddSeason";
 import { useDisclosure } from "@mantine/hooks";
-import { ModalRemoveSeason } from "@/components/shared/animes/ModalRemoveSeason";
+import { ModalRemoveSeason } from "@/components/animes/modals/ModalRemoveSeason";
 import { AnimeBackend } from "@/interfaces/AnimeBackend";
 import { getSeasonInPortuguese } from "@/service/MyAnimeListService";
 
