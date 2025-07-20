@@ -9,7 +9,7 @@ interface RatingAnimeProps extends FlexProps {
 export const RatingAnime: React.FC<RatingAnimeProps> = ({ rating }) => {
     return (
         <Group
-            bg="gray"
+            bg="yellow"
             px="sm"
             gap={5}
             align={"center"}
@@ -18,10 +18,10 @@ export const RatingAnime: React.FC<RatingAnimeProps> = ({ rating }) => {
                 background: "rgba(169, 169, 169, 0.5)",
             }}
         >
-            <Box c={"yellow"} fz={20}>
+            <Box c={"dark.9"} fz={20}>
                 <FaStar />
             </Box>
-            <Text c="gray.0"> {rating} </Text>
+            <Text c="dark.9"> {rating} </Text>
         </Group>
     );
 };

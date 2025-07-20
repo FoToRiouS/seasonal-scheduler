@@ -1,13 +1,8 @@
 import { AnimeMAL } from "@/interfaces/AnimeMAL";
-import {
-    Card as CardMantine,
-    Group,
-    Image as ImageMantine,
-    Stack,
-    Title as TitleMantine,
-} from "@mantine/core";
+import { AspectRatio, Box, Image as ImageMantine, Stack, Text, Title as TitleMantine } from "@mantine/core";
 import { FetchedAnime } from "@/interfaces/FetchedAnime";
 import { AnimeBackend } from "@/interfaces/AnimeBackend";
+import { PropsWithChildren } from "react";
 
 export interface DefaultCardAnimeProps {
     fetchedAnime: FetchedAnime;
@@ -20,59 +15,58 @@ interface WithAnimeMal {
     anime: AnimeMAL;
 }
 
-export const CardAnime = ({ children }: { children: React.ReactNode }) => {
+export const CardAnime = ({ children, anime }: PropsWithChildren<WithAnimeMal>) => {
     return (
-        <CardMantine
-            bg="dark.8"
-            radius="lg"
-            withBorder
-            w={400}
-            h={"100%"}
-            style={{
-                display: "flex",
-                flexDirection: "column",
-                borderWidth: "2px",
-                borderColor: "graple",
-            }}
-        >
-            {children}
-        </CardMantine>
-    );
-};
-
-const Image = ({ anime, children }: React.PropsWithChildren<WithAnimeMal>) => {
-    return (
-        <CardMantine.Section bg="gray.5" pos="relative" h={500}>
-            <ImageMantine
-                src={anime.mainPicture.large}
-                alt={anime.title}
-                h={"100%"}
-                style={{
-                    overflow: "hidden",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                }}
-            />
-            <Group align={"start"} pos="absolute" top={0} left={0} h={"100%"} w={"100%"}>
-                {children}
-            </Group>
-        </CardMantine.Section>
+        <>
+            <AspectRatio
+                ratio={425 / 600}
+                pos="relative"
+                className={
+                    "bg-gray-900/50 backdrop-blur-sm border border-gray-700 rounded-lg overflow-hidden shadow-lg group"
+                }
+            >
+                <ImageMantine
+                    src={anime.mainPicture.large}
+                    alt={anime.title}
+                    className={"transition-transform duration-300 group-hover:scale-105"}
+                />
+                <Box
+                    className={
+                        "relative after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-full after:h-3/5 after:bg-gradient-to-t after:from-black after:via-black/80 after:via-[40%] after:to-transparent after:rounded-b-lg"
+                    }
+                    pos={"absolute"}
+                    top={0}
+                    left={0}
+                />
+                <Stack pos={"absolute"} top={0} left={0} h={"100%"} w={"100%"} p={"sm"}>
+                    {children}
+                </Stack>
+            </AspectRatio>
+        </>
     );
 };
 
 const Title = ({ anime }: WithAnimeMal) => {
+    if (anime.alternativeTitles.en) {
+    }
+
     return (
-        <Stack gap={0} mb="xl">
-            <TitleMantine order={4} c={"white"} ta={"center"} lineClamp={2}>
-                {anime.alternativeTitles ? anime.alternativeTitles.en : ""}
-            </TitleMantine>
-            <TitleMantine order={5} c={"white"} ta={"center"} lineClamp={2}>
-                {anime.title}
-            </TitleMantine>
+        <Stack gap={0}>
+            {anime.alternativeTitles.en ?
+                <>
+                    <TitleMantine order={3} c={"white"} lineClamp={2}>
+                        {anime.alternativeTitles.en}
+                    </TitleMantine>
+                    <Text c={"dimmed"} fw={"bold"} lineClamp={2}>
+                        {anime.title}
+                    </Text>
+                </>
+            :   <TitleMantine order={3} c={"white"} lineClamp={2}>
+                    {anime.title}
+                </TitleMantine>
+            }
         </Stack>
     );
 };
 
-CardAnime.Image = Image;
 CardAnime.Title = Title;

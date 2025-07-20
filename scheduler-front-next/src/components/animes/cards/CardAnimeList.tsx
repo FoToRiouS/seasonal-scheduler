@@ -1,7 +1,7 @@
-import { ActionIcon, Box, Center, Group, List, Menu, ThemeIcon, Tooltip } from "@mantine/core";
+import { ActionIcon, Box, Center, Group, List, Menu, Stack, Text, ThemeIcon, Tooltip } from "@mantine/core";
 import { CardAnime, DefaultCardAnimeProps } from "@/components/animes/cards/CardAnime";
 import { RatingAnime } from "../shared/RatingAnime";
-import { FaCheck, FaGear, FaPlus } from "react-icons/fa6";
+import { FaCheck, FaGear, FaPlus, FaTrash } from "react-icons/fa6";
 import React, { useMemo } from "react";
 import { modals } from "@mantine/modals";
 import { useDeleteAnimeSeason, useSaveAnimeSeason } from "@/queries/AnimeQueries";
@@ -13,6 +13,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { ModalRemoveSeason } from "@/components/animes/modals/ModalRemoveSeason";
 import { AnimeBackend } from "@/interfaces/AnimeBackend";
 import { getSeasonInPortuguese } from "@/service/MyAnimeListService";
+import { FaPlusSquare } from "react-icons/fa";
 
 interface ActionIconAddProps {
     onClickCurrent: () => void;
@@ -99,31 +100,32 @@ export const CardAnimeList = ({ fetchedAnime, index, updateOnList }: DefaultCard
 
     return (
         <>
-            <CardAnime>
-                <CardAnime.Image anime={animeMal} />
-                <CardAnime.Title anime={animeMal} />
-                <Group mt="auto" justify="space-between">
-                    {animeMal.mean ?
-                        <Center h="100%">
-                            <RatingAnime rating={animeMal.mean} />
-                        </Center>
-                    :   <div></div>}
-                    {session ?
-                        animeBackend ?
-                            <>
-                                <IconSeasons animeBackend={animeBackend} />
-                                <ActionIconExist
-                                    onClickAdd={openModalAddSeason}
-                                    onClickRemove={openModalRemoveSeason}
+            <CardAnime anime={animeMal}>
+                <Stack justify={"end"} h={"100%"}>
+                    <CardAnime.Title anime={animeMal} />
+                    <Group mt={"md"}>
+                        {animeMal.mean ?
+                            <Center h="100%">
+                                <RatingAnime rating={animeMal.mean} />
+                            </Center>
+                        :   <div></div>}
+                        {session ?
+                            animeBackend ?
+                                <>
+                                    <IconSeasons animeBackend={animeBackend} />
+                                    <ActionIconExist
+                                        onClickAdd={openModalAddSeason}
+                                        onClickRemove={openModalRemoveSeason}
+                                    />
+                                </>
+                            :   <ActionIconAdd
+                                    onClickOther={openModalAddSeason}
+                                    onClickCurrent={handleAddCurrent}
                                 />
-                            </>
-                        :   <ActionIconAdd
-                                onClickOther={openModalAddSeason}
-                                onClickCurrent={handleAddCurrent}
-                            />
 
-                    :   <></>}
-                </Group>
+                        :   <></>}
+                    </Group>
+                </Stack>
             </CardAnime>
             <ModalAddSeason
                 opened={openedModalAddSeason}
@@ -147,13 +149,17 @@ const ActionIconAdd = ({ onClickCurrent, onClickOther }: ActionIconAddProps) => 
     return (
         <Menu position={"top-end"}>
             <Menu.Target>
-                <ActionIcon radius={"xl"} size={"xl"} color={"violet.8"}>
+                <ActionIcon radius={"xl"} size={"xl"} color={"violet.8"} ml={"auto"}>
                     <FaPlus />
                 </ActionIcon>
             </Menu.Target>
             <Menu.Dropdown>
-                <Menu.Item onClick={onClickOther}>Adicionar a outra temporada</Menu.Item>
-                <Menu.Item onClick={onClickCurrent}>Adicionar a temporada atual</Menu.Item>
+                <Menu.Item onClick={onClickOther} leftSection={<FaPlusSquare />}>
+                    Adicionar a outra temporada
+                </Menu.Item>
+                <Menu.Item onClick={onClickCurrent} leftSection={<FaPlus />}>
+                    Adicionar a temporada atual
+                </Menu.Item>
             </Menu.Dropdown>
         </Menu>
     );
@@ -163,13 +169,18 @@ const ActionIconExist = ({ onClickAdd, onClickRemove }: ActionIconExistProps) =>
     return (
         <Menu position={"top-end"}>
             <Menu.Target>
-                <ActionIcon radius={"xl"} size={"xl"} color={"violet.8"}>
+                <ActionIcon radius={"xl"} size={"xl"} color={"violet.8"} ml={"auto"}>
                     <FaGear />
                 </ActionIcon>
             </Menu.Target>
             <Menu.Dropdown>
-                <Menu.Item onClick={onClickAdd}>Adicionar a outra temporada</Menu.Item>
-                <Menu.Item onClick={onClickRemove}>Remover temporada</Menu.Item>
+                <Menu.Item onClick={onClickAdd} leftSection={<FaPlusSquare />}>
+                    Adicionar a outra temporada
+                </Menu.Item>
+                <Menu.Divider />
+                <Menu.Item onClick={onClickRemove} leftSection={<FaTrash />} c={"red.8"}>
+                    Remover temporada
+                </Menu.Item>
             </Menu.Dropdown>
         </Menu>
     );
@@ -178,14 +189,17 @@ const ActionIconExist = ({ onClickAdd, onClickRemove }: ActionIconExistProps) =>
 const IconSeasons = ({ animeBackend }: IconSeasonsProps) => {
     const seasonsList = useMemo(
         () => (
-            <List>
-                {animeBackend.animeSeasons.map((s) => (
-                    <List.Item
-                        key={s.season.season + s.season.year}
-                        fz={14}
-                    >{`${getSeasonInPortuguese(s.season.season)}/${s.season.year}`}</List.Item>
-                ))}
-            </List>
+            <>
+                <Text fz={14}>Temporadas:</Text>
+                <List>
+                    {animeBackend.animeSeasons.map((s) => (
+                        <List.Item
+                            key={s.season.season + s.season.year}
+                            fz={14}
+                        >{`${getSeasonInPortuguese(s.season.season)}/${s.season.year}`}</List.Item>
+                    ))}
+                </List>
+            </>
         ),
         [animeBackend],
     );

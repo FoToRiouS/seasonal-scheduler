@@ -10,7 +10,8 @@ import { AnimeSearchControls } from "@/components/animes/shared/AnimeSearchContr
 import { useState } from "react";
 import { FetchedAnime } from "@/interfaces/FetchedAnime";
 import { useDisclosure } from "@mantine/hooks";
-import { ModalSendPreviewMessages } from "@/components/animes/modals/ModalSendPreviewMessages";
+import { ModalSendPreview } from "@/components/animes/modals/ModalSendPreview";
+import { ModalSendReview } from "@/components/animes/modals/ModalSendReview";
 
 export const CalendarioPage = () => {
     useSetActivePage("calendar");
@@ -21,6 +22,7 @@ export const CalendarioPage = () => {
     const [controlledAnimeList, setControlledAnimeList] = useState<FetchedAnime[]>([]);
 
     const [openedModalPreview, { open: openModalPreview, close: closeModalPreview }] = useDisclosure(false);
+    const [openedModalReview, { open: openModalReview, close: closeModalReview }] = useDisclosure(false);
 
     return (
         <>
@@ -31,7 +33,7 @@ export const CalendarioPage = () => {
                 />
                 <Group grow>
                     <Button onClick={openModalPreview}>Enviar lista de Preview</Button>
-                    <Button>Enviar lista de Review</Button>
+                    <Button onClick={openModalReview}>Enviar lista de Review</Button>
                 </Group>
                 <ListCardAnime fetchedAnimes={controlledAnimeList}>
                     {({ fetchedAnime, index, updateOnList, removeFromList }) => (
@@ -44,9 +46,14 @@ export const CalendarioPage = () => {
                     )}
                 </ListCardAnime>
             </Stack>
-            <ModalSendPreviewMessages
+            <ModalSendPreview
                 opened={openedModalPreview}
                 onClose={closeModalPreview}
+                fetchedAnimes={controlledAnimeList}
+            />
+            <ModalSendReview
+                opened={openedModalReview}
+                onClose={closeModalReview}
                 fetchedAnimes={controlledAnimeList}
             />
         </>

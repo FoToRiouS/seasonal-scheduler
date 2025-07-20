@@ -4,7 +4,8 @@ import { fetchTelegram } from "@/service/TelegramService";
 import { FetchedAnime } from "@/interfaces/FetchedAnime";
 import { AnimeSeasons, getSeasonInPortuguese } from "@/service/MyAnimeListService";
 import { GroupTelegram } from "@/interfaces/GroupTelegram";
-import { orderByEnglishName, orderByRating } from "@/utils/AnimeOrders";
+import { orderByEnglishName, orderByOriginalName, orderByRating } from "@/utils/AnimeOrders";
+import { AnimeSeason } from "@/interfaces/AnimeSeason";
 
 function escapeHtml(html: string): string {
     let escapedHtml = html;
@@ -59,26 +60,71 @@ const handleSendMessage = (group: string, animeSeason: FetchedAnime, message: st
 
 const timer = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
+export const sendTextMessage = async (
+    fetchedAnime: FetchedAnime,
+    year: number,
+    season: AnimeSeasons,
+    groups: GroupTelegram[],
+    textName: Exclude<keyof AnimeSeason, "season">,
+) => {
+    const animeSeasonToSend = fetchedAnime.animeBackend?.animeSeasons.find(
+        (as) => as.season.year === year && as.season.season === season,
+    );
+
+    for (const group of groups) {
+        if (animeSeasonToSend && animeSeasonToSend[textName]) {
+            handleSendMessage(group.groupId, fetchedAnime, animeSeasonToSend[textName]);
+        }
+    }
+};
+
+export const sendTextMessages = async (
+    fetchedAnimes: FetchedAnime[],
+    year: number,
+    season: AnimeSeasons,
+    groups: GroupTelegram[],
+    orderStrategy: "rating" | "englishName" | "originalName",
+    textName: Exclude<keyof AnimeSeason, "season">,
+) => {
+    let sortedList;
+    switch (orderStrategy) {
+        case "rating":
+            sortedList = orderByRating(fetchedAnimes, "asc");
+            break;
+        case "englishName":
+            sortedList = orderByEnglishName(fetchedAnimes);
+            break;
+        case "originalName":
+            sortedList = orderByOriginalName(fetchedAnimes);
+            break;
+    }
+
+    for (const group of groups) {
+        await handleSendHashtag(
+            group.groupId,
+            textName === "previewText" ? "preview" : "review",
+            year,
+            season,
+        );
+        for (const anime of sortedList) {
+            const animeSeasonToSend = anime.animeBackend?.animeSeasons.find(
+                (as) => as.season.year === year && as.season.season === season,
+            );
+            if (animeSeasonToSend && animeSeasonToSend[textName]) {
+                handleSendMessage(group.groupId, anime, animeSeasonToSend[textName]);
+                await timer(3500);
+            }
+        }
+    }
+};
+
 export const sendPreviewMessages = async (
     fetchedAnimes: FetchedAnime[],
     year: number,
     season: AnimeSeasons,
     groups: GroupTelegram[],
 ) => {
-    const sortedList = orderByEnglishName(fetchedAnimes);
-
-    for (const group of groups) {
-        await handleSendHashtag(group.groupId, "preview", year, season);
-        for (const anime of sortedList) {
-            const animeSeasonToSend = anime.animeBackend?.animeSeasons.find(
-                (as) => as.season.year === year && as.season.season === season,
-            );
-            if (animeSeasonToSend && animeSeasonToSend.previewText) {
-                handleSendMessage(group.groupId, anime, animeSeasonToSend.previewText);
-                await timer(3500);
-            }
-        }
-    }
+    return sendTextMessages(fetchedAnimes, year, season, groups, "englishName", "previewText");
 };
 
 export const sendReviewMessages = async (
@@ -87,18 +133,5 @@ export const sendReviewMessages = async (
     season: AnimeSeasons,
     groups: GroupTelegram[],
 ) => {
-    const sortedList = orderByRating(fetchedAnimes, "asc");
-
-    for (const group of groups!) {
-        await handleSendHashtag(group.groupId, "review", year, season);
-        for (const anime of sortedList) {
-            const animeSeasonToSend = anime.animeBackend?.animeSeasons.find(
-                (as) => as.season.year === year && as.season.season === season,
-            );
-            if (animeSeasonToSend && animeSeasonToSend.reviewText) {
-                handleSendMessage(group.groupId, anime, animeSeasonToSend.reviewText);
-                await timer(3500);
-            }
-        }
-    }
+    return sendTextMessages(fetchedAnimes, year, season, groups, "rating", "reviewText");
 };

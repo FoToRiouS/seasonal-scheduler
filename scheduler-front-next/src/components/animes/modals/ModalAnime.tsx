@@ -16,7 +16,7 @@ import { useUpdateAnimeSeason } from "@/queries/AnimeQueries";
 import { FetchedAnime } from "@/interfaces/FetchedAnime";
 import { getDayOfExhibition } from "@/service/MyAnimeListService";
 import { StartSeason } from "@/interfaces/AnimeMAL";
-import { FaGear, FaX } from "react-icons/fa6";
+import { FaGear, FaPlus, FaTrash, FaX } from "react-icons/fa6";
 import { RatingAnime } from "@/components/animes/shared/RatingAnime";
 import { BadgeSeason } from "@/components/animes/shared/BadgeSeason";
 import { TextareaWithCounter } from "@/components/shared/TextareaWithCounter";
@@ -31,6 +31,7 @@ import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import { ModalRemoveSeason } from "@/components/animes/modals/ModalRemoveSeason";
 import { useAnimesUtils } from "@/hooks/useAnimesOrders";
+import { FaTelegramPlane } from "react-icons/fa";
 
 interface IModalAnimeProps {
     isOpen: boolean;
@@ -287,11 +288,30 @@ export const ModalAnime = ({
                                                 </ActionIcon>
                                             </Menu.Target>
                                             <Menu.Dropdown>
-                                                <Menu.Item onClick={openModalRemoveSeason}>
-                                                    Excluir Temporada
-                                                </Menu.Item>
-                                                <Menu.Item onClick={openModalAddSeason}>
+                                                <Menu.Item
+                                                    onClick={openModalAddSeason}
+                                                    leftSection={<FaPlus />}
+                                                >
                                                     Adicionar Temporada
+                                                </Menu.Item>
+                                                <Menu.Item
+                                                    leftSection={<FaTelegramPlane />}
+                                                    disabled={
+                                                        !(
+                                                            selectedAnimeSeason?.previewText ||
+                                                            selectedAnimeSeason?.reviewText
+                                                        )
+                                                    }
+                                                >
+                                                    Enviar ao Telegram
+                                                </Menu.Item>
+                                                <Menu.Divider />
+                                                <Menu.Item
+                                                    onClick={openModalRemoveSeason}
+                                                    leftSection={<FaTrash />}
+                                                    c={"red.8"}
+                                                >
+                                                    Excluir Temporada
                                                 </Menu.Item>
                                             </Menu.Dropdown>
                                         </Menu>
