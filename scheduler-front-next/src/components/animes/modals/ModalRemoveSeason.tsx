@@ -24,7 +24,7 @@ interface Props {
 }
 
 interface AfterDelete {
-    removeFromList: (index: number) => void;
+    removeFromList?: (index: number) => void;
     onAfterDelete?: () => void;
     onCompleteDeletion?: () => void;
 }

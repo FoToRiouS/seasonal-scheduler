@@ -6,7 +6,7 @@ import {
     Card,
     Center,
     Divider,
-    Grid,
+    Flex,
     Group,
     Image,
     Modal,
@@ -191,31 +191,41 @@ export const ModalAnime = ({
                 size={1000}
                 radius="lg"
                 closeOnClickOutside={false}
+                classNames={{
+                    body: classes.modalBody,
+                }}
             >
-                <ActionIcon
-                    variant="gradient"
-                    gradient={{ from: "violet", to: "grape" }}
-                    radius="xl"
-                    pos="absolute"
-                    right={10}
-                    top={10}
-                    onClick={onClose}
-                >
-                    <FaX />
-                </ActionIcon>
-                <Grid columns={12}>
-                    <Grid.Col span={{ base: 12, lg: 5 }}>
-                        <Box pos="relative">
-                            <Image src={animeMal.mainPicture.large} w="100%" radius="md" />
-                            {animeMal.mean && (
-                                <Box pos="absolute" bottom={15} right={15}>
-                                    <RatingAnime rating={animeMal.mean} />
-                                </Box>
-                            )}
-                        </Box>
-                    </Grid.Col>
-                    <Grid.Col span={{ base: 12, lg: 7 }}>
-                        <Stack gap="xs">
+                <Box pos="absolute" right={20} top={10} style={{ zIndex: 99 }}>
+                    <ActionIcon
+                        variant="gradient"
+                        gradient={{ from: "violet", to: "grape" }}
+                        radius="xl"
+                        onClick={onClose}
+                    >
+                        <FaX />
+                    </ActionIcon>
+                </Box>
+
+                <Flex h={600}>
+                    <Box pos="relative">
+                        <Center maw={500} style={{ overflow: "hidden" }}>
+                            <Image src={animeMal.mainPicture.large} h={"100%"} w={"auto"} radius="md" />
+                        </Center>
+
+                        {animeMal.mean && (
+                            <Box pos="absolute" bottom={15} right={15}>
+                                <RatingAnime rating={animeMal.mean} />
+                            </Box>
+                        )}
+                    </Box>
+                    <Stack>
+                        <Stack
+                            gap="xs"
+                            style={{ overflowY: "auto", flexGrow: 1 }}
+                            mih={0}
+                            px={"md"}
+                            pt={"xs"}
+                        >
                             <Stack gap={0} pr="xl">
                                 {animeMal.alternativeTitles.en ?
                                     <>
@@ -313,15 +323,28 @@ export const ModalAnime = ({
                                 </>
                             )}
                         </Stack>
-                        <Stack gap={0} style={{ background: "#F3F4F6" }}>
+                        <Stack gap={0} style={{ background: "#F3F4F6" }} h={55}>
                             <Divider />
-                            <Group grow preventGrowOverflow={false} p={"sm"}>
-                                <Button variant={"subtle"} color={"red"} onClick={openModalRemoveSeason}>
+                            <Group
+                                grow
+                                preventGrowOverflow={false}
+                                p={"sm"}
+                                wrap={"nowrap"}
+                                align={"center"}
+                                h={"100%"}
+                            >
+                                <Button
+                                    variant={"subtle"}
+                                    color={"red"}
+                                    size={"xs"}
+                                    onClick={openModalRemoveSeason}
+                                >
                                     Remover Temporada
                                 </Button>
                                 <Button
                                     variant={"subtle"}
                                     color={"dark"}
+                                    size={"xs"}
                                     disabled={
                                         !(selectedAnimeSeason?.previewText || selectedAnimeSeason?.reviewText)
                                     }
@@ -330,7 +353,7 @@ export const ModalAnime = ({
                                 </Button>
                                 <Button
                                     variant="filled"
-                                    mt="auto"
+                                    size={"xs"}
                                     onClick={handleUpdateAnimeSeason}
                                     loading={isUpdating}
                                 >
@@ -338,8 +361,8 @@ export const ModalAnime = ({
                                 </Button>
                             </Group>
                         </Stack>
-                    </Grid.Col>
-                </Grid>
+                    </Stack>
+                </Flex>
             </Modal>
             <ModalAddSeason
                 opened={openedModalAddSeason}

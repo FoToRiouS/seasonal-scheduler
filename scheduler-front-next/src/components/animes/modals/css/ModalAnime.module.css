@@ -12,3 +12,8 @@
 .tabsTabLabel {
     font-weight: 500;
 }
+
+.modalBody {
+    padding: 0;
+    position: relative;
+}

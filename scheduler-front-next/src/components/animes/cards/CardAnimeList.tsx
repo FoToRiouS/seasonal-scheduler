@@ -14,6 +14,7 @@ import { ModalRemoveSeason } from "@/components/animes/modals/ModalRemoveSeason"
 import { AnimeBackend } from "@/interfaces/AnimeBackend";
 import { getSeasonInPortuguese } from "@/service/MyAnimeListService";
 import { FaPlusSquare } from "react-icons/fa";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface ActionIconAddProps {
     onClickCurrent: () => void;
@@ -31,6 +32,7 @@ interface IconSeasonsProps {
 
 export const CardAnimeList = ({ fetchedAnime, index, updateOnList }: DefaultCardAnimeProps) => {
     const { showSuccess, showError } = useNotifications();
+    const queryClient = useQueryClient();
     const { year, season } = useSeasonContext();
     const { session } = useUserSession();
     const { animeMal, animeBackend } = fetchedAnime;
@@ -42,6 +44,10 @@ export const CardAnimeList = ({ fetchedAnime, index, updateOnList }: DefaultCard
 
     const { mutate: saveAnimeSeason } = useSaveAnimeSeason();
     const { mutate: deleteAnimeSeason } = useDeleteAnimeSeason(animeBackend?.id);
+
+    const updateCalendarList = () => {
+        queryClient.invalidateQueries({ queryKey: ["fetch-animes-calendar", session?.userId, year, season] });
+    };
 
     const handleAddCurrent = () => {
         modals.openConfirmModal({
@@ -133,6 +139,7 @@ export const CardAnimeList = ({ fetchedAnime, index, updateOnList }: DefaultCard
                 anime={animeMal}
                 updateOnList={updateOnList}
                 index={index}
+                onSuccess={updateCalendarList}
             />
             <ModalRemoveSeason
                 opened={openedModalRemoveSeason}
@@ -140,6 +147,9 @@ export const CardAnimeList = ({ fetchedAnime, index, updateOnList }: DefaultCard
                 fetchedAnime={fetchedAnime}
                 updateOnList={updateOnList}
                 index={index}
+                afterDeleteOptions={{
+                    onAfterDelete: updateCalendarList,
+                }}
             />
         </>
     );

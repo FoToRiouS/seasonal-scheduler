@@ -40,6 +40,7 @@ export const SelectWatchServices = ({ selectedWatchServices, setSelectedWatchSer
                                 value={w.id}
                                 variant="filled"
                                 color={ColorSchema[w.nameId]}
+                                size={"xs"}
                                 classNames={{
                                     label: classes.label,
                                 }}

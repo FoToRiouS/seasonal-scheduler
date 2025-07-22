@@ -24,6 +24,7 @@ export const CardAnime = ({ children, anime }: PropsWithChildren<WithAnimeMal>) 
                 className={
                     "bg-gray-900/50 backdrop-blur-sm border border-gray-700 rounded-lg overflow-hidden shadow-lg group"
                 }
+                w={"100%"}
             >
                 <ImageMantine
                     src={anime.mainPicture.large}

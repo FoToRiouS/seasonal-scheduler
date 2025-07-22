@@ -18,6 +18,7 @@ interface Props {
     anime: AnimeMAL;
     index: number;
     updateOnList: (index: number, animeBack: AnimeBackend | null) => void;
+    onSuccess?: () => void;
 }
 
 const schema = z.object({
@@ -25,7 +26,14 @@ const schema = z.object({
     season: z.string().min(1, "Obrigatório"),
 });
 
-export const ModalAddSeason: React.FC<Props> = ({ anime, index, updateOnList, opened, onClose }) => {
+export const ModalAddSeason: React.FC<Props> = ({
+    anime,
+    index,
+    updateOnList,
+    opened,
+    onClose,
+    onSuccess,
+}) => {
     const { showSuccess, showError } = useNotifications();
     const { year, season } = useSeasonContext();
     const { session } = useUserSession();
@@ -54,6 +62,9 @@ export const ModalAddSeason: React.FC<Props> = ({ anime, index, updateOnList, op
                 showSuccess(`Anime adicionado a temporada ${getSeasonInPortuguese(season!)}/${year}!`);
                 onClose();
                 updateOnList(index, data);
+                if (onSuccess) {
+                    onSuccess();
+                }
             },
             onError: showError,
         });
