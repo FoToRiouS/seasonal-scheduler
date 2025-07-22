@@ -1,0 +1,11 @@
+.label {
+    justify-content: center;
+
+    &:not([data-checked="true"]) {
+        background-color: rgba(0,0,0,0.1);
+
+        &:hover {
+            background-color: rgba(0,0,0,0.1);
+        }
+    }
+}

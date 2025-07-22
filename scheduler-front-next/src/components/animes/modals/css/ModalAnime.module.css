@@ -1,0 +1,14 @@
+.tabsTab {
+    &:hover {
+        background-color: transparent;
+        color: var(--mantine-color-violet-9);
+    }
+
+    &[data-active="true"] {
+        color: var(--mantine-color-violet-9);
+    }
+}
+
+.tabsTabLabel {
+    font-weight: 500;
+}

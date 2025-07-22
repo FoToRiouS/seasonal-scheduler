@@ -3,22 +3,24 @@ import {
     ActionIcon,
     Box,
     Button,
+    Card,
+    Center,
     Divider,
     Grid,
     Group,
     Image,
-    Menu,
     Modal,
     Stack,
+    Tabs,
     Text,
+    Title,
 } from "@mantine/core";
 import { useUpdateAnimeSeason } from "@/queries/AnimeQueries";
 import { FetchedAnime } from "@/interfaces/FetchedAnime";
-import { getDayOfExhibition } from "@/service/MyAnimeListService";
+import { getDayOfExhibition, getSeasonInPortuguese } from "@/service/MyAnimeListService";
 import { StartSeason } from "@/interfaces/AnimeMAL";
-import { FaGear, FaPlus, FaTrash, FaX } from "react-icons/fa6";
+import { FaX } from "react-icons/fa6";
 import { RatingAnime } from "@/components/animes/shared/RatingAnime";
-import { BadgeSeason } from "@/components/animes/shared/BadgeSeason";
 import { TextareaWithCounter } from "@/components/shared/TextareaWithCounter";
 import { ModalAddSeason } from "@/components/animes/modals/ModalAddSeason";
 import { useSeasonContext } from "@/components/animes/provider/useSeasonContext";
@@ -26,12 +28,12 @@ import { AnimeSeason } from "@/interfaces/AnimeSeason";
 import { AnimeSeasonUpdateDTO } from "@/interfaces/AnimeSeasonUpdateDTO";
 import { useNotifications } from "@/hooks/useNotifications";
 import { AnimeBackend } from "@/interfaces/AnimeBackend";
-import { SelectWatchServices } from "@/components/animes/shared/SelectWatchServices";
+import { SelectWatchServices } from "@/components/animes/shared/selectWatchServices/SelectWatchServices";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import { ModalRemoveSeason } from "@/components/animes/modals/ModalRemoveSeason";
 import { useAnimesUtils } from "@/hooks/useAnimesOrders";
-import { FaTelegramPlane } from "react-icons/fa";
+import classes from "./css/ModalAnime.module.css";
 
 interface IModalAnimeProps {
     isOpen: boolean;
@@ -186,7 +188,7 @@ export const ModalAnime = ({
                 onClose={onClose}
                 withCloseButton={false}
                 centered
-                size={880}
+                size={1000}
                 radius="lg"
                 closeOnClickOutside={false}
             >
@@ -201,8 +203,8 @@ export const ModalAnime = ({
                 >
                     <FaX />
                 </ActionIcon>
-                <Grid columns={2}>
-                    <Grid.Col span={{ base: 2, lg: 1 }}>
+                <Grid columns={12}>
+                    <Grid.Col span={{ base: 12, lg: 5 }}>
                         <Box pos="relative">
                             <Image src={animeMal.mainPicture.large} w="100%" radius="md" />
                             {animeMal.mean && (
@@ -212,54 +214,87 @@ export const ModalAnime = ({
                             )}
                         </Box>
                     </Grid.Col>
-                    <Grid.Col span={{ base: 2, lg: 1 }}>
-                        <Stack h="100%" gap="xs">
-                            <Group gap="xs" wrap={"nowrap"} pr="xl">
-                                <Text fw="bold">Nome:</Text>
-                                <Text>
-                                    {animeMal.title}
-                                    {animeMal.alternativeTitles.en ?
-                                        " (" + animeMal.alternativeTitles.en + ")"
-                                    :   undefined}
-                                </Text>
-                            </Group>
-                            {animeMal.broadcast ?
-                                <Group gap="xs">
-                                    <Text fw="bold">Exibição:</Text>
-                                    <Text tt={"capitalize"}>
-                                        {getDayOfExhibition(
-                                            animeMal.broadcast.day_of_the_week,
-                                            animeMal.broadcast.start_time,
-                                        )}
+                    <Grid.Col span={{ base: 12, lg: 7 }}>
+                        <Stack gap="xs">
+                            <Stack gap={0} pr="xl">
+                                {animeMal.alternativeTitles.en ?
+                                    <>
+                                        <Title order={4} c={"gray.9"}>
+                                            {animeMal.alternativeTitles.en}
+                                        </Title>
+                                        <Text c={"gray.6"} fw={400}>
+                                            {animeMal.title}
+                                        </Text>
+                                    </>
+                                :   <Title order={3} c={"gray.9"}>
+                                        {animeMal.title}
+                                    </Title>
+                                }
+                            </Stack>
+
+                            <Card bg="gray.1" radius="md">
+                                <Stack gap={0}>
+                                    <Text fz={"xs"} c={"gray.6"} fw={500}>
+                                        Dia da Exibição
                                     </Text>
-                                </Group>
-                            :   undefined}
+                                    {animeMal.broadcast ?
+                                        <Text tt={"capitalize"} c={"gray.9"} fw={500}>
+                                            {getDayOfExhibition(
+                                                animeMal.broadcast.day_of_the_week,
+                                                animeMal.broadcast.start_time,
+                                            )}
+                                        </Text>
+                                    :   <Text c={"red.8"}>Não Informado</Text>}
+                                </Stack>
+                                <Stack gap={5} mt={"sm"}>
+                                    <Text fz={"xs"} c={"gray.6"} fw={500}>
+                                        Onde Assistir
+                                    </Text>
+                                    <SelectWatchServices
+                                        selectedWatchServices={selectedWatchServices}
+                                        setSelectedWatchServices={setSelectedWatchServices}
+                                    />
+                                </Stack>
+                            </Card>
 
                             {animeBackendToUpdate && (
                                 <>
-                                    <Divider my={5} />
                                     {animeBackendToUpdate.animeSeasons && (
-                                        <Group justify="center">
-                                            {orderByAnimeSeason(animeBackendToUpdate.animeSeasons).map(
-                                                (s) => (
-                                                    <BadgeSeason
-                                                        key={s.season.season + s.season.year}
-                                                        startSeason={s.season}
-                                                        onClick={() => handleSelectAnimeSeason(s)}
-                                                        variant={
-                                                            (
-                                                                selectedAnimeSeason?.season.season ===
-                                                                    s.season.season &&
-                                                                selectedAnimeSeason?.season.year ===
-                                                                    s.season.year
-                                                            ) ?
-                                                                "filled"
-                                                            :   "outline"
-                                                        }
-                                                    />
-                                                ),
-                                            )}
-                                        </Group>
+                                        <Tabs
+                                            color={"violet.9"}
+                                            classNames={{
+                                                tab: classes.tabsTab,
+                                                tabLabel: classes.tabsTabLabel,
+                                            }}
+                                            value={
+                                                (selectedAnimeSeason?.season.season ?? "") +
+                                                selectedAnimeSeason?.season.year.toString()
+                                            }
+                                        >
+                                            <Tabs.List>
+                                                {orderByAnimeSeason(animeBackendToUpdate.animeSeasons).map(
+                                                    (s) => (
+                                                        <Tabs.Tab
+                                                            key={s.season.season + s.season.year}
+                                                            onClick={() => handleSelectAnimeSeason(s)}
+                                                            value={s.season.season + s.season.year}
+                                                        >
+                                                            {getSeasonInPortuguese(s.season.season) +
+                                                                "/" +
+                                                                s.season.year}
+                                                        </Tabs.Tab>
+                                                    ),
+                                                )}
+                                                <Center ml="auto">
+                                                    <Button
+                                                        variant={"transparent"}
+                                                        onClick={openModalAddSeason}
+                                                    >
+                                                        + Adiconar
+                                                    </Button>
+                                                </Center>
+                                            </Tabs.List>
+                                        </Tabs>
                                     )}
                                     <TextareaWithCounter
                                         maxCounter={900}
@@ -275,57 +310,33 @@ export const ModalAnime = ({
                                         {...formTexts.getInputProps("review")}
                                         rows={3}
                                     />
-                                    <Divider my={5} />
-                                    <SelectWatchServices
-                                        selectedWatchServices={selectedWatchServices}
-                                        setSelectedWatchServices={setSelectedWatchServices}
-                                    />
-                                    <Group mt="auto" gap="xs" grow preventGrowOverflow={false}>
-                                        <Menu position={"top"}>
-                                            <Menu.Target>
-                                                <ActionIcon color={"violet.8"} h={"100%"} maw={50}>
-                                                    <FaGear />
-                                                </ActionIcon>
-                                            </Menu.Target>
-                                            <Menu.Dropdown>
-                                                <Menu.Item
-                                                    onClick={openModalAddSeason}
-                                                    leftSection={<FaPlus />}
-                                                >
-                                                    Adicionar Temporada
-                                                </Menu.Item>
-                                                <Menu.Item
-                                                    leftSection={<FaTelegramPlane />}
-                                                    disabled={
-                                                        !(
-                                                            selectedAnimeSeason?.previewText ||
-                                                            selectedAnimeSeason?.reviewText
-                                                        )
-                                                    }
-                                                >
-                                                    Enviar ao Telegram
-                                                </Menu.Item>
-                                                <Menu.Divider />
-                                                <Menu.Item
-                                                    onClick={openModalRemoveSeason}
-                                                    leftSection={<FaTrash />}
-                                                    c={"red.8"}
-                                                >
-                                                    Excluir Temporada
-                                                </Menu.Item>
-                                            </Menu.Dropdown>
-                                        </Menu>
-                                        <Button
-                                            variant="filled"
-                                            mt="auto"
-                                            onClick={handleUpdateAnimeSeason}
-                                            loading={isUpdating}
-                                        >
-                                            Salvar Alterações
-                                        </Button>
-                                    </Group>
                                 </>
                             )}
+                        </Stack>
+                        <Stack gap={0} style={{ background: "#F3F4F6" }}>
+                            <Divider />
+                            <Group grow preventGrowOverflow={false} p={"sm"}>
+                                <Button variant={"subtle"} color={"red"} onClick={openModalRemoveSeason}>
+                                    Remover Temporada
+                                </Button>
+                                <Button
+                                    variant={"subtle"}
+                                    color={"dark"}
+                                    disabled={
+                                        !(selectedAnimeSeason?.previewText || selectedAnimeSeason?.reviewText)
+                                    }
+                                >
+                                    Enviar ao Telegram
+                                </Button>
+                                <Button
+                                    variant="filled"
+                                    mt="auto"
+                                    onClick={handleUpdateAnimeSeason}
+                                    loading={isUpdating}
+                                >
+                                    Salvar Alterações
+                                </Button>
+                            </Group>
                         </Stack>
                     </Grid.Col>
                 </Grid>
