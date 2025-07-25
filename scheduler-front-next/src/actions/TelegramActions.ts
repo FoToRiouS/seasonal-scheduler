@@ -64,7 +64,7 @@ export const sendTextMessage = async (
     fetchedAnime: FetchedAnime,
     year: number,
     season: AnimeSeasons,
-    groups: GroupTelegram[],
+    groups: GroupTelegram[] | string[],
     textName: Exclude<keyof AnimeSeason, "season">,
 ) => {
     const animeSeasonToSend = fetchedAnime.animeBackend?.animeSeasons.find(
@@ -72,8 +72,10 @@ export const sendTextMessage = async (
     );
 
     for (const group of groups) {
+        const groupId = typeof group === "string" ? group : group.groupId;
+
         if (animeSeasonToSend && animeSeasonToSend[textName]) {
-            handleSendMessage(group.groupId, fetchedAnime, animeSeasonToSend[textName]);
+            handleSendMessage(groupId, fetchedAnime, animeSeasonToSend[textName]);
         }
     }
 };
@@ -82,7 +84,7 @@ export const sendTextMessages = async (
     fetchedAnimes: FetchedAnime[],
     year: number,
     season: AnimeSeasons,
-    groups: GroupTelegram[],
+    groups: GroupTelegram[] | string[],
     orderStrategy: "rating" | "englishName" | "originalName",
     textName: Exclude<keyof AnimeSeason, "season">,
 ) => {
@@ -100,18 +102,15 @@ export const sendTextMessages = async (
     }
 
     for (const group of groups) {
-        await handleSendHashtag(
-            group.groupId,
-            textName === "previewText" ? "preview" : "review",
-            year,
-            season,
-        );
+        const groupId = typeof group === "string" ? group : group.groupId;
+
+        await handleSendHashtag(groupId, textName === "previewText" ? "preview" : "review", year, season);
         for (const anime of sortedList) {
             const animeSeasonToSend = anime.animeBackend?.animeSeasons.find(
                 (as) => as.season.year === year && as.season.season === season,
             );
             if (animeSeasonToSend && animeSeasonToSend[textName]) {
-                handleSendMessage(group.groupId, anime, animeSeasonToSend[textName]);
+                handleSendMessage(groupId, anime, animeSeasonToSend[textName]);
                 await timer(3500);
             }
         }

@@ -34,6 +34,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { ModalRemoveSeason } from "@/components/animes/modals/ModalRemoveSeason";
 import { useAnimesUtils } from "@/hooks/useAnimesOrders";
 import classes from "./css/ModalAnime.module.css";
+import { ModalSendUniqueMessage } from "@/components/animes/modals/ModalSendUniqueMessage";
 
 interface IModalAnimeProps {
     isOpen: boolean;
@@ -67,6 +68,8 @@ export const ModalAnime = ({
     const [openedModalAddSeason, { open: openModalAddSeason, close: closeModalAddSeason }] =
         useDisclosure(false);
     const [openedModalRemoveSeason, { open: openModalRemoveSeason, close: closeModalRemoveSeason }] =
+        useDisclosure(false);
+    const [openedModalSendMessage, { open: openModalSendMessage, close: closeModalSendMessage }] =
         useDisclosure(false);
 
     const [animeBackendToUpdate, setAnimeBackendToUpdate] = useState(animeBackend!);
@@ -348,6 +351,7 @@ export const ModalAnime = ({
                                     disabled={
                                         !(selectedAnimeSeason?.previewText || selectedAnimeSeason?.reviewText)
                                     }
+                                    onClick={openModalSendMessage}
                                 >
                                     Enviar ao Telegram
                                 </Button>
@@ -381,6 +385,11 @@ export const ModalAnime = ({
                     removeFromList: removeFromList,
                     onCompleteDeletion: onClose,
                 }}
+            />
+            <ModalSendUniqueMessage
+                opened={openedModalSendMessage}
+                onClose={closeModalSendMessage}
+                fetchedAnime={fetchedAnime}
             />
         </>
     );

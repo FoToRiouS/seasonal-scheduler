@@ -4,7 +4,7 @@ import { RatingAnime } from "../shared/RatingAnime";
 import { FaCheck, FaGear, FaPlus, FaTrash } from "react-icons/fa6";
 import React, { useMemo } from "react";
 import { modals } from "@mantine/modals";
-import { useDeleteAnimeSeason, useSaveAnimeSeason } from "@/queries/AnimeQueries";
+import { useSaveAnimeSeason } from "@/queries/AnimeQueries";
 import { useNotifications } from "@/hooks/useNotifications";
 import { useUserSession } from "@/hooks/useUserSession";
 import { useSeasonContext } from "@/components/animes/provider/useSeasonContext";
@@ -43,10 +43,10 @@ export const CardAnimeList = ({ fetchedAnime, index, updateOnList }: DefaultCard
         useDisclosure(false);
 
     const { mutate: saveAnimeSeason } = useSaveAnimeSeason();
-    const { mutate: deleteAnimeSeason } = useDeleteAnimeSeason(animeBackend?.id);
 
     const updateCalendarList = () => {
         queryClient.invalidateQueries({ queryKey: ["fetch-animes-calendar", session?.userId, year, season] });
+        queryClient.invalidateQueries({ queryKey: ["fetch-animes-list", session?.userId, year, season] });
     };
 
     const handleAddCurrent = () => {
@@ -70,32 +70,8 @@ export const CardAnimeList = ({ fetchedAnime, index, updateOnList }: DefaultCard
                     {
                         onSuccess: (data) => {
                             updateOnList(index, data);
+                            updateCalendarList();
                             showSuccess("Anime adicionado ao calendário!");
-                        },
-                        onError: showError,
-                    },
-                );
-            },
-        });
-    };
-
-    const handleRemoveAnime = () => {
-        modals.openConfirmModal({
-            title: "Remover anime do calendário",
-            children: (
-                <Box>
-                    <p>Você tem certeza que deseja remover o anime {animeMal.title} do seu calendário?</p>
-                </Box>
-            ),
-            labels: { confirm: "Sim", cancel: "Não" },
-            confirmProps: { color: "red.8" },
-            onConfirm: () => {
-                deleteAnimeSeason(
-                    { season: season, year: year },
-                    {
-                        onSuccess: (data) => {
-                            updateOnList(index, data);
-                            showSuccess("Anime excluído do calendário!");
                         },
                         onError: showError,
                     },

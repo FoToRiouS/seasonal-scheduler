@@ -1,4 +1,4 @@
-import { Alert, Box, Button, Checkbox, Group, List, Modal, Stack, Text } from "@mantine/core";
+import { Alert, Box, Button, Group, List, Modal, Stack, Text } from "@mantine/core";
 import { useUserSession } from "@/hooks/useUserSession";
 import { useGroupsByUser } from "@/queries/GroupQueries";
 import Link from "next/link";
@@ -9,6 +9,7 @@ import { FaCircleExclamation } from "react-icons/fa6";
 import { useNotifications } from "@/hooks/useNotifications";
 import { AnimeSeasons } from "@/service/MyAnimeListService";
 import { GroupTelegram } from "@/interfaces/GroupTelegram";
+import { GroupsSelect } from "@/components/animes/shared/GroupsSelect";
 
 interface Props {
     opened: boolean;
@@ -72,11 +73,7 @@ export const ModalSendMessagesBase = ({
                 </Box>
             :   <Stack gap={5}>
                     <Text fz={15}>Selecione os grupos que desejam enviar as mensagens:</Text>
-                    <Checkbox.Group value={selectedGroups} onChange={setSelectedGroups}>
-                        {groups.map((g) => (
-                            <Checkbox color={"violet.8"} value={g.groupId} label={g.name} key={g.id} />
-                        ))}
-                    </Checkbox.Group>
+                    <GroupsSelect selectedGroups={selectedGroups} setSelectedGroups={setSelectedGroups} />
                     {emptyPreviewMessages.length > 0 && (
                         <Alert
                             title={"Atenção: Conteúdo não será enviado"}

@@ -80,7 +80,7 @@ export function getSeasonInPortuguese(animeSeason: AnimeSeasons) {
     }
 }
 
-export function getCurrentSeason() {
+export function getCurrentSeason(): AnimeSeasons {
     const month = new Date().getMonth();
     if (month === 12 || (month >= 1 && month <= 2)) {
         return "winter";
