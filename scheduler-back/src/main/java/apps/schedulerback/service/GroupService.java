@@ -52,7 +52,6 @@ public class GroupService extends GenericService<Group, UUID, GroupRepository> {
         Group group = findById(groupId);
 
         group.setName(groupDto.name());
-        group.setGroupId(groupDto.groupId());
 
         validate(group);
         validateUniqueGroupId(group);
@@ -83,10 +82,10 @@ public class GroupService extends GenericService<Group, UUID, GroupRepository> {
 
     @Transactional
     public void registerGroup(TelegramWebhookUpdate payload) {
-        if(payload.message().chat().type().equals("group")) {
+        if(payload.message() != null && payload.message().chat().type().equals("group")) {
             try{
                 String message = payload.message().text();
-                if(message.startsWith("/start")) {
+                if(message != null && message.startsWith("/start")) {
                     String token = message.split(" ")[1];
                     GroupToken groupToken = groupTokenRepository.findByToken(UUID.fromString(token)).orElse(null);
                     if(groupToken != null) {

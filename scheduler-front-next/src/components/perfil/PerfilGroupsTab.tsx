@@ -8,13 +8,15 @@ import { useMemo, useState } from "react";
 import { GroupTelegram } from "@/interfaces/GroupTelegram";
 import { modals } from "@mantine/modals";
 import { useNotifications } from "@/hooks/useNotifications";
+import { ModalGroupToken } from "@/components/perfil/ModalGroupToken";
 
 export const PerfilGroupsTab = () => {
     const { session } = useUserSession();
     const { showError, showSuccess } = useNotifications();
     const { data: groups, isPending } = useGroupsByUser(session?.userId);
 
-    const [openedModal, { open: openModal, close: closeModal }] = useDisclosure(false);
+    const [openedGroupModal, { open: openGroupModal, close: closeGroupModal }] = useDisclosure(false);
+    const [openedGroupToken, { open: openGroupToken, close: closeGroupToken }] = useDisclosure(false);
     const [selectedGroup, setSelectedGroup] = useState<GroupTelegram | null>();
     const { mutate: deleteGroup } = useDeleteGroup(session?.userId);
 
@@ -42,34 +44,26 @@ export const PerfilGroupsTab = () => {
         <>
             <Stack align={"center"}>
                 <Stack w={500}>
-                    <Alert w={"100%"} title={"Instruções"} icon={<FaCircleInfo />}>
-                        <Text size={"sm"} c={"blue"}>
-                            Para inserir um grupo, clique em "Novo Grupo". O nome do grupo é apenas uma
-                            identificação, porém o ID do Grupo, deve ser o ID forneceido pelo telegram.
-                        </Text>
-                        <Text size={"sm"} c={"blue"} my={"sm"}>
-                            A forma mais fácil de encontrar este ID é acessando o Telegram Web, clicar no
-                            grupo que deseja inserir o id e na URL da página o que estiver depois do "#"
-                            (inclusive se tiver o sinal "-").
-                        </Text>
-                        <Text size={"sm"} c={"blue"}>
-                            Por exemplo: https://web.telegram.org/a/#-123456789, o ID seria 123456789
+                    <Alert icon={<FaCircleInfo />} color={"yellow"} title="Atenção">
+                        <Text size={"sm"} c={"yellow.9"}>
+                            Por favor não remova o bot do grupo, ele precisa estar para que funcione
+                            corretamente. Caso tenha removida é so adicioná-lo novamente pelo link ou
+                            manualmente;
                         </Text>
                     </Alert>
                     <Button
                         disabled={isPending}
                         onClick={() => {
-                            setSelectedGroup(null);
-                            openModal();
+                            openGroupToken();
                         }}
+                        size={"lg"}
                     >
-                        Novo Grupo
+                        Adicionar Novo Grupo
                     </Button>
                     <Table>
                         <Table.Thead>
                             <Table.Tr>
                                 <Table.Th>Nome</Table.Th>
-                                <Table.Th w={150}>ID</Table.Th>
                                 <Table.Th w={65} />
                             </Table.Tr>
                         </Table.Thead>
@@ -79,14 +73,13 @@ export const PerfilGroupsTab = () => {
                                 orderedGroups.map((group) => (
                                     <Table.Tr key={group.id}>
                                         <Table.Td>{group.name}</Table.Td>
-                                        <Table.Td>{group.groupId}</Table.Td>
                                         <Table.Td>
                                             <Center>
                                                 <Group wrap={"nowrap"}>
                                                     <Box
                                                         onClick={() => {
                                                             setSelectedGroup(group);
-                                                            openModal();
+                                                            openGroupModal();
                                                         }}
                                                         className={
                                                             "cursor-pointer text-gray-500 hover:text-gray-800 duration-300"
@@ -128,7 +121,8 @@ export const PerfilGroupsTab = () => {
                     </Table>
                 </Stack>
             </Stack>
-            <ModalGroup opened={openedModal} onClose={closeModal} selectedGroup={selectedGroup} />
+            <ModalGroup opened={openedGroupModal} onClose={closeGroupModal} selectedGroup={selectedGroup} />
+            <ModalGroupToken opened={openedGroupToken} onClose={closeGroupToken} />
         </>
     );
 };

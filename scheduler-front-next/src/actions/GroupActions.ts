@@ -12,7 +12,6 @@ export const createGroup = async (
     userId: string | undefined,
     group: GroupTelegram,
 ): Promise<GroupTelegram> => {
-    console.log("USERID", userId, "GROUP", group);
     const response = await fetchAuth(`/api/groups/${userId}`, {
         method: "POST",
         body: JSON.stringify(group),
@@ -33,4 +32,12 @@ export const deleteGroup = async (groupId: string): Promise<boolean> => {
         method: "DELETE",
     });
     return response.json();
+};
+
+export const generateGroupToken = async (userId: string): Promise<string> => {
+    const response = await fetchAuth(`/api/groups/generate-token`, {
+        method: "POST",
+        body: JSON.stringify({ userId: userId }),
+    });
+    return response.text();
 };
