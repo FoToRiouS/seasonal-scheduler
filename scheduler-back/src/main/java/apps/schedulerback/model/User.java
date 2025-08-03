@@ -53,6 +53,11 @@ public class User implements UserDetails {
         this.createdAt = Instant.now();
     }
 
+    public User(UUID id) {
+        this();
+        this.id = id;
+    }
+
     public UUID getId() {
         return id;
     }

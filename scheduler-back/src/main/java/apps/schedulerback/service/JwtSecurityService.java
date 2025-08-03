@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
 @Service
-public class JwtService {
+public class JwtSecurityService {
 
     final UserRepository userRepository;
 
@@ -21,7 +21,7 @@ public class JwtService {
 
     final Algorithm algorithm;
 
-    public JwtService(UserRepository userRepository, ApplicationConfig appConfig) {
+    public JwtSecurityService(UserRepository userRepository, ApplicationConfig appConfig) {
         this.userRepository = userRepository;
         this.appConfig = appConfig;
         this.algorithm = Algorithm.HMAC256(appConfig.getSecurity().getJwtSecret());
@@ -56,7 +56,7 @@ public class JwtService {
     }
 
     private Instant getAccessExpirationTime() {
-        //        return LocalDateTime.now().plusSeconds(2).toInstant(ZoneOffset.of("-03:00"));
+//                return LocalDateTime.now().plusYears(10).toInstant(ZoneOffset.of("-03:00"));
         return LocalDateTime.now().plusMinutes(15).toInstant(ZoneOffset.of("-03:00"));
     }
 

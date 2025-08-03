@@ -31,7 +31,7 @@ public class UserService extends GenericService<User, UUID, UserRepository> impl
 
     final AuthenticationManager authenticationManager;
 
-    final JwtService jwtService;
+    final JwtSecurityService jwtSecurityService;
 
     final GroupRepository groupRepository;
 
@@ -40,13 +40,13 @@ public class UserService extends GenericService<User, UUID, UserRepository> impl
             UserMapper userMapper, GroupMapper groupMapper,
             @Lazy PasswordEncoder passwordEncoder,
             @Lazy AuthenticationManager authenticationManager,
-            JwtService jwtService, GroupRepository groupRepository) {
+            JwtSecurityService jwtSecurityService, GroupRepository groupRepository) {
         super(repository);
         this.userMapper = userMapper;
         this.groupMapper = groupMapper;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
-        this.jwtService = jwtService;
+        this.jwtSecurityService = jwtSecurityService;
         this.groupRepository = groupRepository;
     }
 
@@ -72,19 +72,19 @@ public class UserService extends GenericService<User, UUID, UserRepository> impl
         Authentication auth = authenticationManager.authenticate(token);
         User user = (User) auth.getPrincipal();
 
-        String accessToken = jwtService.generateAccessToken(user.getId().toString());
-        String refreshToken = jwtService.generateRefreshToken(user.getId().toString());
+        String accessToken = jwtSecurityService.generateAccessToken(user.getId().toString());
+        String refreshToken = jwtSecurityService.generateRefreshToken(user.getId().toString());
         return new AuthenticationResponseDTO(accessToken, refreshToken, user.getId().toString());
     }
 
     public AuthenticationResponseDTO refreshToken(String refreshToken) {
-        String userId = jwtService.validateToken(refreshToken);
+        String userId = jwtSecurityService.validateToken(refreshToken);
         if(userId == null) {
             return null;
         }
 
-        String newAccessToken = jwtService.generateAccessToken(userId);
-        String newRefreshToken = jwtService.generateRefreshToken(userId);
+        String newAccessToken = jwtSecurityService.generateAccessToken(userId);
+        String newRefreshToken = jwtSecurityService.generateRefreshToken(userId);
         return new AuthenticationResponseDTO(newAccessToken, newRefreshToken, userId);
     }
 

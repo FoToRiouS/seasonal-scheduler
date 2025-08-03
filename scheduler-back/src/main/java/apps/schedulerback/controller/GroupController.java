@@ -1,6 +1,7 @@
 package apps.schedulerback.controller;
 
 import apps.schedulerback.model.dto.GroupDTO;
+import apps.schedulerback.model.dto.RegisterTokenDTO;
 import apps.schedulerback.model.mappers.GroupMapper;
 import apps.schedulerback.service.GroupService;
 import org.springframework.http.ResponseEntity;
@@ -41,6 +42,12 @@ public class GroupController {
     public ResponseEntity<Boolean> delete(@PathVariable UUID groupId) {
         groupService.deleteById(groupId);
         return ResponseEntity.ok(true);
+    }
+
+    @PostMapping("/generate-token")
+    public ResponseEntity<String> generateRegisterToken(@RequestBody RegisterTokenDTO registerTokenDTO) {
+        UUID token = groupService.generateRegisterGroupToken(registerTokenDTO.userId());
+        return ResponseEntity.ok(token.toString());
     }
 
 }

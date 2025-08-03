@@ -1,6 +1,6 @@
 package apps.schedulerback.config;
 
-import apps.schedulerback.service.JwtService;
+import apps.schedulerback.service.JwtSecurityService;
 import apps.schedulerback.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -19,12 +19,12 @@ import java.util.UUID;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    final JwtService jwtService;
+    final JwtSecurityService jwtSecurityService;
 
     final UserService userService;
 
-    public JwtAuthenticationFilter(JwtService jwtService, UserDetailsService userDetailsService, UserService userService) {
-        this.jwtService = jwtService;
+    public JwtAuthenticationFilter(JwtSecurityService jwtSecurityService, UserDetailsService userDetailsService, UserService userService) {
+        this.jwtSecurityService = jwtSecurityService;
         this.userService = userService;
     }
 
@@ -33,7 +33,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         throws ServletException, IOException {
         var token = recoverToken(request);
         if (token != null) {
-            var userId = jwtService.validateToken(token);
+            var userId = jwtSecurityService.validateToken(token);
             if (userId.isEmpty()) {
                 filterChain.doFilter(request, response);
                 return;

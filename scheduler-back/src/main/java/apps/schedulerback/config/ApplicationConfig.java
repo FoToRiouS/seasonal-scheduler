@@ -14,12 +14,23 @@ public class ApplicationConfig {
     @Valid
     private Security security;
 
+    @Valid
+    private Telegram telegram;
+
     public Security getSecurity() {
         return security;
     }
 
     public void setSecurity(Security security) {
         this.security = security;
+    }
+
+    public Telegram getTelegram() {
+        return telegram;
+    }
+
+    public void setTelegram(Telegram telegram) {
+        this.telegram = telegram;
     }
 
     public static class Security {
@@ -44,6 +55,31 @@ public class ApplicationConfig {
 
         public void setJwtIssuer(String jwtIssuer) {
             this.jwtIssuer = jwtIssuer;
+        }
+    }
+
+    public static class Telegram {
+
+        @NotEmpty
+        private String botToken;
+
+        @NotEmpty
+        private String baseApiUrl;
+
+        public String getBotToken() {
+            return botToken;
+        }
+
+        public void setBotToken(String botToken) {
+            this.botToken = botToken;
+        }
+
+        public String getBaseApiUrl() {
+            return baseApiUrl;
+        }
+
+        public void setBaseApiUrl(String baseApiUrl) {
+            this.baseApiUrl = baseApiUrl;
         }
     }
 }

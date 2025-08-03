@@ -28,3 +28,5 @@ management:
 app:
     security:
         jwt-issuer: "scheduler"
+    telegram:
+        base-api-url: "https://api.telegram.org/bot"
