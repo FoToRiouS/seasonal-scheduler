@@ -39,12 +39,7 @@ public class AnimeSeasonController {
 
     @GetMapping("/{userId}/{year}/{season}")
     public ResponseEntity<List<AnimeDTO>> getByIdAndSeason(@PathVariable String season, @PathVariable long year, @PathVariable UUID userId){
-        Instant inicio = Instant.now();
         List<Anime> list = animeService.getAnimeSeasonBySeason(userId, year, season);
-        Instant fim = Instant.now();
-
-        Duration duracao = Duration.between(inicio, fim);
-        System.out.println("O método AnimeSeasonController.getByIdAndSeason executou em " + duracao.toMillis() + " milissegundos.");
         return ResponseEntity.ok(mapper.toDto(list));
     }
 
