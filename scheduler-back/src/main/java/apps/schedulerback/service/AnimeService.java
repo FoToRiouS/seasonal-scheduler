@@ -19,15 +19,16 @@ import java.util.stream.Collectors;
 public class AnimeService extends GenericService<Anime, UUID, AnimeRepository> {
 
     private final SeasonRepository seasonRepository;
-
     private final WatchServiceRepository watchServiceRepository;
     private final UserRepository userRepository;
+    private final MyAnimeListService myAnimeListService;
 
-    public AnimeService(AnimeRepository repository, SeasonRepository seasonRepository, WatchServiceRepository watchServiceRepository, GroupRepository groupRepository, UserRepository userRepository) {
+    public AnimeService(AnimeRepository repository, SeasonRepository seasonRepository, WatchServiceRepository watchServiceRepository, GroupRepository groupRepository, UserRepository userRepository, MyAnimeListService myAnimeListService) {
         super(repository);
         this.seasonRepository = seasonRepository;
         this.watchServiceRepository = watchServiceRepository;
         this.userRepository = userRepository;
+        this.myAnimeListService = myAnimeListService;
     }
 
     public Anime getAnimeSeasonByIdAnimeAndSeason(Long idAnime){
@@ -35,7 +36,9 @@ public class AnimeService extends GenericService<Anime, UUID, AnimeRepository> {
     }
 
     public List<Anime> getAnimeSeasonBySeason(UUID userId, Long year, String seasonName){
-        return repository.findByUser_IdAndAnimeSeasons_Season_YearAndAnimeSeasons_Season_SeasonName(userId, year, Seasons.valueOf(seasonName));
+        List<Anime> animes = repository.findByUser_IdAndAnimeSeasons_Season_YearAndAnimeSeasons_Season_SeasonName(userId, year, Seasons.valueOf(seasonName));
+        animes.forEach(anime -> anime.setAnimeMAL(myAnimeListService.findById(anime.getIdAnime())));
+        return animes;
     }
 
     @Transactional

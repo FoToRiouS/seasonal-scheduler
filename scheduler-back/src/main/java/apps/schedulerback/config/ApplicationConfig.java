@@ -17,6 +17,9 @@ public class ApplicationConfig {
     @Valid
     private Telegram telegram;
 
+    @Valid
+    private MyAnimeList myAnimeList;
+
     public Security getSecurity() {
         return security;
     }
@@ -31,6 +34,14 @@ public class ApplicationConfig {
 
     public void setTelegram(Telegram telegram) {
         this.telegram = telegram;
+    }
+
+    public MyAnimeList getMyAnimeList() {
+        return myAnimeList;
+    }
+
+    public void setMyAnimeList(MyAnimeList myAnimeList) {
+        this.myAnimeList = myAnimeList;
     }
 
     public static class Security {
@@ -80,6 +91,31 @@ public class ApplicationConfig {
 
         public void setBaseApiUrl(String baseApiUrl) {
             this.baseApiUrl = baseApiUrl;
+        }
+    }
+
+    public static class MyAnimeList {
+
+        @NotEmpty
+        private String baseUrl;
+
+        @NotEmpty
+        private String token;
+
+        public String getBaseUrl() {
+            return baseUrl;
+        }
+
+        public void setBaseUrl(String baseUrl) {
+            this.baseUrl = baseUrl;
+        }
+
+        public String getToken() {
+            return token;
+        }
+
+        public void setToken(String token) {
+            this.token = token;
         }
     }
 }

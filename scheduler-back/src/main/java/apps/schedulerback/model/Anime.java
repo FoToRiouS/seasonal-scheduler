@@ -1,5 +1,6 @@
 package apps.schedulerback.model;
 
+import apps.schedulerback.model.mal.AnimeMAL;
 import jakarta.persistence.*;
 
 import java.util.*;
@@ -23,6 +24,9 @@ public class Anime {
 
     @Column(name = "id_anime", unique = true)
     private long idAnime;
+
+    @Transient
+    private AnimeMAL animeMAL;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
@@ -59,6 +63,14 @@ public class Anime {
 
     public void setIdAnime(long idAnime) {
         this.idAnime = idAnime;
+    }
+
+    public AnimeMAL getAnimeMAL() {
+        return animeMAL;
+    }
+
+    public void setAnimeMAL(AnimeMAL animeMAL) {
+        this.animeMAL = animeMAL;
     }
 
     public Set<AnimeSeason> getAnimeSeasons() {

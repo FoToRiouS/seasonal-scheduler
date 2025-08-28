@@ -1,5 +1,6 @@
 package apps.schedulerback.service;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -8,7 +9,7 @@ public class TelegramService {
 
     final WebClient webClientTelegram;
 
-    public TelegramService(WebClient webClientTelegram) {
+    public TelegramService(@Qualifier("webClientTelegram") WebClient webClientTelegram) {
         this.webClientTelegram = webClientTelegram;
     }
 
