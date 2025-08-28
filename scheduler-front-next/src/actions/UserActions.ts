@@ -62,6 +62,5 @@ export const updateProfileImage = async (
         method: "PATCH",
         body: JSON.stringify(imageSrc),
     });
-    console.log("RES", res);
     return await res.json();
 };

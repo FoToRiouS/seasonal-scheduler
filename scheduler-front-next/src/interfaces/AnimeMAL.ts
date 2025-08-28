@@ -1,14 +1,12 @@
-import { AnimeSeasons } from "@/service/MyAnimeListService";
-
 export interface AnimeMAL {
     id: number;
     title: string;
-    alternativeTitles: AlternativeTitles;
+    alternative_titles: AlternativeTitles;
     mean: number;
-    mainPicture: MainPicture;
+    main_picture: MainPicture;
     broadcast: Broadcast;
-    startSeason: StartSeason;
-    mediaType: "tv" | "ona" | "ova" | "movie" | "special";
+    start_season: StartSeason;
+    media_type: "tv" | "ona" | "ova" | "movie" | "special";
     genres: Genre[];
 }
 
@@ -33,5 +31,7 @@ export interface Genre {
 
 export interface StartSeason {
     year: number;
-    season: AnimeSeasons;
+    season: SeasonMAL;
 }
+
+export type SeasonMAL = "winter" | "spring" | "summer" | "fall";

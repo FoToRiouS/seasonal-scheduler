@@ -7,7 +7,7 @@ import { useSeasonContext } from "@/components/animes/provider/useSeasonContext"
 import { FetchedAnime } from "@/interfaces/FetchedAnime";
 import { FaCircleExclamation } from "react-icons/fa6";
 import { useNotifications } from "@/hooks/useNotifications";
-import { AnimeSeasons } from "@/service/MyAnimeListService";
+import { SeasonMAL } from "@/interfaces/AnimeMAL";
 import { GroupTelegram } from "@/interfaces/GroupTelegram";
 import { GroupsSelect } from "@/components/animes/shared/GroupsSelect";
 
@@ -19,14 +19,10 @@ interface Props {
     sendMessageFn: (
         fetchedAnimes: FetchedAnime[],
         year: number,
-        season: AnimeSeasons,
+        season: SeasonMAL,
         groups: GroupTelegram[],
     ) => Promise<void>;
-    emptyAnimeMessageFn: (
-        fetchedAnimes: FetchedAnime[],
-        year: number,
-        season: AnimeSeasons,
-    ) => FetchedAnime[];
+    emptyAnimeMessageFn: (fetchedAnimes: FetchedAnime[], year: number, season: SeasonMAL) => FetchedAnime[];
 }
 
 export const ModalSendMessagesBase = ({
@@ -46,8 +42,8 @@ export const ModalSendMessagesBase = ({
     const emptyPreviewMessages = emptyAnimeMessageFn(fetchedAnimes, year, season);
 
     const getFullNameAnime = (fetchedAnime: FetchedAnime) => {
-        if (fetchedAnime.animeMal.alternativeTitles.en) {
-            return `${fetchedAnime.animeMal.alternativeTitles.en} (${fetchedAnime.animeMal.title})`;
+        if (fetchedAnime.animeMal.alternative_titles.en) {
+            return `${fetchedAnime.animeMal.alternative_titles.en} (${fetchedAnime.animeMal.title})`;
         }
         return `${fetchedAnime.animeMal.title}`;
     };

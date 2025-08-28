@@ -12,7 +12,7 @@ export const ServicesAnime = ({ animeBack }: Props) => {
     return (
         <Group m={"sm"} gap={10}>
             {services.map((s) => (
-                <Tooltip label={s.name}>
+                <Tooltip key={s.id} label={s.name}>
                     <ThemeIcon key={s.id} color={"dark.9"} radius={"xl"} size={"lg"} p={3}>
                         <Image src={s.imageSrc} />
                     </ThemeIcon>

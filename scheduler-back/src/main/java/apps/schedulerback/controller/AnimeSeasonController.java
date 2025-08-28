@@ -10,6 +10,8 @@ import jakarta.validation.constraints.NotEmpty;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -37,7 +39,12 @@ public class AnimeSeasonController {
 
     @GetMapping("/{userId}/{year}/{season}")
     public ResponseEntity<List<AnimeDTO>> getByIdAndSeason(@PathVariable String season, @PathVariable long year, @PathVariable UUID userId){
+        Instant inicio = Instant.now();
         List<Anime> list = animeService.getAnimeSeasonBySeason(userId, year, season);
+        Instant fim = Instant.now();
+
+        Duration duracao = Duration.between(inicio, fim);
+        System.out.println("O método AnimeSeasonController.getByIdAndSeason executou em " + duracao.toMillis() + " milissegundos.");
         return ResponseEntity.ok(mapper.toDto(list));
     }
 

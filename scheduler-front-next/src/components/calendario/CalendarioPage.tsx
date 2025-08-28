@@ -1,5 +1,5 @@
 "use client";
-import { Button, Group, Stack } from "@mantine/core";
+import { Button, Group, Stack, Text, Title } from "@mantine/core";
 import { useSetActivePage } from "@/hooks/useSetActivePage";
 import { useUserSession } from "@/hooks/useUserSession";
 import { useFetchAnimesForCalendar } from "@/queries/FetchedAnimeQueries";

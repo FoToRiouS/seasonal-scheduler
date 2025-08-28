@@ -1,9 +1,8 @@
 import { FetchedAnime } from "@/interfaces/FetchedAnime";
-import { AnimeSeasons } from "@/service/MyAnimeListService";
+import { SeasonMAL } from "@/interfaces/AnimeMAL";
 import { AnimeSeason } from "@/interfaces/AnimeSeason";
 
-const emptyPreviews = (fetchedAnimes: FetchedAnime[], year: number, season: AnimeSeasons): FetchedAnime[] => {
-    console.log("fetchedAnimes", fetchedAnimes);
+const emptyPreviews = (fetchedAnimes: FetchedAnime[], year: number, season: SeasonMAL): FetchedAnime[] => {
     if (!fetchedAnimes) {
         return [];
     }
@@ -23,7 +22,7 @@ const emptyPreviews = (fetchedAnimes: FetchedAnime[], year: number, season: Anim
     });
 };
 
-const emptyReviews = (fetchedAnimes: FetchedAnime[], year: number, season: AnimeSeasons): FetchedAnime[] => {
+const emptyReviews = (fetchedAnimes: FetchedAnime[], year: number, season: SeasonMAL): FetchedAnime[] => {
     if (!fetchedAnimes) {
         return [];
     }

@@ -6,13 +6,13 @@ import {
     saveAnimeSeason,
     updateAnimeSeason,
 } from "@/actions/AnimeActions";
-import { AnimeSeasons } from "@/service/MyAnimeListService";
+import { SeasonMAL } from "@/interfaces/AnimeMAL";
 import { AnimeBackend } from "@/interfaces/AnimeBackend";
 import { AnimeSeasonSaveDTO } from "@/interfaces/AnimeSeasonSaveDTO";
 import { AnimeSeasonUpdateDTO } from "@/interfaces/AnimeSeasonUpdateDTO";
 import { StartSeason } from "@/interfaces/AnimeMAL";
 
-export const useGetAnimesBySeason = (userId: string | undefined, year: number, season: AnimeSeasons) => {
+export const useGetAnimesBySeason = (userId: string | undefined, year: number, season: SeasonMAL) => {
     return useQuery<AnimeBackend[]>({
         queryFn: () => resolveServerAction(getAnimesBySeason)(userId, year, season),
         queryKey: ["animes-season", userId, year, season],

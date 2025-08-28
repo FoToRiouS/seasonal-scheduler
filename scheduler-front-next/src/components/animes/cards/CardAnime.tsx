@@ -27,7 +27,7 @@ export const CardAnime = ({ children, anime }: PropsWithChildren<WithAnimeMal>) 
                 w={"100%"}
             >
                 <ImageMantine
-                    src={anime.mainPicture.large}
+                    src={anime.main_picture.large}
                     alt={anime.title}
                     className={"transition-transform duration-300 group-hover:scale-105"}
                 />
@@ -48,15 +48,15 @@ export const CardAnime = ({ children, anime }: PropsWithChildren<WithAnimeMal>) 
 };
 
 const Title = ({ anime }: WithAnimeMal) => {
-    if (anime.alternativeTitles.en) {
+    if (anime.alternative_titles.en) {
     }
 
     return (
         <Stack gap={0}>
-            {anime.alternativeTitles.en ?
+            {anime.alternative_titles.en ?
                 <>
                     <TitleMantine order={3} c={"white"} lineClamp={2}>
-                        {anime.alternativeTitles.en}
+                        {anime.alternative_titles.en}
                     </TitleMantine>
                     <Text c={"dimmed"} fw={"bold"} lineClamp={2}>
                         {anime.title}

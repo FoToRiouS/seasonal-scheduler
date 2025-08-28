@@ -1,4 +1,10 @@
 package apps.schedulerback.model.mal;
 
-public record AlternativeTitles(
-) {}
+import java.io.Serializable;
+
+public record AlternativeTitles (
+        String en,
+        String ja
+) implements Serializable {
+
+}

@@ -1,14 +1,14 @@
 "use server";
 import { fetchAuth } from "@/service/BackendService";
-import { AnimeSeasons } from "@/service/MyAnimeListService";
 import { AnimeBackend } from "@/interfaces/AnimeBackend";
 import { AnimeSeasonSaveDTO } from "@/interfaces/AnimeSeasonSaveDTO";
 import { AnimeSeasonUpdateDTO } from "@/interfaces/AnimeSeasonUpdateDTO";
+import { SeasonMAL } from "@/interfaces/AnimeMAL";
 
 export const getAnimesBySeason = async (
     userId: string,
     year: number,
-    season: AnimeSeasons,
+    season: SeasonMAL,
 ): Promise<AnimeBackend[]> => {
     const res = await fetchAuth(`/api/animeseason/${userId}/${year}/${season}`);
     return await res.json();
@@ -33,7 +33,7 @@ export const updateAnimeSeason = async (payload: AnimeSeasonUpdateDTO): Promise<
 export const deleteAnimeSeason = async (
     idBackend: string,
     year: number,
-    season: AnimeSeasons,
+    season: SeasonMAL,
 ): Promise<AnimeBackend | null> => {
     const res = await fetchAuth(`/api/animeseason/${idBackend}/${year}/${season}`, {
         method: "DELETE",

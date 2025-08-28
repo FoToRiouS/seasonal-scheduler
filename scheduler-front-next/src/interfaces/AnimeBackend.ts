@@ -4,7 +4,7 @@ import { AnimeMAL } from "@/interfaces/AnimeMAL";
 
 export interface AnimeBackend {
     id: string;
-    animeMal: AnimeMAL;
+    animeMAL: AnimeMAL;
     animeSeasons: AnimeSeason[];
     watchServices: WatchService[];
 }

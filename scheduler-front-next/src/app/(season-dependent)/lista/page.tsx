@@ -3,7 +3,8 @@ import { auth } from "@/security/authOptions";
 import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
 import { fetchAnimesForList } from "@/actions/FetchedAnimeActions";
 import dayjs from "dayjs";
-import { AnimeSeasons, getCurrentSeason } from "@/service/MyAnimeListService";
+import { getCurrentSeason } from "@/utils/MyAnimeListUtils";
+import { SeasonMAL } from "@/interfaces/AnimeMAL";
 
 export default async function Page({
     searchParams,
@@ -15,7 +16,7 @@ export default async function Page({
 
     const params = await searchParams;
     const year = params.year ? parseInt(params["year"]) : dayjs().year();
-    const season = (params.season ? params.season : getCurrentSeason()) as AnimeSeasons;
+    const season = (params.season ? params.season : getCurrentSeason()) as SeasonMAL;
 
     queryClient.prefetchQuery({
         queryKey: ["fetch-animes-list", session?.userId, year, season],

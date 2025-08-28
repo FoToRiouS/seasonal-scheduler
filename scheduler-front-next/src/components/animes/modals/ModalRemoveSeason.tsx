@@ -1,7 +1,6 @@
 import { Button, ComboboxData, Group, Modal, Select, Stack, Text } from "@mantine/core";
 import React, { useMemo } from "react";
-import { StartSeason } from "@/interfaces/AnimeMAL";
-import { AnimeSeasons, getSeasonInPortuguese } from "@/service/MyAnimeListService";
+import { SeasonMAL, StartSeason } from "@/interfaces/AnimeMAL";
 import { useDeleteAnimeSeason } from "@/queries/AnimeQueries";
 import { useNotifications } from "@/hooks/useNotifications";
 import { AnimeBackend } from "@/interfaces/AnimeBackend";
@@ -12,6 +11,7 @@ import { useSeasonContext } from "@/components/animes/provider/useSeasonContext"
 import { z } from "zod/v4";
 import { zod4Resolver } from "mantine-form-zod-resolver";
 import { useAnimesUtils } from "@/hooks/useAnimesOrders";
+import { getSeasonInPortuguese } from "@/utils/MyAnimeListUtils";
 
 interface Props {
     opened: boolean;
@@ -67,7 +67,7 @@ export const ModalRemoveSeason: React.FC<Props> = ({
 
     const handleDeleteSeason = (animeSeasonId: string) => {
         const startSeason: StartSeason = {
-            season: animeSeasonId.split("#")[1] as AnimeSeasons,
+            season: animeSeasonId.split("#")[1] as SeasonMAL,
             year: parseInt(animeSeasonId.split("#")[0]),
         };
 

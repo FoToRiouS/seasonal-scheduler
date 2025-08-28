@@ -58,7 +58,6 @@ export const PerfilDataTab = () => {
             email: values.email,
             phone: values.phone,
         };
-        console.log(payload);
         updateProfile(payload, {
             onSuccess: () => showSuccess("Informações do perfil atualizados com sucesso!"),
             onError: showError,

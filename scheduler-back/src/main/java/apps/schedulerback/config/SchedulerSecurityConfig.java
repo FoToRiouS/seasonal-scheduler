@@ -35,6 +35,7 @@ public class SchedulerSecurityConfig {
                     .requestMatchers(HttpMethod.POST, "/api/user/login").permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/user/refresh-token").permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/user").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/mal/**").permitAll()
                     .anyRequest().authenticated()
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

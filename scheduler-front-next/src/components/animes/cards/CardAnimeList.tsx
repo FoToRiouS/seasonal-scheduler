@@ -12,9 +12,9 @@ import { ModalAddSeason } from "@/components/animes/modals/ModalAddSeason";
 import { useDisclosure } from "@mantine/hooks";
 import { ModalRemoveSeason } from "@/components/animes/modals/ModalRemoveSeason";
 import { AnimeBackend } from "@/interfaces/AnimeBackend";
-import { getSeasonInPortuguese } from "@/service/MyAnimeListService";
 import { FaPlusSquare } from "react-icons/fa";
 import { useQueryClient } from "@tanstack/react-query";
+import { getSeasonInPortuguese } from "@/utils/MyAnimeListUtils";
 
 interface ActionIconAddProps {
     onClickCurrent: () => void;
@@ -30,7 +30,11 @@ interface IconSeasonsProps {
     animeBackend: AnimeBackend;
 }
 
-export const CardAnimeList = ({ fetchedAnime, index, updateOnList }: DefaultCardAnimeProps) => {
+export const CardAnimeList = ({
+    fetchedAnime,
+    index,
+    updateOnList,
+}: Omit<DefaultCardAnimeProps, "removeFromList">) => {
     const { showSuccess, showError } = useNotifications();
     const queryClient = useQueryClient();
     const { year, season } = useSeasonContext();

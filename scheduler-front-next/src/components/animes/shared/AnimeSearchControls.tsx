@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 import { useSeasonContext } from "@/components/animes/provider/useSeasonContext";
 import { FetchedAnime } from "@/interfaces/FetchedAnime";
 import { useEffect } from "react";
-import { AnimeSeasons } from "@/service/MyAnimeListService";
+import { SeasonMAL } from "@/interfaces/AnimeMAL";
 import { useAnimesUtils } from "@/hooks/useAnimesOrders";
 import { useDebouncedValue, useLocalStorage } from "@mantine/hooks";
 import { OrderStrategySelect } from "@/components/animes/shared/OrderStrategySelect";
@@ -34,7 +34,7 @@ export const AnimeSearchControls = ({ rawAnimesList, setControlledAnimeList }: P
             filtered = filtered.filter((a) => {
                 return (
                     a.animeMal.title.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
-                    a.animeMal.alternativeTitles.en.toLowerCase().includes(debouncedSearch.toLowerCase())
+                    a.animeMal.alternative_titles.en.toLowerCase().includes(debouncedSearch.toLowerCase())
                 );
             });
         }
@@ -65,7 +65,7 @@ export const AnimeSearchControls = ({ rawAnimesList, setControlledAnimeList }: P
             />
             <Select
                 value={season}
-                onChange={(e) => setSeason(e as AnimeSeasons)}
+                onChange={(e) => setSeason(e as SeasonMAL)}
                 data={[
                     { value: "winter", label: "Inverno" },
                     { value: "spring", label: "Primavera" },

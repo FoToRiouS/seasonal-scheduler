@@ -16,13 +16,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 password: { label: "Senha", type: "password" },
             },
             async authorize(credentials) {
-                console.log("credentials", credentials);
                 const payload = {
                     username: credentials?.username,
                     password: credentials?.password,
                 } as unknown as AuthenticationRequest;
 
-                console.log("LOGIN");
                 const res = await login(payload);
 
                 const ret = await res.json();

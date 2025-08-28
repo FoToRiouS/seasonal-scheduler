@@ -25,7 +25,6 @@ export const useRegisterUser = () => {
 };
 
 export const useGetUser = (id?: string) => {
-    console.log("AUTH PROVIDER");
     return useQuery<User>({
         queryKey: ["user", id],
         queryFn: () => resolveServerAction(getUser)(id),

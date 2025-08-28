@@ -1,16 +1,16 @@
 "use server";
 
 import { FetchedAnime } from "@/interfaces/FetchedAnime";
-import { AnimeSeasons } from "@/service/MyAnimeListService";
+import { SeasonMAL } from "@/interfaces/AnimeMAL";
 import { getAnimesBySeason } from "@/actions/AnimeActions";
+import { getAnimesMalBySeason } from "@/actions/MalActions";
 
 export const fetchAnimesForCalendar = async (
     userId: string,
     year: number,
-    season: AnimeSeasons,
+    season: SeasonMAL,
 ): Promise<FetchedAnime[]> => {
     const animes = await getAnimesBySeason(userId, year, season);
-
     // const animesMal = await getAnimesMalBySeason(year, season);
     //
     // let fetched = animes.map(
@@ -29,25 +29,25 @@ export const fetchAnimesForCalendar = async (
     //     );
     // }
 
-    return animes.map((a) => ({ animeBackend: a, animeMal: a.animeMal })) as FetchedAnime[];
+    if (animes) {
+        return animes.map((a) => ({ animeBackend: a, animeMal: a.animeMAL }) as FetchedAnime);
+    }
+    return [];
 };
 
 export const fetchAnimesForList = async (
     userId: string | undefined,
     year: number,
-    season: AnimeSeasons,
+    season: SeasonMAL,
 ): Promise<FetchedAnime[]> => {
     const animes = userId ? await getAnimesBySeason(userId, year, season) : [];
+    const animesMal = await getAnimesMalBySeason(year, season);
 
-    // const animesMal = await getAnimesMalBySeason(year, season);
-    //
-    // const fetched = animesMal.map(
-    //     (a) =>
-    //         ({
-    //             animeMal: a,
-    //             animeBackend: animes.find((b) => b.idAnime === a.id)!,
-    //         }) as FetchedAnime,
-    // );
-
-    return animes.map((a) => ({ animeBackend: a, animeMal: a.animeMal })) as FetchedAnime[];
+    return animesMal.map(
+        (a) =>
+            ({
+                animeMal: a,
+                animeBackend: animes.find((b) => b.animeMAL.id === a.id)!,
+            }) as FetchedAnime,
+    );
 };

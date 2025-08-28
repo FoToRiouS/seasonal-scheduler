@@ -1,7 +1,6 @@
 import { Button, Group, Modal, NumberInput, Select, Stack } from "@mantine/core";
 import React from "react";
-import { AnimeMAL } from "@/interfaces/AnimeMAL";
-import { AnimeSeasons, getSeasonInPortuguese } from "@/service/MyAnimeListService";
+import { AnimeMAL, SeasonMAL } from "@/interfaces/AnimeMAL";
 import { useSaveAnimeSeason } from "@/queries/AnimeQueries";
 import { AnimeSeasonSaveDTO } from "@/interfaces/AnimeSeasonSaveDTO";
 import { useUserSession } from "@/hooks/useUserSession";
@@ -11,6 +10,7 @@ import { useForm } from "@mantine/form";
 import { z } from "zod/v4";
 import { zod4Resolver } from "mantine-form-zod-resolver";
 import { useSeasonContext } from "@/components/animes/provider/useSeasonContext";
+import { getSeasonInPortuguese } from "@/utils/MyAnimeListUtils";
 
 interface Props {
     opened: boolean;
@@ -50,7 +50,7 @@ export const ModalAddSeason: React.FC<Props> = ({
 
     const { mutate: save, isPending: isSaving } = useSaveAnimeSeason();
 
-    const handleSaveAnimeSeason = (year: number, season: AnimeSeasons) => {
+    const handleSaveAnimeSeason = (year: number, season: SeasonMAL) => {
         const animeSeason: AnimeSeasonSaveDTO = {
             userId: session!.userId,
             idAnime: anime!.id.toString(),

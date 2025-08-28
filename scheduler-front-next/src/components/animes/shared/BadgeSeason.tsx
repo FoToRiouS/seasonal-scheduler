@@ -1,7 +1,7 @@
 import React from "react";
 import { Badge, BadgeProps } from "@mantine/core";
-import { getSeasonInPortuguese } from "@/service/MyAnimeListService";
 import { StartSeason } from "@/interfaces/AnimeMAL";
+import { getSeasonInPortuguese } from "@/utils/MyAnimeListUtils";
 
 interface BadgeSeasonProps {
     startSeason: StartSeason;

@@ -17,7 +17,6 @@ import {
 } from "@mantine/core";
 import { useUpdateAnimeSeason } from "@/queries/AnimeQueries";
 import { FetchedAnime } from "@/interfaces/FetchedAnime";
-import { getDayOfExhibition, getSeasonInPortuguese } from "@/service/MyAnimeListService";
 import { StartSeason } from "@/interfaces/AnimeMAL";
 import { FaX } from "react-icons/fa6";
 import { RatingAnime } from "@/components/animes/shared/RatingAnime";
@@ -35,6 +34,7 @@ import { ModalRemoveSeason } from "@/components/animes/modals/ModalRemoveSeason"
 import { useAnimesUtils } from "@/hooks/useAnimesOrders";
 import classes from "./css/ModalAnime.module.css";
 import { ModalSendUniqueMessage } from "@/components/animes/modals/ModalSendUniqueMessage";
+import { getDayOfExhibition, getSeasonInPortuguese } from "@/utils/MyAnimeListUtils";
 
 interface IModalAnimeProps {
     isOpen: boolean;
@@ -212,7 +212,7 @@ export const ModalAnime = ({
                 <Flex h={600}>
                     <Box pos="relative">
                         <Center maw={500} style={{ overflow: "hidden" }}>
-                            <Image src={animeMal.mainPicture.large} h={"100%"} w={"auto"} radius="md" />
+                            <Image src={animeMal.main_picture.large} h={"100%"} w={"auto"} radius="md" />
                         </Center>
 
                         {animeMal.mean && (
@@ -230,10 +230,10 @@ export const ModalAnime = ({
                             pt={"xs"}
                         >
                             <Stack gap={0} pr="xl">
-                                {animeMal.alternativeTitles.en ?
+                                {animeMal.alternative_titles.en ?
                                     <>
                                         <Title order={4} c={"gray.9"}>
-                                            {animeMal.alternativeTitles.en}
+                                            {animeMal.alternative_titles.en}
                                         </Title>
                                         <Text c={"gray.6"} fw={400}>
                                             {animeMal.title}

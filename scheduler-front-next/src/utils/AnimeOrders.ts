@@ -1,8 +1,8 @@
 import { FetchedAnime } from "@/interfaces/FetchedAnime";
 import { AnimeSeason } from "@/interfaces/AnimeSeason";
-import { AnimeSeasons } from "@/service/MyAnimeListService";
+import { SeasonMAL } from "@/interfaces/AnimeMAL";
 
-const seasonOrder: Record<AnimeSeasons, number> = {
+const seasonOrder: Record<SeasonMAL, number> = {
     winter: 0,
     spring: 1,
     summer: 2,
@@ -22,8 +22,8 @@ const originalNameStrategy = (a: FetchedAnime, b: FetchedAnime) => {
 };
 
 const englishNameStrategy = (a: FetchedAnime, b: FetchedAnime) => {
-    const aName = a.animeMal.alternativeTitles.en ? a.animeMal.alternativeTitles.en : a.animeMal.title;
-    const bName = b.animeMal.alternativeTitles.en ? b.animeMal.alternativeTitles.en : b.animeMal.title;
+    const aName = a.animeMal.alternative_titles.en ? a.animeMal.alternative_titles.en : a.animeMal.title;
+    const bName = b.animeMal.alternative_titles.en ? b.animeMal.alternative_titles.en : b.animeMal.title;
 
     return aName.localeCompare(bName);
 };

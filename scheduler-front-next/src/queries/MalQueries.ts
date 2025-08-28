@@ -1,10 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import { AnimeSeasons } from "@/service/MyAnimeListService";
 import { getAnimesMalBySeason } from "@/actions/MalActions";
 import { resolveServerAction } from "@/service/BackendService";
-import { AnimeMAL } from "@/interfaces/AnimeMAL";
+import { AnimeMAL, SeasonMAL } from "@/interfaces/AnimeMAL";
 
-export function useAnimesMalBySeason(year: number, season: AnimeSeasons) {
+export function useAnimesMalBySeason(year: number, season: SeasonMAL) {
     return useQuery<AnimeMAL[]>({
         queryFn: () => resolveServerAction(getAnimesMalBySeason)(year, season),
         queryKey: ["animes-mal-season", year, season],

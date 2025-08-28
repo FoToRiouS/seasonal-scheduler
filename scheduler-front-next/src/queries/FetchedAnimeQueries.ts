@@ -1,17 +1,17 @@
 import { resolveServerAction } from "@/service/BackendService";
-import { AnimeSeasons } from "@/service/MyAnimeListService";
+import { SeasonMAL } from "@/interfaces/AnimeMAL";
 import { fetchAnimesForCalendar, fetchAnimesForList } from "@/actions/FetchedAnimeActions";
 import { useQuery } from "@tanstack/react-query";
 import { FetchedAnime } from "@/interfaces/FetchedAnime";
 
-export const useFetchAnimesForList = (userId: string | undefined, year: number, season: AnimeSeasons) => {
+export const useFetchAnimesForList = (userId: string | undefined, year: number, season: SeasonMAL) => {
     return useQuery<FetchedAnime[]>({
         queryFn: () => resolveServerAction(fetchAnimesForList)(userId, year, season),
         queryKey: ["fetch-animes-list", userId, year, season],
     });
 };
 
-export const useFetchAnimesForCalendar = (userId: string | undefined, year: number, season: AnimeSeasons) => {
+export const useFetchAnimesForCalendar = (userId: string | undefined, year: number, season: SeasonMAL) => {
     return useQuery<FetchedAnime[]>({
         queryFn: () => resolveServerAction(fetchAnimesForCalendar)(userId, year, season),
         queryKey: ["fetch-animes-calendar", userId, year, season],

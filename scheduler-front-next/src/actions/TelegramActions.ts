@@ -2,10 +2,11 @@
 
 import { fetchTelegram } from "@/service/TelegramService";
 import { FetchedAnime } from "@/interfaces/FetchedAnime";
-import { AnimeSeasons, getSeasonInPortuguese } from "@/service/MyAnimeListService";
 import { GroupTelegram } from "@/interfaces/GroupTelegram";
 import { orderByEnglishName, orderByOriginalName, orderByRating } from "@/utils/AnimeOrders";
 import { AnimeSeason } from "@/interfaces/AnimeSeason";
+import { getSeasonInPortuguese } from "@/utils/MyAnimeListUtils";
+import { SeasonMAL } from "@/interfaces/AnimeMAL";
 
 function escapeHtml(html: string): string {
     let escapedHtml = html;
@@ -35,7 +36,7 @@ const handleSendHashtag = async (
     group: string,
     type: "preview" | "review",
     year: number,
-    season: AnimeSeasons,
+    season: SeasonMAL,
 ) => {
     const typeText = type === "preview" ? "Preview" : "Review";
     await sendMessage(group, `%23fotolista ${typeText}-${getSeasonInPortuguese(season)}/${year}`);
@@ -45,7 +46,7 @@ const handleSendMessage = (group: string, animeSeason: FetchedAnime, message: st
     const { animeMal, animeBackend } = animeSeason;
 
     const title = animeMal.title;
-    const enTitle = animeMal.alternativeTitles.en;
+    const enTitle = animeMal.alternative_titles.en;
     const formattedTitle = enTitle ? `${enTitle} (${title})` : `${title}`;
     const formattedRating = animeMal.mean ? `<b>Nota MAL:</b> ${animeMal.mean} %0A%0A` : "";
     const formattedServices =
@@ -55,7 +56,7 @@ const handleSendMessage = (group: string, animeSeason: FetchedAnime, message: st
 
     let caption = `<b>${formattedTitle}</b>` + "%0A%0A" + formattedRating + formattedServices + message;
     caption = escapeHtml(caption);
-    sendPhoto(group, animeMal.mainPicture.large, caption).then(undefined);
+    sendPhoto(group, animeMal.main_picture.large, caption).then(undefined);
 };
 
 const timer = (ms: number) => new Promise((res) => setTimeout(res, ms));
@@ -63,7 +64,7 @@ const timer = (ms: number) => new Promise((res) => setTimeout(res, ms));
 export const sendTextMessage = async (
     fetchedAnime: FetchedAnime,
     year: number,
-    season: AnimeSeasons,
+    season: SeasonMAL,
     groups: GroupTelegram[] | string[],
     textName: Exclude<keyof AnimeSeason, "season">,
 ) => {
@@ -83,7 +84,7 @@ export const sendTextMessage = async (
 export const sendTextMessages = async (
     fetchedAnimes: FetchedAnime[],
     year: number,
-    season: AnimeSeasons,
+    season: SeasonMAL,
     groups: GroupTelegram[] | string[],
     orderStrategy: "rating" | "englishName" | "originalName",
     textName: Exclude<keyof AnimeSeason, "season">,
@@ -120,7 +121,7 @@ export const sendTextMessages = async (
 export const sendPreviewMessages = async (
     fetchedAnimes: FetchedAnime[],
     year: number,
-    season: AnimeSeasons,
+    season: SeasonMAL,
     groups: GroupTelegram[],
 ) => {
     return sendTextMessages(fetchedAnimes, year, season, groups, "englishName", "previewText");
@@ -129,7 +130,7 @@ export const sendPreviewMessages = async (
 export const sendReviewMessages = async (
     fetchedAnimes: FetchedAnime[],
     year: number,
-    season: AnimeSeasons,
+    season: SeasonMAL,
     groups: GroupTelegram[],
 ) => {
     return sendTextMessages(fetchedAnimes, year, season, groups, "rating", "reviewText");
