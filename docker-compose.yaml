@@ -5,8 +5,8 @@ services:
         restart: always
         container_name: database
         environment:
-            MYSQL_USER: scheduler
-            MYSQL_PASSWORD: scheduler!@#
+            MYSQL_USER: ${MYSQL_USER}
+            MYSQL_PASSWORD: ${MYSQL_PASSWORD}
             MYSQL_DATABASE: scheduler
             MYSQL_RANDOM_ROOT_PASSWORD: true
         ports:
