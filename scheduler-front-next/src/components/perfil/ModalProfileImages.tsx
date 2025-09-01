@@ -31,7 +31,7 @@ export const ModalProfileImages = ({ opened, onClose }: Props) => {
             <SimpleGrid cols={4}>
                 {profileImages.map((image) => {
                     return (
-                        <Center>
+                        <Center key={image}>
                             <Avatar
                                 key={image}
                                 src={image}

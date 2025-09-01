@@ -1,4 +1,3 @@
-version: "3.8"
 services:
     db:
         image: mysql:8.1
@@ -36,7 +35,7 @@ services:
 
     scheduler-front:
         build:
-            context: scheduler-front
+            context: scheduler-front-next
             dockerfile: Dockerfile
         image: scheduler-front:latest
         container_name: scheduler-front
