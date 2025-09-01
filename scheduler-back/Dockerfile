@@ -1,5 +1,5 @@
 # Deve ser executado na pasta raiz onde estão os projetos, pois a arquitetura precisa ser importada
-FROM maven:3.8.6-eclipse-temurin-24-alpine as build
+FROM maven:3.9.11-eclipse-temurin-24-alpine as build
 ENV APP=/usr/app/
 RUN mkdir -p $APP
 WORKDIR $APP
