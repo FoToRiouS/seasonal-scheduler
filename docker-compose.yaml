@@ -65,6 +65,11 @@ services:
         depends_on:
             - scheduler-front
 
+    redis:
+      image: redis:8.2.0-alpine
+      networks:
+        - scheduler-network
+
 networks:
     scheduler-network:
 
