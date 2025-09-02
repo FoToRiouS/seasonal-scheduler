@@ -59,8 +59,8 @@ services:
             TZ: "America/Sao_Paulo"
         tty: true
         ports:
-            - "9090:443"
-            - "8080:80"
+            - "443:443"
+            - "80:80"
             - "555:555"
         depends_on:
             - scheduler-front
