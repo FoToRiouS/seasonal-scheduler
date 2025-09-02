@@ -62,6 +62,8 @@ services:
             - "443:443"
             - "80:80"
             - "555:555"
+        volumes:
+          - "/etc/ssl/private:/etc/ssl"
         depends_on:
             - scheduler-front
 
