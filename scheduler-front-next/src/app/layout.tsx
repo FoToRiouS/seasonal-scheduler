@@ -10,10 +10,15 @@ import { getUser } from "@/actions/UserActions";
 import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
 import { MantineThemeProvider } from "@/providers/MantineThemeProvider";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { Metadata } from "next";
 
 interface Props {
     children: React.ReactNode;
 }
+
+export const metadata: Metadata = {
+    title: "Anime Scheduler",
+};
 
 export default async function RootLayout({ children }: Props) {
     const queryClient = new QueryClient();
