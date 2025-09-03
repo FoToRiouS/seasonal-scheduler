@@ -64,7 +64,7 @@ services:
             - "555:555"
         volumes:
           - type: bind
-            source: /etc/letsencrypt/live/animeschedul.vps.webdock.cloud/
+            source: /etc/letsencrypt/
             target: /etc/ssl/
         depends_on:
             - scheduler-front
