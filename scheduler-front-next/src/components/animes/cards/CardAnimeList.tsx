@@ -58,7 +58,10 @@ export const CardAnimeList = ({
             title: "Adicionar anime ao calendário",
             children: (
                 <Box>
-                    <p>Você tem certeza que deseja adicionar o anime {animeMal.title} ao seu calendário?</p>
+                    <p>
+                        Você tem certeza que deseja adicionar o anime {animeMal.title} ao calendário de{" "}
+                        {getSeasonInPortuguese(season)} de {year}?
+                    </p>
                 </Box>
             ),
             labels: { confirm: "Sim", cancel: "Não" },
@@ -68,8 +71,8 @@ export const CardAnimeList = ({
                     {
                         userId: session?.userId!,
                         idAnime: animeMal.id.toString(),
-                        season: "summer",
-                        year: 2025,
+                        season: season,
+                        year: year,
                     },
                     {
                         onSuccess: (data) => {
@@ -148,7 +151,7 @@ const ActionIconAdd = ({ onClickCurrent, onClickOther }: ActionIconAddProps) => 
                     Adicionar a outra temporada
                 </Menu.Item>
                 <Menu.Item onClick={onClickCurrent} leftSection={<FaPlus />}>
-                    Adicionar a temporada atual
+                    Adicionar a temporada de exibição
                 </Menu.Item>
             </Menu.Dropdown>
         </Menu>

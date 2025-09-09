@@ -7,6 +7,9 @@ import { AuthenticationResponse } from "@/interfaces/AuthenticationResponse";
 import { jwtDecode } from "jwt-decode";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+    session: {
+        maxAge: 3 * 24 * 60 * 60, //3 Dias
+    },
     providers: [
         CredentialsProvider({
             id: "user_provider",
