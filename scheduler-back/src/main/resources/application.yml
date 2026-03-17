@@ -1,6 +1,7 @@
 spring:
   profiles:
     active: prod
+
   jpa:
     open-in-view: "false"
     hibernate:
@@ -16,10 +17,6 @@ spring:
     enabled: true
     baseline-on-migrate: true
 
-  cache:
-    type: redis
-    redis:
-      time-to-live: 1d
   data:
     redis:
       host: redis

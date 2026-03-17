@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.3</version>
+        <version>4.0.3</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>apps</groupId>
@@ -32,7 +32,7 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <artifactId>spring-boot-starter-webmvc</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -66,8 +66,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.flywaydb</groupId>
-            <artifactId>flyway-core</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-flyway</artifactId>
         </dependency>
 
         <dependency>
@@ -78,7 +78,7 @@
         <dependency>
             <groupId>com.auth0</groupId>
             <artifactId>java-jwt</artifactId>
-            <version>4.5.0</version>
+            <version>4.5.1</version>
         </dependency>
 
         <dependency>
