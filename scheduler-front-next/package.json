@@ -8,6 +8,7 @@
         "start": "next start",
         "lint": "next lint"
     },
+    "packageManager": "pnpm@10.33.4",
     "dependencies": {
         "@mantine/core": "^8.3.17",
         "@mantine/form": "^8.3.17",
