@@ -63,8 +63,8 @@ services:
             - "80:80"
             - "555:555"
         volumes:
-          - /etc/letsencrypt:/etc/letsencrypt:ro  # Mapeia tudo como somente leitura
-          - /var/www/certbot:/var/www/certbot     # Para renovação futura
+            - /certificate/letsencrypt:/etc/letsencrypt:ro      # Aponta para a pasta local de certificados
+            - /certificate/certbot:/var/www/certbot:ro     # Para renovação futura
         depends_on:
             - scheduler-front
 
