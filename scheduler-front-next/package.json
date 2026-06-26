@@ -8,7 +8,7 @@
         "start": "next start",
         "lint": "next lint"
     },
-    "packageManager": "pnpm@11.7.0",
+    "packageManager": "pnpm@11.9.0",
     "dependencies": {
         "@mantine/core": "^8.3.17",
         "@mantine/form": "^8.3.17",
@@ -38,6 +38,7 @@
         "@types/react-dom": "^19.2.3",
         "eslint": "^10.0.3",
         "eslint-config-next": "16.1.6",
+        "orval": "^8.19.0",
         "postcss": "^8.5.8",
         "postcss-preset-mantine": "^1.18.0",
         "postcss-simple-vars": "^7.0.1",
