@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { fetchAnimesForCalendar } from "@/actions/FetchedAnimeActions";
 import dayjs from "dayjs";
 import { getCurrentSeason } from "@/utils/MyAnimeListUtils";
-import { SeasonMAL } from "@/interfaces/AnimeMAL";
+import { SeasonMAL } from "@/interfaces/SeasonMAL";
 
 export default async function Page({
     searchParams,

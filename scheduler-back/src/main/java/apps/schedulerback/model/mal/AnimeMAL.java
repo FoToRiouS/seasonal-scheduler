@@ -3,21 +3,24 @@ package apps.schedulerback.model.mal;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
 public record AnimeMAL(
-        Integer id,
-        String title,
+        @NotNull Integer id,
+        @NotBlank String title,
         AlternativeTitles alternativeTitles,
         Double mean,
         MainPicture mainPicture,
         Broadcast broadcast,
         StartSeason startSeason,
-        String mediaType,
-        List<Genre> genres
+        @NotBlank String mediaType,
+        @NotEmpty List<Genre> genres
 ) implements Serializable {
     @JsonCreator
     public static AnimeMAL create(

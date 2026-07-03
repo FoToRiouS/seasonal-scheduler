@@ -1,12 +1,23 @@
-import { GroupTelegram } from "@/interfaces/GroupTelegram";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { resolveServerAction } from "@/service/BackendService";
-import { createGroup, deleteGroup, generateGroupToken, getGroups, updateGroup } from "@/actions/GroupActions";
+import {
+    groupCreate,
+    groupDelete,
+    groupGenerateRegisterToken,
+    groupGetGroups,
+    groupUpdate,
+} from "@/schemas/generated/api";
+import { GroupDTO, RegisterTokenDTO } from "@/schemas/generated/model";
 
 export const useGroupsByUser = (userId?: string) => {
-    return useQuery<GroupTelegram[]>({
+    return useQuery({
         queryKey: ["groups", userId],
-        queryFn: () => resolveServerAction(getGroups)(userId),
+        queryFn: () => {
+            if (!userId) {
+                throw new Error("User ID is required");
+            }
+            return groupGetGroups(userId);
+        },
+        select: (data) => data.data,
         enabled: !!userId,
     });
 };
@@ -15,7 +26,12 @@ export const useCreateGroup = (userId?: string) => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (group: GroupTelegram) => resolveServerAction(createGroup)(userId, group),
+        mutationFn: (dto: GroupDTO) => {
+            if (!userId) {
+                throw new Error("User ID is required");
+            }
+            return groupCreate(userId, dto);
+        },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["groups", userId] });
         },
@@ -26,7 +42,7 @@ export const useUpdateGroup = (userId?: string) => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (group: GroupTelegram) => resolveServerAction(updateGroup)(group),
+        mutationFn: (group: GroupDTO) => groupUpdate(group.id!, group),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["groups", userId] });
         },
@@ -37,7 +53,7 @@ export const useDeleteGroup = (userId?: string) => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: resolveServerAction(deleteGroup),
+        mutationFn: (groupId: string) => groupDelete(groupId),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["groups", userId] });
         },
@@ -45,7 +61,7 @@ export const useDeleteGroup = (userId?: string) => {
 };
 
 export const useGenerateGroupToken = () => {
-    return useMutation<string, Error, string>({
-        mutationFn: resolveServerAction(generateGroupToken),
+    return useMutation({
+        mutationFn: (dto: RegisterTokenDTO) => groupGenerateRegisterToken(dto),
     });
 };

@@ -1,12 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import { getAllWatchServices } from "@/actions/WatchServiceActions";
-import { resolveServerAction } from "@/service/BackendService";
-import { WatchService } from "@/interfaces/WatchService";
+import { watchserviceListAll } from "@/schemas/generated/api";
 
 export function useWatchServiceList() {
-    return useQuery<WatchService[]>({
-        queryFn: resolveServerAction(getAllWatchServices),
+    return useQuery({
+        queryFn: () => watchserviceListAll(),
         queryKey: ["watch-services-list"],
+        select: (data) => data.data,
         staleTime: Infinity,
     });
 }

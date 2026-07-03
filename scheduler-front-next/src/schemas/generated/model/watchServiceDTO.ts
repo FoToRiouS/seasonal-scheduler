@@ -6,8 +6,11 @@
  */
 
 export interface WatchServiceDTO {
-    id?: string;
-    name?: string;
-    nameId?: string;
-    imageSrc?: string;
+    id: string;
+    /** @minLength 1 */
+    name: string;
+    /** @minLength 1 */
+    nameId: string;
+    /** @minLength 1 */
+    imageSrc: string;
 }

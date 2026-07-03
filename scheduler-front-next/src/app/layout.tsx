@@ -6,11 +6,11 @@ import { ReactQueryProvider } from "@/providers/ReactQueryProvider";
 import { AuthProvider } from "@/providers/AuthProvider";
 import { auth } from "@/security/authOptions";
 import { ModalsProvider } from "@mantine/modals";
-import { getUser } from "@/actions/UserActions";
 import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
 import { MantineThemeProvider } from "@/providers/MantineThemeProvider";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { Metadata } from "next";
+import { userGetById } from "@/schemas/generated/api";
 
 interface Props {
     children: React.ReactNode;
@@ -23,11 +23,17 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: Props) {
     const queryClient = new QueryClient();
 
+    const getUserFn = async (id: string) => {
+        return (await userGetById(id)).data;
+    };
+
     const session = await auth();
-    await queryClient.prefetchQuery({
-        queryKey: ["user", session?.userId],
-        queryFn: () => getUser(session?.userId),
-    });
+    if (session?.userId) {
+        await queryClient.prefetchQuery({
+            queryKey: ["user", session?.userId],
+            queryFn: () => getUserFn(session?.userId),
+        });
+    }
 
     return (
         <html lang="en" {...mantineHtmlProps}>

@@ -3,15 +3,15 @@ import { z } from "zod/v4";
 import { useForm } from "@mantine/form";
 import { zod4Resolver } from "mantine-form-zod-resolver";
 import { useNotifications } from "@/hooks/useNotifications";
-import { GroupTelegram } from "@/interfaces/GroupTelegram";
 import { useUpdateGroup } from "@/queries/GroupQueries";
 import { useUserSession } from "@/hooks/useUserSession";
 import { useEffect, useMemo } from "react";
+import { GroupDTO } from "@/schemas/generated/model";
 
 interface Props {
     opened: boolean;
     onClose: () => void;
-    selectedGroup?: GroupTelegram | null;
+    selectedGroup?: GroupDTO | null;
 }
 
 const schema = z.object({
@@ -46,8 +46,8 @@ export const ModalGroup = ({ opened, onClose, selectedGroup }: Props) => {
     }, [opened, selectedGroup]);
 
     const onSubmit = (values: schemaType) => {
-        const groupTelegram: GroupTelegram = {
-            id: selectedGroup ? selectedGroup.id : null,
+        const groupTelegram: GroupDTO = {
+            id: selectedGroup ? selectedGroup.id : undefined,
             name: values.name,
             groupId: "",
         };

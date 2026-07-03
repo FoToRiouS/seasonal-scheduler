@@ -7,9 +7,9 @@ import { useSeasonContext } from "@/components/animes/provider/useSeasonContext"
 import { FetchedAnime } from "@/interfaces/FetchedAnime";
 import { FaCircleExclamation } from "react-icons/fa6";
 import { useNotifications } from "@/hooks/useNotifications";
-import { SeasonMAL } from "@/interfaces/AnimeMAL";
-import { GroupTelegram } from "@/interfaces/GroupTelegram";
 import { GroupsSelect } from "@/components/animes/shared/GroupsSelect";
+import { SeasonMAL } from "@/interfaces/SeasonMAL";
+import { GroupDTO } from "@/schemas/generated/model";
 
 interface Props {
     opened: boolean;
@@ -20,7 +20,7 @@ interface Props {
         fetchedAnimes: FetchedAnime[],
         year: number,
         season: SeasonMAL,
-        groups: GroupTelegram[],
+        groups: GroupDTO[],
     ) => Promise<void>;
     emptyAnimeMessageFn: (fetchedAnimes: FetchedAnime[], year: number, season: SeasonMAL) => FetchedAnime[];
 }
@@ -42,7 +42,7 @@ export const ModalSendMessagesBase = ({
     const emptyPreviewMessages = emptyAnimeMessageFn(fetchedAnimes, year, season);
 
     const getFullNameAnime = (fetchedAnime: FetchedAnime) => {
-        if (fetchedAnime.animeMal.alternative_titles.en) {
+        if (fetchedAnime.animeMal.alternative_titles?.en) {
             return `${fetchedAnime.animeMal.alternative_titles.en} (${fetchedAnime.animeMal.title})`;
         }
         return `${fetchedAnime.animeMal.title}`;
@@ -50,7 +50,7 @@ export const ModalSendMessagesBase = ({
 
     const handleSendMessages = () => {
         showSuccess("Enviando suas mensagens em segundo plano. Pode continuar navegando");
-        const groupsToSend = groups?.filter((g) => selectedGroups.includes(g.groupId));
+        const groupsToSend = groups?.filter((g) => selectedGroups.includes(g.groupId!));
         if (groupsToSend && groupsToSend.length > 0) {
             sendMessageFn(fetchedAnimes, year, season, groupsToSend)
                 .then(() => showSuccess("Mensagens enviadas com sucesso"))

@@ -11,10 +11,10 @@ import { useSeasonContext } from "@/components/animes/provider/useSeasonContext"
 import { ModalAddSeason } from "@/components/animes/modals/ModalAddSeason";
 import { useDisclosure } from "@mantine/hooks";
 import { ModalRemoveSeason } from "@/components/animes/modals/ModalRemoveSeason";
-import { AnimeBackend } from "@/interfaces/AnimeBackend";
 import { FaPlusSquare } from "react-icons/fa";
 import { useQueryClient } from "@tanstack/react-query";
 import { getSeasonInPortuguese } from "@/utils/MyAnimeListUtils";
+import { AnimeDTO } from "@/schemas/generated/model";
 
 interface ActionIconAddProps {
     onClickCurrent: () => void;
@@ -27,7 +27,7 @@ interface ActionIconExistProps {
 }
 
 interface IconSeasonsProps {
-    animeBackend: AnimeBackend;
+    animeBackend: AnimeDTO;
 }
 
 export const CardAnimeList = ({
@@ -70,13 +70,13 @@ export const CardAnimeList = ({
                 saveAnimeSeason(
                     {
                         userId: session?.userId!,
-                        idAnime: animeMal.id.toString(),
+                        idAnime: animeMal.id,
                         season: season,
                         year: year,
                     },
                     {
                         onSuccess: (data) => {
-                            updateOnList(index, data);
+                            updateOnList(index, data.data);
                             updateCalendarList();
                             showSuccess("Anime adicionado ao calendário!");
                         },
@@ -185,7 +185,7 @@ const IconSeasons = ({ animeBackend }: IconSeasonsProps) => {
             <>
                 <Text fz={14}>Temporadas:</Text>
                 <List>
-                    {animeBackend.animeSeasons.map((s) => (
+                    {animeBackend.animeSeasons?.map((s) => (
                         <List.Item
                             key={s.season.season + s.season.year}
                             fz={14}

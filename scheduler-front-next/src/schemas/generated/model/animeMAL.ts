@@ -12,17 +12,20 @@ import type { MainPicture } from "./mainPicture";
 import type { StartSeason } from "./startSeason";
 
 export interface AnimeMAL {
-    id?: number;
-    title?: string;
+    id: number;
+    /** @minLength 1 */
+    title: string;
     alternative_titles?: AnimeMALAlternativeTitles;
     mean?: number;
     main_picture?: MainPicture;
     broadcast?: Broadcast;
     start_season?: StartSeason;
     media_type?: string;
-    genres?: Genre[];
+    /** @minItems 1 */
+    genres: Genre[];
     alternativeTitles?: AlternativeTitles;
     mainPicture?: MainPicture;
     startSeason?: StartSeason;
-    mediaType?: string;
+    /** @minLength 1 */
+    mediaType: string;
 }

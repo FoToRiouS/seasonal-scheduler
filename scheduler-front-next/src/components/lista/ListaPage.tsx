@@ -7,9 +7,9 @@ import { CardAnimeList } from "@/components/animes/cards/CardAnimeList";
 import { useState } from "react";
 import { FetchedAnime } from "@/interfaces/FetchedAnime";
 import { ListCardAnime } from "@/components/animes/cards/ListCardAnime";
-import { SeasonMAL } from "@/interfaces/AnimeMAL";
 import { AnimeSearchControls } from "@/components/animes/shared/AnimeSearchControls";
 import { useSeasonContext } from "@/components/animes/provider/useSeasonContext";
+import { SeasonMAL } from "@/interfaces/SeasonMAL";
 
 export const ListaPage = () => {
     useSetActivePage("list");

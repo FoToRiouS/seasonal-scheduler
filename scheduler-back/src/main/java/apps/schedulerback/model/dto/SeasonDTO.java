@@ -1,4 +1,7 @@
 package apps.schedulerback.model.dto;
 
-public record SeasonDTO(Long year, String season) {
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
+public record SeasonDTO(@NotNull Long year, @NotBlank String season) {
 }

@@ -19,7 +19,7 @@ export const ModalSendUniqueMessage = ({ opened, onClose, fetchedAnime }: Props)
 
     const animeSeason = useMemo(
         () =>
-            fetchedAnime.animeBackend?.animeSeasons.find(
+            fetchedAnime.animeBackend?.animeSeasons?.find(
                 (as) => as.season.year === year && as.season.season === season,
             ),
         [fetchedAnime, year, season],

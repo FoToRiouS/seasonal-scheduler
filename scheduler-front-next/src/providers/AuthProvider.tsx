@@ -1,8 +1,8 @@
 "use client";
 import { Session } from "next-auth";
 import { createContext } from "react";
-import { User } from "@/interfaces/User";
 import { useGetUser } from "@/queries/UserQueries";
+import { UserDTO } from "@/schemas/generated/model";
 
 type Props = {
     session: Session | null; //Sessão que vem do SSR
@@ -10,7 +10,7 @@ type Props = {
 
 interface AuthContext {
     session: Session | null | undefined;
-    user: User | null | undefined;
+    user: UserDTO | null | undefined;
 }
 
 export const AuthContext = createContext<AuthContext>({ session: null, user: null });

@@ -1,6 +1,6 @@
-import { SeasonMAL } from "@/interfaces/AnimeMAL";
+import { SeasonMAL } from "@/interfaces/SeasonMAL";
 
-export function getSeasonInPortuguese(animeSeason: SeasonMAL) {
+export function getSeasonInPortuguese(animeSeason: string) {
     switch (animeSeason) {
         case "summer":
             return "Verão";

@@ -1,11 +1,11 @@
 import { Avatar, Box, Center, Overlay, Text } from "@mantine/core";
-import { User } from "@/interfaces/User";
 import { useState } from "react";
 import { useDisclosure } from "@mantine/hooks";
 import { ModalProfileImages } from "@/components/perfil/ModalProfileImages";
+import { UserDTO } from "@/schemas/generated/model";
 
 interface Props {
-    user: User | undefined;
+    user: UserDTO | undefined;
 }
 
 export const ProfileImage = ({ user }: Props) => {

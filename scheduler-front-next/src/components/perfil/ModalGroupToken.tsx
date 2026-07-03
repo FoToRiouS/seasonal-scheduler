@@ -20,11 +20,14 @@ export const ModalGroupToken = ({ opened, onClose }: Props) => {
 
     useEffect(() => {
         if (opened) {
-            generateGroupToken(session!.userId, {
-                onSuccess: (token) => {
-                    setToken(token);
+            generateGroupToken(
+                { userId: session!.userId },
+                {
+                    onSuccess: (data) => {
+                        setToken(data.data);
+                    },
                 },
-            });
+            );
         } else {
             setToken("");
         }

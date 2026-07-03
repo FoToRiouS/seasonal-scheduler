@@ -6,7 +6,10 @@
  */
 
 export interface AuthenticationResponseDTO {
-    accessToken?: string;
-    refreshToken?: string;
-    userId?: string;
+    /** @minLength 1 */
+    accessToken: string;
+    /** @minLength 1 */
+    refreshToken: string;
+    /** @minLength 1 */
+    userId: string;
 }

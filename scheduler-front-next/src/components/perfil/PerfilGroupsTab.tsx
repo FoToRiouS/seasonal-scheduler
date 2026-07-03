@@ -5,10 +5,10 @@ import { useUserSession } from "@/hooks/useUserSession";
 import { useDisclosure } from "@mantine/hooks";
 import { ModalGroup } from "@/components/perfil/ModalGroup";
 import { useMemo, useState } from "react";
-import { GroupTelegram } from "@/interfaces/GroupTelegram";
 import { modals } from "@mantine/modals";
 import { useNotifications } from "@/hooks/useNotifications";
 import { ModalGroupToken } from "@/components/perfil/ModalGroupToken";
+import { GroupDTO } from "@/schemas/generated/model";
 
 export const PerfilGroupsTab = () => {
     const { session } = useUserSession();
@@ -17,12 +17,15 @@ export const PerfilGroupsTab = () => {
 
     const [openedGroupModal, { open: openGroupModal, close: closeGroupModal }] = useDisclosure(false);
     const [openedGroupToken, { open: openGroupToken, close: closeGroupToken }] = useDisclosure(false);
-    const [selectedGroup, setSelectedGroup] = useState<GroupTelegram | null>();
+    const [selectedGroup, setSelectedGroup] = useState<GroupDTO | null>();
     const { mutate: deleteGroup } = useDeleteGroup(session?.userId);
 
-    const orderedGroups = useMemo(() => groups?.sort((a, b) => a.name.localeCompare(b.name)), [groups]);
+    const orderedGroups = useMemo(
+        () => groups?.sort((a, b) => (a.name ?? "").localeCompare(b.name ?? "")),
+        [groups],
+    );
 
-    const handleDelete = (group: GroupTelegram) => {
+    const handleDelete = (group: GroupDTO) => {
         modals.openConfirmModal({
             title: "Excluir Grupo",
             centered: true,
@@ -30,7 +33,7 @@ export const PerfilGroupsTab = () => {
             labels: { confirm: "Excluir", cancel: "Cancelar" },
             confirmProps: { color: "red" },
             onConfirm: () => {
-                deleteGroup(group.id, {
+                deleteGroup(group.id!, {
                     onError: showError,
                     onSuccess: () => {
                         showSuccess("Grupo excluido com sucesso!");

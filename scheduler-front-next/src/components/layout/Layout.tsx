@@ -60,7 +60,7 @@ export const Layout = ({ children }: LayoutProps) => {
                     src={user?.profileImageSrc}
                 />
             ),
-            label: username,
+            label: username ?? "",
             atRight: true,
             subItems: [
                 { key: "sub-profile", link: "/perfil", label: "Perfil", icon: <CgProfile /> },

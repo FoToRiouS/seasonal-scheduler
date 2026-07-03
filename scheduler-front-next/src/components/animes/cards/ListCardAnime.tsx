@@ -1,9 +1,9 @@
 import { FetchedAnime } from "@/interfaces/FetchedAnime";
 import { ReactNode, useEffect } from "react";
 import { useListState } from "@mantine/hooks";
-import { AnimeBackend } from "@/interfaces/AnimeBackend";
 import { Center, SimpleGrid } from "@mantine/core";
 import { DefaultCardAnimeProps } from "@/components/animes/cards/CardAnime";
+import { AnimeDTO } from "@/schemas/generated/model";
 
 interface Props {
     fetchedAnimes: FetchedAnime[] | undefined;
@@ -17,7 +17,7 @@ export const ListCardAnime = ({ fetchedAnimes, children }: Props) => {
         handlers.setState(fetchedAnimes || []);
     }, [fetchedAnimes]);
 
-    const updateOnList = (index: number, animeBack: AnimeBackend | null) => {
+    const updateOnList = (index: number, animeBack: AnimeDTO | null) => {
         handlers.setItemProp(index, "animeBackend", animeBack);
     };
 

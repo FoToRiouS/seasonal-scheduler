@@ -1,23 +1,23 @@
-import { UserRegister } from "@/interfaces/UserRegister";
-import {
-    getUser,
-    registerUser,
-    updatePassword,
-    updateProfile,
-    updateProfileImage,
-} from "@/actions/UserActions";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { resolveServerAction } from "@/service/BackendService";
-import { User } from "@/interfaces/User";
-import { UserUpdateProfile } from "@/interfaces/UserUpdateProfile";
-import { UserUpdatePassword } from "@/interfaces/UserUpdatePassword";
-import { UserUpdateProfileImage } from "@/interfaces/UserUpdateProfileImage";
+import {
+    userGetById,
+    userRegister,
+    userUpdatePassword,
+    userUpdateProfile,
+    userUpdateProfileImage,
+} from "@/schemas/generated/api";
+import {
+    UpdatePasswordDTO,
+    UpdateProfileDTO,
+    UpdateProfileImageDTO,
+    UserRegisterDTO,
+} from "@/schemas/generated/model";
 
 export const useRegisterUser = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (user: UserRegister) => resolveServerAction(registerUser)(user),
+        mutationFn: (user: UserRegisterDTO) => userRegister(user),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["users"] });
         },
@@ -25,10 +25,16 @@ export const useRegisterUser = () => {
 };
 
 export const useGetUser = (id?: string) => {
-    return useQuery<User>({
+    return useQuery({
         queryKey: ["user", id],
-        queryFn: () => resolveServerAction(getUser)(id),
+        queryFn: () => {
+            if (!id) {
+                throw new Error("User ID is required");
+            }
+            return userGetById(id);
+        },
         staleTime: 60000,
+        select: (data) => data.data,
         enabled: !!id,
     });
 };
@@ -37,7 +43,12 @@ export const useUpdateProfile = (id?: string) => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (payload: UserUpdateProfile) => resolveServerAction(updateProfile)(id, payload),
+        mutationFn: (payload: UpdateProfileDTO) => {
+            if (!id) {
+                throw new Error("User ID is required");
+            }
+            return userUpdateProfile(id, payload);
+        },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["users"] });
             queryClient.invalidateQueries({ queryKey: ["user", id] });
@@ -47,7 +58,12 @@ export const useUpdateProfile = (id?: string) => {
 
 export const useUpdatePassword = (id?: string) => {
     return useMutation({
-        mutationFn: (payload: UserUpdatePassword) => resolveServerAction(updatePassword)(id, payload),
+        mutationFn: (payload: UpdatePasswordDTO) => {
+            if (!id) {
+                throw new Error("User ID is required");
+            }
+            return userUpdatePassword(id, payload);
+        },
     });
 };
 
@@ -55,8 +71,12 @@ export const useUpdateProfileImage = (id?: string) => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (imageSrc: UserUpdateProfileImage) =>
-            resolveServerAction(updateProfileImage)(id, imageSrc),
+        mutationFn: (imageSrc: UpdateProfileImageDTO) => {
+            if (!id) {
+                throw new Error("User ID is required");
+            }
+            return userUpdateProfileImage(id, imageSrc);
+        },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["users"] });
             queryClient.invalidateQueries({ queryKey: ["user", id] });

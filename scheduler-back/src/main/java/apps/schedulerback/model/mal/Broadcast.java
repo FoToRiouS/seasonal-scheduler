@@ -1,8 +1,10 @@
 package apps.schedulerback.model.mal;
 
+import jakarta.validation.constraints.NotBlank;
+
 import java.io.Serializable;
 
 public record Broadcast(
-        String day_of_the_week,
-        String start_time
+        @NotBlank String day_of_the_week,
+        @NotBlank String start_time
 ) implements Serializable {}

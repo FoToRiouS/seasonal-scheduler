@@ -1,23 +1,22 @@
 import { Button, Group, Modal, NumberInput, Select, Stack } from "@mantine/core";
 import React from "react";
-import { AnimeMAL, SeasonMAL } from "@/interfaces/AnimeMAL";
 import { useSaveAnimeSeason } from "@/queries/AnimeQueries";
-import { AnimeSeasonSaveDTO } from "@/interfaces/AnimeSeasonSaveDTO";
 import { useUserSession } from "@/hooks/useUserSession";
 import { useNotifications } from "@/hooks/useNotifications";
-import { AnimeBackend } from "@/interfaces/AnimeBackend";
 import { useForm } from "@mantine/form";
 import { z } from "zod/v4";
 import { zod4Resolver } from "mantine-form-zod-resolver";
 import { useSeasonContext } from "@/components/animes/provider/useSeasonContext";
 import { getSeasonInPortuguese } from "@/utils/MyAnimeListUtils";
+import { AnimeDTO, AnimeMAL, AnimeSaveDTO } from "@/schemas/generated/model";
+import { SeasonMAL } from "@/interfaces/SeasonMAL";
 
 interface Props {
     opened: boolean;
     onClose: () => void;
     anime: AnimeMAL;
     index: number;
-    updateOnList: (index: number, animeBack: AnimeBackend | null) => void;
+    updateOnList: (index: number, animeBack: AnimeDTO | null) => void;
     onSuccess?: () => void;
 }
 
@@ -51,9 +50,9 @@ export const ModalAddSeason: React.FC<Props> = ({
     const { mutate: save, isPending: isSaving } = useSaveAnimeSeason();
 
     const handleSaveAnimeSeason = (year: number, season: SeasonMAL) => {
-        const animeSeason: AnimeSeasonSaveDTO = {
+        const animeSeason: AnimeSaveDTO = {
             userId: session!.userId,
-            idAnime: anime!.id.toString(),
+            idAnime: anime!.id,
             year: +year,
             season: season!,
         };
@@ -61,7 +60,7 @@ export const ModalAddSeason: React.FC<Props> = ({
             onSuccess: (data) => {
                 showSuccess(`Anime adicionado a temporada ${getSeasonInPortuguese(season!)}/${year}!`);
                 onClose();
-                updateOnList(index, data);
+                updateOnList(index, data.data);
                 if (onSuccess) {
                     onSuccess();
                 }

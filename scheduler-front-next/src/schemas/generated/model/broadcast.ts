@@ -6,6 +6,8 @@
  */
 
 export interface Broadcast {
-    day_of_the_week?: string;
-    start_time?: string;
+    /** @minLength 1 */
+    day_of_the_week: string;
+    /** @minLength 1 */
+    start_time: string;
 }

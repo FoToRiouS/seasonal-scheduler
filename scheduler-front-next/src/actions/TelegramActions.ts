@@ -2,11 +2,10 @@
 
 import { fetchTelegram } from "@/service/TelegramService";
 import { FetchedAnime } from "@/interfaces/FetchedAnime";
-import { GroupTelegram } from "@/interfaces/GroupTelegram";
 import { orderByEnglishName, orderByOriginalName, orderByRating } from "@/utils/AnimeOrders";
-import { AnimeSeason } from "@/interfaces/AnimeSeason";
 import { getSeasonInPortuguese } from "@/utils/MyAnimeListUtils";
-import { SeasonMAL } from "@/interfaces/AnimeMAL";
+import { SeasonMAL } from "@/interfaces/SeasonMAL";
+import { AnimeSeasonDTO, GroupDTO } from "@/schemas/generated/model";
 
 function escapeHtml(html: string): string {
     let escapedHtml = html;
@@ -46,7 +45,7 @@ const handleSendMessage = (group: string, animeSeason: FetchedAnime, message: st
     const { animeMal, animeBackend } = animeSeason;
 
     const title = animeMal.title;
-    const enTitle = animeMal.alternative_titles.en;
+    const enTitle = animeMal.alternative_titles?.["en"] || undefined;
     const formattedTitle = enTitle ? `${enTitle} (${title})` : `${title}`;
     const formattedRating = animeMal.mean ? `<b>Nota MAL:</b> ${animeMal.mean} %0A%0A` : "";
     const formattedServices =
@@ -56,7 +55,7 @@ const handleSendMessage = (group: string, animeSeason: FetchedAnime, message: st
 
     let caption = `<b>${formattedTitle}</b>` + "%0A%0A" + formattedRating + formattedServices + message;
     caption = escapeHtml(caption);
-    sendPhoto(group, animeMal.main_picture.large, caption).then(undefined);
+    sendPhoto(group, animeMal.main_picture!.large, caption).then(undefined);
 };
 
 const timer = (ms: number) => new Promise((res) => setTimeout(res, ms));
@@ -65,17 +64,17 @@ export const sendTextMessage = async (
     fetchedAnime: FetchedAnime,
     year: number,
     season: SeasonMAL,
-    groups: GroupTelegram[] | string[],
-    textName: Exclude<keyof AnimeSeason, "season">,
+    groups: GroupDTO[] | string[],
+    textName: Exclude<keyof AnimeSeasonDTO, "season">,
 ) => {
-    const animeSeasonToSend = fetchedAnime.animeBackend?.animeSeasons.find(
+    const animeSeasonToSend = fetchedAnime.animeBackend?.animeSeasons?.find(
         (as) => as.season.year === year && as.season.season === season,
     );
 
     for (const group of groups) {
         const groupId = typeof group === "string" ? group : group.groupId;
 
-        if (animeSeasonToSend && animeSeasonToSend[textName]) {
+        if (animeSeasonToSend && animeSeasonToSend[textName] && groupId) {
             handleSendMessage(groupId, fetchedAnime, animeSeasonToSend[textName]);
         }
     }
@@ -85,9 +84,9 @@ export const sendTextMessages = async (
     fetchedAnimes: FetchedAnime[],
     year: number,
     season: SeasonMAL,
-    groups: GroupTelegram[] | string[],
+    groups: GroupDTO[] | string[],
     orderStrategy: "rating" | "englishName" | "originalName",
-    textName: Exclude<keyof AnimeSeason, "season">,
+    textName: Exclude<keyof AnimeSeasonDTO, "season">,
 ) => {
     let sortedList;
     switch (orderStrategy) {
@@ -105,14 +104,16 @@ export const sendTextMessages = async (
     for (const group of groups) {
         const groupId = typeof group === "string" ? group : group.groupId;
 
-        await handleSendHashtag(groupId, textName === "previewText" ? "preview" : "review", year, season);
-        for (const anime of sortedList) {
-            const animeSeasonToSend = anime.animeBackend?.animeSeasons.find(
-                (as) => as.season.year === year && as.season.season === season,
-            );
-            if (animeSeasonToSend && animeSeasonToSend[textName]) {
-                handleSendMessage(groupId, anime, animeSeasonToSend[textName]);
-                await timer(3500);
+        if (groupId) {
+            await handleSendHashtag(groupId, textName === "previewText" ? "preview" : "review", year, season);
+            for (const anime of sortedList) {
+                const animeSeasonToSend = anime.animeBackend?.animeSeasons?.find(
+                    (as) => as.season.year === year && as.season.season === season,
+                );
+                if (animeSeasonToSend && animeSeasonToSend[textName]) {
+                    handleSendMessage(groupId, anime, animeSeasonToSend[textName]);
+                    await timer(3500);
+                }
             }
         }
     }
@@ -122,7 +123,7 @@ export const sendPreviewMessages = async (
     fetchedAnimes: FetchedAnime[],
     year: number,
     season: SeasonMAL,
-    groups: GroupTelegram[],
+    groups: GroupDTO[],
 ) => {
     return sendTextMessages(fetchedAnimes, year, season, groups, "englishName", "previewText");
 };
@@ -131,7 +132,7 @@ export const sendReviewMessages = async (
     fetchedAnimes: FetchedAnime[],
     year: number,
     season: SeasonMAL,
-    groups: GroupTelegram[],
+    groups: GroupDTO[],
 ) => {
     return sendTextMessages(fetchedAnimes, year, season, groups, "rating", "reviewText");
 };

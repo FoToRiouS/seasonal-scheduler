@@ -1,6 +1,6 @@
 import { FetchedAnime } from "@/interfaces/FetchedAnime";
-import { SeasonMAL } from "@/interfaces/AnimeMAL";
-import { AnimeSeason } from "@/interfaces/AnimeSeason";
+import { SeasonMAL } from "@/interfaces/SeasonMAL";
+import { AnimeSeasonDTO } from "@/schemas/generated/model";
 
 const emptyPreviews = (fetchedAnimes: FetchedAnime[], year: number, season: SeasonMAL): FetchedAnime[] => {
     if (!fetchedAnimes) {
@@ -12,7 +12,7 @@ const emptyPreviews = (fetchedAnimes: FetchedAnime[], year: number, season: Seas
             return false;
         }
 
-        return fetchedAnime.animeBackend.animeSeasons.some((animeSeason: AnimeSeason) => {
+        return fetchedAnime.animeBackend.animeSeasons.some((animeSeason: AnimeSeasonDTO) => {
             return (
                 animeSeason.season.year === year &&
                 animeSeason.season.season === season &&
@@ -32,7 +32,7 @@ const emptyReviews = (fetchedAnimes: FetchedAnime[], year: number, season: Seaso
             return false;
         }
 
-        return fetchedAnime.animeBackend.animeSeasons.some((animeSeason: AnimeSeason) => {
+        return fetchedAnime.animeBackend.animeSeasons.some((animeSeason: AnimeSeasonDTO) => {
             return (
                 animeSeason.season.year === year &&
                 animeSeason.season.season === season &&

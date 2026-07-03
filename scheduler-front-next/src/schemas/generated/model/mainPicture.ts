@@ -6,6 +6,8 @@
  */
 
 export interface MainPicture {
-    medium?: string;
-    large?: string;
+    /** @minLength 1 */
+    medium: string;
+    /** @minLength 1 */
+    large: string;
 }

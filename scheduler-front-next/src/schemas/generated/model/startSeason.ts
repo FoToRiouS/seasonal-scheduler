@@ -7,6 +7,6 @@
 import type { StartSeasonSeason } from "./startSeasonSeason";
 
 export interface StartSeason {
-    year?: number;
-    season?: StartSeasonSeason;
+    year: number;
+    season: StartSeasonSeason;
 }

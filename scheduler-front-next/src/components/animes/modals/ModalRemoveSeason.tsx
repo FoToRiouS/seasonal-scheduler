@@ -1,9 +1,7 @@
 import { Button, ComboboxData, Group, Modal, Select, Stack, Text } from "@mantine/core";
 import React, { useMemo } from "react";
-import { SeasonMAL, StartSeason } from "@/interfaces/AnimeMAL";
 import { useDeleteAnimeSeason } from "@/queries/AnimeQueries";
 import { useNotifications } from "@/hooks/useNotifications";
-import { AnimeBackend } from "@/interfaces/AnimeBackend";
 import { useForm } from "@mantine/form";
 import { FetchedAnime } from "@/interfaces/FetchedAnime";
 import { modals } from "@mantine/modals";
@@ -12,6 +10,8 @@ import { z } from "zod/v4";
 import { zod4Resolver } from "mantine-form-zod-resolver";
 import { useAnimesUtils } from "@/hooks/useAnimesOrders";
 import { getSeasonInPortuguese } from "@/utils/MyAnimeListUtils";
+import { AnimeDTO, StartSeason } from "@/schemas/generated/model";
+import { SeasonMAL } from "@/interfaces/SeasonMAL";
 
 interface Props {
     opened: boolean;
@@ -19,7 +19,7 @@ interface Props {
     onAfterDelete?: () => void;
     fetchedAnime: FetchedAnime;
     index: number;
-    updateOnList: (index: number, animeBack: AnimeBackend | null) => void;
+    updateOnList: (index: number, animeBack: AnimeDTO | null) => void;
     afterDeleteOptions?: AfterDelete;
 }
 
@@ -91,9 +91,9 @@ export const ModalRemoveSeason: React.FC<Props> = ({
                                 `Anime excluído do calendário ${getSeasonInPortuguese(startSeason.season)}/${startSeason.year}!`,
                             );
                             if (needRemove) {
-                                removeAnimeFromList(data);
+                                removeAnimeFromList(data.data);
                             } else {
-                                updateOnList(index, data);
+                                updateOnList(index, data.data);
                             }
                         } else {
                             removeAnimeFromList(data);
@@ -112,7 +112,7 @@ export const ModalRemoveSeason: React.FC<Props> = ({
         });
     };
 
-    const removeAnimeFromList = (animeBack: AnimeBackend | null) => {
+    const removeAnimeFromList = (animeBack: AnimeDTO | null) => {
         if (afterDeleteOptions && afterDeleteOptions.removeFromList) {
             afterDeleteOptions.removeFromList(index);
         } else {

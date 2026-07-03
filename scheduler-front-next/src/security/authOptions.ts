@@ -1,10 +1,9 @@
-import NextAuth from "next-auth";
-import { AuthenticationRequest } from "@/interfaces/AuthenticationRequest";
+import NextAuth, { User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { login, refreshToken } from "@/actions/UserActions";
 import { InvalidSigninError } from "@/security/InvalidSigninError";
-import { AuthenticationResponse } from "@/interfaces/AuthenticationResponse";
 import { jwtDecode } from "jwt-decode";
+import { userLogin, userRefreshToken } from "@/schemas/generated/api";
+import { AuthenticationRequestDTO, AuthenticationResponseDTO } from "@/schemas/generated/model";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
     session: {
@@ -20,22 +19,21 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             },
             async authorize(credentials) {
                 const payload = {
-                    username: credentials?.username,
+                    login: credentials?.username,
                     password: credentials?.password,
-                } as unknown as AuthenticationRequest;
+                } as AuthenticationRequestDTO;
 
-                const res = await login(payload);
-
-                const ret = await res.json();
-                if (!res.ok) {
-                    throw new InvalidSigninError(ret.exceptionName, ret.message);
+                try {
+                    const res = await userLogin(payload);
+                    const user = res.data as User;
+                    if (user) {
+                        return user;
+                    }
+                } catch (e) {
+                    const error = e as Error;
+                    const parsedError = JSON.parse(error.message);
+                    throw new InvalidSigninError(parsedError.exceptionName, parsedError.message);
                 }
-
-                const user = ret;
-                if (res.ok && user) {
-                    return user;
-                }
-
                 return null;
             },
         }),
@@ -43,7 +41,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     callbacks: {
         async jwt({ token, user, account }) {
             if (account) {
-                const auth = user as unknown as AuthenticationResponse;
+                const auth = user as unknown as AuthenticationResponseDTO;
                 token.userId = auth.userId;
                 token.accessToken = auth.accessToken;
                 token.refreshToken = auth.refreshToken;
@@ -53,19 +51,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 return token;
             } else {
                 //Verifica se o token expirou e tenta dar refresh no access token baseado no refresh token
-                const res = await refreshToken(token.refreshToken); //JwtFetchs.refreshToken();
-                if (res.ok) {
-                    const auth = (await res.json()) as AuthenticationResponse;
+                try {
+                    const res = await userRefreshToken(token.refreshToken);
+                    const auth = res.data;
 
-                    token.accessToken = auth.accessToken;
-                    token.refreshToken = auth.refreshToken;
-                    token.expireAt = jwtDecode<{ exp: number }>(auth.accessToken).exp * 1000;
+                    token.accessToken = auth.accessToken!;
+                    token.refreshToken = auth.refreshToken!;
+                    token.expireAt = jwtDecode<{ exp: number }>(auth.accessToken!).exp * 1000;
                     return token;
-                } else {
-                    if (res.status !== 401) {
-                        console.error("Error refreshing access token", res);
-                    }
-                    // await AuthFetchs.signOut()
+                } catch {
                     return { ...token, error: "RefreshAccessTokenError" as const };
                 }
             }

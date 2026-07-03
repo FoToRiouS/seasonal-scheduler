@@ -6,6 +6,7 @@
  */
 
 export interface SeasonDTO {
-    year?: number;
-    season?: string;
+    year: number;
+    /** @minLength 1 */
+    season: string;
 }

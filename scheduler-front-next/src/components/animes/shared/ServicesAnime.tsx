@@ -1,9 +1,9 @@
 import { Group, Image, ThemeIcon, Tooltip } from "@mantine/core";
 import React from "react";
-import { AnimeBackend } from "@/interfaces/AnimeBackend";
+import { AnimeDTO } from "@/schemas/generated/model";
 
 interface Props {
-    animeBack: AnimeBackend;
+    animeBack: AnimeDTO;
 }
 
 export const ServicesAnime = ({ animeBack }: Props) => {
@@ -11,7 +11,7 @@ export const ServicesAnime = ({ animeBack }: Props) => {
 
     return (
         <Group m={"sm"} gap={10}>
-            {services.map((s) => (
+            {services?.map((s) => (
                 <Tooltip key={s.id} label={s.name}>
                     <ThemeIcon key={s.id} color={"dark.9"} radius={"xl"} size={"lg"} p={3}>
                         <Image src={s.imageSrc} />

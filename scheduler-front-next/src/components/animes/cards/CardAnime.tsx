@@ -1,13 +1,12 @@
-import { AnimeMAL } from "@/interfaces/AnimeMAL";
 import { AspectRatio, Box, Image as ImageMantine, Stack, Text, Title as TitleMantine } from "@mantine/core";
 import { FetchedAnime } from "@/interfaces/FetchedAnime";
-import { AnimeBackend } from "@/interfaces/AnimeBackend";
 import { PropsWithChildren } from "react";
+import { AnimeDTO, AnimeMAL } from "@/schemas/generated/model";
 
 export interface DefaultCardAnimeProps {
     fetchedAnime: FetchedAnime;
     index: number;
-    updateOnList: (index: number, animeBack: AnimeBackend | null) => void;
+    updateOnList: (index: number, animeBack: AnimeDTO | null) => void;
     removeFromList: (index: number) => void;
 }
 
@@ -27,7 +26,7 @@ export const CardAnime = ({ children, anime }: PropsWithChildren<WithAnimeMal>) 
                 w={"100%"}
             >
                 <ImageMantine
-                    src={anime.main_picture.large}
+                    src={anime.main_picture?.large}
                     alt={anime.title}
                     className={"transition-transform duration-300 group-hover:scale-105"}
                 />
@@ -48,15 +47,15 @@ export const CardAnime = ({ children, anime }: PropsWithChildren<WithAnimeMal>) 
 };
 
 const Title = ({ anime }: WithAnimeMal) => {
-    if (anime.alternative_titles.en) {
+    if (anime.alternative_titles?.en) {
     }
 
     return (
         <Stack gap={0}>
-            {anime.alternative_titles.en ?
+            {anime.alternative_titles?.en ?
                 <>
                     <TitleMantine order={3} c={"white"} lineClamp={2}>
-                        {anime.alternative_titles.en}
+                        {anime.alternative_titles.en.toString()}
                     </TitleMantine>
                     <Text c={"dimmed"} fw={"bold"} lineClamp={2}>
                         {anime.title}

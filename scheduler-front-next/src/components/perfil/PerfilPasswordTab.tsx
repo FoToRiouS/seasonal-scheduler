@@ -4,9 +4,9 @@ import { useForm } from "@mantine/form";
 import { zod4Resolver } from "mantine-form-zod-resolver";
 import { useUpdatePassword } from "@/queries/UserQueries";
 import { useNotifications } from "@/hooks/useNotifications";
-import { UserUpdatePassword } from "@/interfaces/UserUpdatePassword";
 import { useDisclosure } from "@mantine/hooks";
 import { useUserSession } from "@/hooks/useUserSession";
+import { UpdatePasswordDTO } from "@/schemas/generated/model";
 
 const schema = z
     .object({
@@ -39,7 +39,7 @@ export const PerfilPasswordTab = () => {
     });
 
     const handleSubmit = (values: schemaType) => {
-        const payload: UserUpdatePassword = {
+        const payload: UpdatePasswordDTO = {
             oldPassword: values.oldPassword,
             newPassword: values.newPassword,
         };

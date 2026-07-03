@@ -66,7 +66,7 @@ public class UserController {
     }
 
     @PatchMapping("/profile-image/{id}")
-    public ResponseEntity<UserDTO> updatePassword(@PathVariable UUID id, @RequestBody UpdateProfileImageDTO profileImageSrc) {
+    public ResponseEntity<UserDTO> updateProfileImage(@PathVariable UUID id, @RequestBody UpdateProfileImageDTO profileImageSrc) {
         User user = userService.updateProfileImage(id, profileImageSrc.imageSrc());
         return ResponseEntity.ok(userMapper.toDto(user));
     }

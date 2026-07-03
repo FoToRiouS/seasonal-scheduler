@@ -2,7 +2,6 @@
 import { useSetActivePage } from "@/hooks/useSetActivePage";
 import { Button, Center, Image, PasswordInput, Stack, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { UserRegister } from "@/interfaces/UserRegister";
 import { z } from "zod/v4";
 import { zod4Resolver } from "mantine-form-zod-resolver";
 import { useMask } from "@react-input/mask";
@@ -10,6 +9,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { useRegisterUser } from "@/queries/UserQueries";
 import { useNotifications } from "@/hooks/useNotifications";
 import { useRouter } from "next/navigation";
+import { UserRegisterDTO } from "@/schemas/generated/model";
 
 export const CadastroPage = () => {
     useSetActivePage("register");
@@ -51,7 +51,7 @@ export const CadastroPage = () => {
         validate: zod4Resolver(schema),
     });
 
-    const handleSubmit = (user: UserRegister) => {
+    const handleSubmit = (user: UserRegisterDTO) => {
         registerUser(user, {
             onSuccess: (data) => {
                 showSuccess("Cadastro realizado com sucesso!");

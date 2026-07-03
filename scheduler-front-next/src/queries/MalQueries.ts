@@ -1,11 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import { getAnimesMalBySeason } from "@/actions/MalActions";
-import { resolveServerAction } from "@/service/BackendService";
-import { AnimeMAL, SeasonMAL } from "@/interfaces/AnimeMAL";
+import { myanimelistFindBySeason } from "@/schemas/generated/api";
+import { SeasonMAL } from "@/interfaces/SeasonMAL";
 
 export function useAnimesMalBySeason(year: number, season: SeasonMAL) {
-    return useQuery<AnimeMAL[]>({
-        queryFn: () => resolveServerAction(getAnimesMalBySeason)(year, season),
+    return useQuery({
+        queryFn: () => myanimelistFindBySeason(year, season),
         queryKey: ["animes-mal-season", year, season],
+        select: (data) => data.data,
     });
 }

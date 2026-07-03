@@ -4,11 +4,11 @@ import dayjs from "dayjs";
 import { useSeasonContext } from "@/components/animes/provider/useSeasonContext";
 import { FetchedAnime } from "@/interfaces/FetchedAnime";
 import { useEffect } from "react";
-import { SeasonMAL } from "@/interfaces/AnimeMAL";
 import { useAnimesUtils } from "@/hooks/useAnimesOrders";
 import { useDebouncedValue, useLocalStorage } from "@mantine/hooks";
 import { OrderStrategySelect } from "@/components/animes/shared/OrderStrategySelect";
 import { useQueryState } from "nuqs";
+import { SeasonMAL } from "@/interfaces/SeasonMAL";
 
 interface Props {
     rawAnimesList: FetchedAnime[] | undefined;
@@ -34,7 +34,10 @@ export const AnimeSearchControls = ({ rawAnimesList, setControlledAnimeList }: P
             filtered = filtered.filter((a) => {
                 return (
                     a.animeMal.title.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
-                    a.animeMal.alternative_titles.en.toLowerCase().includes(debouncedSearch.toLowerCase())
+                    a.animeMal.alternative_titles?.en
+                        ?.toString()
+                        .toLowerCase()
+                        .includes(debouncedSearch.toLowerCase())
                 );
             });
         }

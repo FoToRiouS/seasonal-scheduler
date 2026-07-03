@@ -1,4 +1,7 @@
 package apps.schedulerback.model.dto;
 
-public record AnimeSeasonDTO(String animeId, SeasonDTO season, String previewText, String reviewText) {
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
+public record AnimeSeasonDTO(@NotBlank String animeId, @NotNull SeasonDTO season, String previewText, String reviewText) {
 }

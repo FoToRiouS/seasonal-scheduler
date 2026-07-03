@@ -1,8 +1,7 @@
 import { FetchedAnime } from "@/interfaces/FetchedAnime";
-import { AnimeSeason } from "@/interfaces/AnimeSeason";
-import { SeasonMAL } from "@/interfaces/AnimeMAL";
+import { AnimeSeasonDTO } from "@/schemas/generated/model";
 
-const seasonOrder: Record<SeasonMAL, number> = {
+const seasonOrder: Record<string, number> = {
     winter: 0,
     spring: 1,
     summer: 2,
@@ -22,13 +21,19 @@ const originalNameStrategy = (a: FetchedAnime, b: FetchedAnime) => {
 };
 
 const englishNameStrategy = (a: FetchedAnime, b: FetchedAnime) => {
-    const aName = a.animeMal.alternative_titles.en ? a.animeMal.alternative_titles.en : a.animeMal.title;
-    const bName = b.animeMal.alternative_titles.en ? b.animeMal.alternative_titles.en : b.animeMal.title;
+    const aName =
+        (a.animeMal.alternative_titles?.en as string) ?
+            (a.animeMal.alternative_titles?.en as string)
+        :   a.animeMal.title;
+    const bName =
+        (b.animeMal.alternative_titles?.en as string) ?
+            (b.animeMal.alternative_titles?.en as string)
+        :   b.animeMal.title;
 
     return aName.localeCompare(bName);
 };
 
-const animeSeasonStrategy = (a: AnimeSeason, b: AnimeSeason) => {
+const animeSeasonStrategy = (a: AnimeSeasonDTO, b: AnimeSeasonDTO) => {
     // Primeiro, compare os anos
     if (a.season.year !== b.season.year) {
         return a.season.year - b.season.year; // Ordena por ano ascendente
@@ -54,6 +59,6 @@ export const orderByEnglishName = (animesSeason: FetchedAnime[]) => {
     return [...animesSeason].sort(englishNameStrategy);
 };
 
-export const orderByAnimeSeason = (animesSeason: AnimeSeason[] | undefined) => {
+export const orderByAnimeSeason = (animesSeason: AnimeSeasonDTO[] | undefined) => {
     return animesSeason ? [...animesSeason].sort(animeSeasonStrategy) : [];
 };

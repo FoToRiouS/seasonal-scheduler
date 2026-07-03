@@ -17,16 +17,12 @@ import {
 } from "@mantine/core";
 import { useUpdateAnimeSeason } from "@/queries/AnimeQueries";
 import { FetchedAnime } from "@/interfaces/FetchedAnime";
-import { StartSeason } from "@/interfaces/AnimeMAL";
 import { FaX } from "react-icons/fa6";
 import { RatingAnime } from "@/components/animes/shared/RatingAnime";
 import { TextareaWithCounter } from "@/components/shared/TextareaWithCounter";
 import { ModalAddSeason } from "@/components/animes/modals/ModalAddSeason";
 import { useSeasonContext } from "@/components/animes/provider/useSeasonContext";
-import { AnimeSeason } from "@/interfaces/AnimeSeason";
-import { AnimeSeasonUpdateDTO } from "@/interfaces/AnimeSeasonUpdateDTO";
 import { useNotifications } from "@/hooks/useNotifications";
-import { AnimeBackend } from "@/interfaces/AnimeBackend";
 import { SelectWatchServices } from "@/components/animes/shared/selectWatchServices/SelectWatchServices";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
@@ -35,13 +31,14 @@ import { useAnimesUtils } from "@/hooks/useAnimesOrders";
 import classes from "./css/ModalAnime.module.css";
 import { ModalSendUniqueMessage } from "@/components/animes/modals/ModalSendUniqueMessage";
 import { getDayOfExhibition, getSeasonInPortuguese } from "@/utils/MyAnimeListUtils";
+import { AnimeDTO, AnimeSeasonDTO, AnimeUpdateDTO, StartSeason } from "@/schemas/generated/model";
 
 interface IModalAnimeProps {
     isOpen: boolean;
     onClose: () => void;
     fetchedAnime: FetchedAnime;
     index: number;
-    updateOnList: (index: number, animeBack: AnimeBackend | null) => void;
+    updateOnList: (index: number, animeBack: AnimeDTO | null) => void;
     removeFromList: (index: number) => void;
 }
 
@@ -73,12 +70,12 @@ export const ModalAnime = ({
         useDisclosure(false);
 
     const [animeBackendToUpdate, setAnimeBackendToUpdate] = useState(animeBackend!);
-    const [selectedAnimeSeason, setSelectedAnimeSeason] = useState<AnimeSeason>();
+    const [selectedAnimeSeason, setSelectedAnimeSeason] = useState<AnimeSeasonDTO>();
     const [selectedWatchServices, setSelectedWatchServices] = useState(
-        animeBackend?.watchServices.map((ws) => ws.id)!,
+        animeBackend?.watchServices?.map((ws) => ws.id)!,
     );
 
-    const { mutate: update, isPending: isUpdating } = useUpdateAnimeSeason();
+    const { mutate: update, isPending: isUpdating } = useUpdateAnimeSeason(animeBackend!.id!);
 
     const formTexts = useForm({
         mode: "uncontrolled",
@@ -89,7 +86,7 @@ export const ModalAnime = ({
     });
 
     useEffect(() => {
-        const selectedAnimeSeason = animeBackend?.animeSeasons.find(
+        const selectedAnimeSeason = animeBackend?.animeSeasons?.find(
             (as) => as.season.season === season && as.season.year === year,
         );
         if (selectedAnimeSeason) {
@@ -103,9 +100,9 @@ export const ModalAnime = ({
             // evitando que se percam informações que nao foram salvas
             setAnimeBackendToUpdate((prev) => ({
                 ...prev,
-                animeSeasons: animeBackend.animeSeasons.map((as) => {
+                animeSeasons: animeBackend.animeSeasons?.map((as) => {
                     // Tenta encontrar um animeSeason correspondente em prev
-                    const foundInPrev = prev.animeSeasons.find(
+                    const foundInPrev = prev.animeSeasons?.find(
                         (prevSeason) =>
                             prevSeason.season.season === as.season.season &&
                             prevSeason.season.year === as.season.year,
@@ -116,18 +113,18 @@ export const ModalAnime = ({
                 }),
             }));
 
-            const stillExistsSelected = animeBackend.animeSeasons.some(
+            const stillExistsSelected = animeBackend.animeSeasons?.some(
                 (as) =>
                     as.season.season === selectedAnimeSeason?.season.season &&
                     as.season.year === selectedAnimeSeason?.season.year,
             );
             if (!stillExistsSelected) {
-                setSelectedAnimeSeason(animeBackend.animeSeasons[0]);
+                setSelectedAnimeSeason(animeBackend.animeSeasons?.[0]);
             }
         }
     }, [animeBackend]);
 
-    const getUpdatedAnimeSeason = (): AnimeSeason | undefined => {
+    const getUpdatedAnimeSeason = (): AnimeSeasonDTO | undefined => {
         if (selectedAnimeSeason) {
             return {
                 ...selectedAnimeSeason,
@@ -137,7 +134,10 @@ export const ModalAnime = ({
         }
     };
 
-    const updateAnimeSeasons = (animeSeasons: AnimeSeason[], updatedAnimeSeason: AnimeSeason | undefined) => {
+    const updateAnimeSeasons = (
+        animeSeasons: AnimeSeasonDTO[],
+        updatedAnimeSeason: AnimeSeasonDTO | undefined,
+    ) => {
         return animeSeasons.map((as) =>
             (
                 as.season.season === updatedAnimeSeason?.season.season &&
@@ -148,12 +148,12 @@ export const ModalAnime = ({
         );
     };
 
-    const handleSelectAnimeSeason = (animeSeason: AnimeSeason) => {
+    const handleSelectAnimeSeason = (animeSeason: AnimeSeasonDTO) => {
         const updatedAnimeSeason = getUpdatedAnimeSeason();
 
         setAnimeBackendToUpdate((prev) => ({
             ...prev,
-            animeSeasons: updateAnimeSeasons(prev.animeSeasons, updatedAnimeSeason),
+            animeSeasons: updateAnimeSeasons(prev.animeSeasons ?? [], updatedAnimeSeason),
         }));
 
         setSelectedAnimeSeason(animeSeason);
@@ -169,16 +169,15 @@ export const ModalAnime = ({
     const handleUpdateAnimeSeason = () => {
         //Precisa ser feito, para evitar que os textos sejam atualizados memso sem trocar a temporada selecionada
         const updatedAnimeSeason = getUpdatedAnimeSeason();
-        const animeSeasonUpdate: AnimeSeasonUpdateDTO = {
-            animeBackId: animeBackend!.id,
+        const animeSeasonUpdate: AnimeUpdateDTO = {
             services: selectedWatchServices,
-            animeSeasons: updateAnimeSeasons(animeBackendToUpdate.animeSeasons, updatedAnimeSeason),
+            animeSeasons: updateAnimeSeasons(animeBackendToUpdate.animeSeasons ?? [], updatedAnimeSeason),
         };
 
         update(animeSeasonUpdate, {
             onSuccess: (data) => {
                 showSuccess("Informações foram salvas com sucesso!");
-                updateOnList(index, data);
+                updateOnList(index, data.data);
                 onClose();
             },
         });
@@ -212,7 +211,7 @@ export const ModalAnime = ({
                 <Flex h={600}>
                     <Box pos="relative">
                         <Center maw={500} style={{ overflow: "hidden" }}>
-                            <Image src={animeMal.main_picture.large} h={"100%"} w={"auto"} radius="md" />
+                            <Image src={animeMal.main_picture?.large} h={"100%"} w={"auto"} radius="md" />
                         </Center>
 
                         {animeMal.mean && (
@@ -230,10 +229,10 @@ export const ModalAnime = ({
                             pt={"xs"}
                         >
                             <Stack gap={0} pr="xl">
-                                {animeMal.alternative_titles.en ?
+                                {animeMal.alternative_titles?.en ?
                                     <>
                                         <Title order={4} c={"gray.9"}>
-                                            {animeMal.alternative_titles.en}
+                                            {animeMal.alternative_titles?.en.toString()}
                                         </Title>
                                         <Text c={"gray.6"} fw={400}>
                                             {animeMal.title}

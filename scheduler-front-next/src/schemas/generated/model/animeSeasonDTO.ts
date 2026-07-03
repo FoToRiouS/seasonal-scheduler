@@ -7,8 +7,9 @@
 import type { SeasonDTO } from "./seasonDTO";
 
 export interface AnimeSeasonDTO {
-    animeId?: string;
-    season?: SeasonDTO;
+    /** @minLength 1 */
+    animeId: string;
+    season: SeasonDTO;
     previewText?: string;
     reviewText?: string;
 }

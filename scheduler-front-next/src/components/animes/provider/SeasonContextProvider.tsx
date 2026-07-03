@@ -3,7 +3,7 @@ import React, { createContext } from "react";
 import { parseAsInteger, useQueryState } from "nuqs";
 import dayjs from "dayjs";
 import { getCurrentSeason } from "@/utils/MyAnimeListUtils";
-import { SeasonMAL } from "@/interfaces/AnimeMAL";
+import { SeasonMAL } from "@/interfaces/SeasonMAL";
 
 interface SeasonContextProviderProps {
     year: number;

@@ -25,26 +25,26 @@ import type {
 
 import { serverActionMutatorAuth } from "../mutators";
 
-export type updateProfileResponse200 = {
+export type userUpdateProfileResponse200 = {
     data: UserDTO;
     status: 200;
 };
 
-export type updateProfileResponseSuccess = updateProfileResponse200 & {
+export type userUpdateProfileResponseSuccess = userUpdateProfileResponse200 & {
     headers: Headers;
 };
-export type updateProfileResponse = updateProfileResponseSuccess;
+export type userUpdateProfileResponse = userUpdateProfileResponseSuccess;
 
-export const getUpdateProfileUrl = (id: string) => {
+export const getUserUpdateProfileUrl = (id: string) => {
     return `/api/user/profile/${id}`;
 };
 
-export const updateProfile = async (
+export const userUpdateProfile = async (
     id: string,
     updateProfileDTO: UpdateProfileDTO,
     options?: RequestInit,
-): Promise<updateProfileResponse> => {
-    return serverActionMutatorAuth<updateProfileResponse>(getUpdateProfileUrl(id), {
+): Promise<userUpdateProfileResponse> => {
+    return serverActionMutatorAuth<userUpdateProfileResponse>(getUserUpdateProfileUrl(id), {
         ...options,
         method: "PUT",
         headers: { "Content-Type": "application/json", ...options?.headers },
@@ -52,26 +52,26 @@ export const updateProfile = async (
     });
 };
 
-export type updateResponse200 = {
+export type groupUpdateResponse200 = {
     data: GroupDTO;
     status: 200;
 };
 
-export type updateResponseSuccess = updateResponse200 & {
+export type groupUpdateResponseSuccess = groupUpdateResponse200 & {
     headers: Headers;
 };
-export type updateResponse = updateResponseSuccess;
+export type groupUpdateResponse = groupUpdateResponseSuccess;
 
-export const getUpdateUrl = (groupId: string) => {
+export const getGroupUpdateUrl = (groupId: string) => {
     return `/api/groups/${groupId}`;
 };
 
-export const update = async (
+export const groupUpdate = async (
     groupId: string,
     groupDTO: GroupDTO,
     options?: RequestInit,
-): Promise<updateResponse> => {
-    return serverActionMutatorAuth<updateResponse>(getUpdateUrl(groupId), {
+): Promise<groupUpdateResponse> => {
+    return serverActionMutatorAuth<groupUpdateResponse>(getGroupUpdateUrl(groupId), {
         ...options,
         method: "PUT",
         headers: { "Content-Type": "application/json", ...options?.headers },
@@ -79,73 +79,76 @@ export const update = async (
     });
 };
 
-export type _deleteResponse200 = {
+export type groupDeleteResponse200 = {
     data: boolean;
     status: 200;
 };
 
-export type _deleteResponseSuccess = _deleteResponse200 & {
+export type groupDeleteResponseSuccess = groupDeleteResponse200 & {
     headers: Headers;
 };
-export type _deleteResponse = _deleteResponseSuccess;
+export type groupDeleteResponse = groupDeleteResponseSuccess;
 
-export const getDeleteUrl = (groupId: string) => {
+export const getGroupDeleteUrl = (groupId: string) => {
     return `/api/groups/${groupId}`;
 };
 
-export const _delete = async (groupId: string, options?: RequestInit): Promise<_deleteResponse> => {
-    return serverActionMutatorAuth<_deleteResponse>(getDeleteUrl(groupId), {
+export const groupDelete = async (groupId: string, options?: RequestInit): Promise<groupDeleteResponse> => {
+    return serverActionMutatorAuth<groupDeleteResponse>(getGroupDeleteUrl(groupId), {
         ...options,
         method: "DELETE",
     });
 };
 
-export type updateAnimeSeasonResponse200 = {
+export type animeseasonUpdateAnimeSeasonResponse200 = {
     data: AnimeDTO;
     status: 200;
 };
 
-export type updateAnimeSeasonResponseSuccess = updateAnimeSeasonResponse200 & {
+export type animeseasonUpdateAnimeSeasonResponseSuccess = animeseasonUpdateAnimeSeasonResponse200 & {
     headers: Headers;
 };
-export type updateAnimeSeasonResponse = updateAnimeSeasonResponseSuccess;
+export type animeseasonUpdateAnimeSeasonResponse = animeseasonUpdateAnimeSeasonResponseSuccess;
 
-export const getUpdateAnimeSeasonUrl = (uuid: string) => {
+export const getAnimeseasonUpdateAnimeSeasonUrl = (uuid: string) => {
     return `/api/animeseason/${uuid}`;
 };
 
-export const updateAnimeSeason = async (
+export const animeseasonUpdateAnimeSeason = async (
     uuid: string,
     animeUpdateDTO: AnimeUpdateDTO,
     options?: RequestInit,
-): Promise<updateAnimeSeasonResponse> => {
-    return serverActionMutatorAuth<updateAnimeSeasonResponse>(getUpdateAnimeSeasonUrl(uuid), {
-        ...options,
-        method: "PUT",
-        headers: { "Content-Type": "application/json", ...options?.headers },
-        body: JSON.stringify(animeUpdateDTO),
-    });
+): Promise<animeseasonUpdateAnimeSeasonResponse> => {
+    return serverActionMutatorAuth<animeseasonUpdateAnimeSeasonResponse>(
+        getAnimeseasonUpdateAnimeSeasonUrl(uuid),
+        {
+            ...options,
+            method: "PUT",
+            headers: { "Content-Type": "application/json", ...options?.headers },
+            body: JSON.stringify(animeUpdateDTO),
+        },
+    );
 };
 
-export type receiveUpdateResponse200 = {
+export type telegramReceiveUpdateResponse200 = {
     data: void;
     status: 200;
 };
 
-export type receiveUpdateResponseSuccess = receiveUpdateResponse200 & {
+export type telegramReceiveUpdateResponseSuccess = telegramReceiveUpdateResponse200 & {
     headers: Headers;
 };
-export type receiveUpdateResponse = receiveUpdateResponseSuccess;
+export type telegramReceiveUpdateResponse = telegramReceiveUpdateResponseSuccess;
 
-export const getReceiveUpdateUrl = () => {
+export const getTelegramReceiveUpdateUrl = () => {
     return `/telegram/update`;
 };
 
-export const receiveUpdate = async (
+export const telegramReceiveUpdate = async (
     telegramWebhookUpdate: TelegramWebhookUpdate,
     options?: RequestInit,
-): Promise<receiveUpdateResponse> => {
-    return serverActionMutatorAuth<receiveUpdateResponse>(getReceiveUpdateUrl(), {
+): Promise<telegramReceiveUpdateResponse> => {
+    return serverActionMutatorAuth<telegramReceiveUpdateResponse>(getTelegramReceiveUpdateUrl(), {
         ...options,
         method: "POST",
         headers: { "Content-Type": "application/json", ...options?.headers },
@@ -153,25 +156,25 @@ export const receiveUpdate = async (
     });
 };
 
-export type registerResponse200 = {
+export type userRegisterResponse200 = {
     data: UserDTO;
     status: 200;
 };
 
-export type registerResponseSuccess = registerResponse200 & {
+export type userRegisterResponseSuccess = userRegisterResponse200 & {
     headers: Headers;
 };
-export type registerResponse = registerResponseSuccess;
+export type userRegisterResponse = userRegisterResponseSuccess;
 
-export const getRegisterUrl = () => {
+export const getUserRegisterUrl = () => {
     return `/api/user`;
 };
 
-export const register = async (
+export const userRegister = async (
     userRegisterDTO: UserRegisterDTO,
     options?: RequestInit,
-): Promise<registerResponse> => {
-    return serverActionMutatorAuth<registerResponse>(getRegisterUrl(), {
+): Promise<userRegisterResponse> => {
+    return serverActionMutatorAuth<userRegisterResponse>(getUserRegisterUrl(), {
         ...options,
         method: "POST",
         headers: { "Content-Type": "application/json", ...options?.headers },
@@ -179,51 +182,51 @@ export const register = async (
     });
 };
 
-export type refreshTokenResponse200 = {
+export type userRefreshTokenResponse200 = {
     data: AuthenticationResponseDTO;
     status: 200;
 };
 
-export type refreshTokenResponseSuccess = refreshTokenResponse200 & {
+export type userRefreshTokenResponseSuccess = userRefreshTokenResponse200 & {
     headers: Headers;
 };
-export type refreshTokenResponse = refreshTokenResponseSuccess;
+export type userRefreshTokenResponse = userRefreshTokenResponseSuccess;
 
-export const getRefreshTokenUrl = () => {
+export const getUserRefreshTokenUrl = () => {
     return `/api/user/refresh-token`;
 };
 
-export const refreshToken = async (
-    refreshTokenBody: string,
+export const userRefreshToken = async (
+    userRefreshTokenBody: string,
     options?: RequestInit,
-): Promise<refreshTokenResponse> => {
-    return serverActionMutatorAuth<refreshTokenResponse>(getRefreshTokenUrl(), {
+): Promise<userRefreshTokenResponse> => {
+    return serverActionMutatorAuth<userRefreshTokenResponse>(getUserRefreshTokenUrl(), {
         ...options,
         method: "POST",
         headers: { "Content-Type": "application/json", ...options?.headers },
-        body: JSON.stringify(refreshTokenBody),
+        body: JSON.stringify(userRefreshTokenBody),
     });
 };
 
-export type loginResponse200 = {
+export type userLoginResponse200 = {
     data: AuthenticationResponseDTO;
     status: 200;
 };
 
-export type loginResponseSuccess = loginResponse200 & {
+export type userLoginResponseSuccess = userLoginResponse200 & {
     headers: Headers;
 };
-export type loginResponse = loginResponseSuccess;
+export type userLoginResponse = userLoginResponseSuccess;
 
-export const getLoginUrl = () => {
+export const getUserLoginUrl = () => {
     return `/api/user/login`;
 };
 
-export const login = async (
+export const userLogin = async (
     authenticationRequestDTO: AuthenticationRequestDTO,
     options?: RequestInit,
-): Promise<loginResponse> => {
-    return serverActionMutatorAuth<loginResponse>(getLoginUrl(), {
+): Promise<userLoginResponse> => {
+    return serverActionMutatorAuth<userLoginResponse>(getUserLoginUrl(), {
         ...options,
         method: "POST",
         headers: { "Content-Type": "application/json", ...options?.headers },
@@ -231,26 +234,26 @@ export const login = async (
     });
 };
 
-export type createResponse200 = {
+export type groupCreateResponse200 = {
     data: GroupDTO;
     status: 200;
 };
 
-export type createResponseSuccess = createResponse200 & {
+export type groupCreateResponseSuccess = groupCreateResponse200 & {
     headers: Headers;
 };
-export type createResponse = createResponseSuccess;
+export type groupCreateResponse = groupCreateResponseSuccess;
 
-export const getCreateUrl = (userId: string) => {
+export const getGroupCreateUrl = (userId: string) => {
     return `/api/groups/${userId}`;
 };
 
-export const create = async (
+export const groupCreate = async (
     userId: string,
     groupDTO: GroupDTO,
     options?: RequestInit,
-): Promise<createResponse> => {
-    return serverActionMutatorAuth<createResponse>(getCreateUrl(userId), {
+): Promise<groupCreateResponse> => {
+    return serverActionMutatorAuth<groupCreateResponse>(getGroupCreateUrl(userId), {
         ...options,
         method: "POST",
         headers: { "Content-Type": "application/json", ...options?.headers },
@@ -258,25 +261,25 @@ export const create = async (
     });
 };
 
-export type generateRegisterTokenResponse200 = {
+export type groupGenerateRegisterTokenResponse200 = {
     data: string;
     status: 200;
 };
 
-export type generateRegisterTokenResponseSuccess = generateRegisterTokenResponse200 & {
+export type groupGenerateRegisterTokenResponseSuccess = groupGenerateRegisterTokenResponse200 & {
     headers: Headers;
 };
-export type generateRegisterTokenResponse = generateRegisterTokenResponseSuccess;
+export type groupGenerateRegisterTokenResponse = groupGenerateRegisterTokenResponseSuccess;
 
-export const getGenerateRegisterTokenUrl = () => {
+export const getGroupGenerateRegisterTokenUrl = () => {
     return `/api/groups/generate-token`;
 };
 
-export const generateRegisterToken = async (
+export const groupGenerateRegisterToken = async (
     registerTokenDTO: RegisterTokenDTO,
     options?: RequestInit,
-): Promise<generateRegisterTokenResponse> => {
-    return serverActionMutatorAuth<generateRegisterTokenResponse>(getGenerateRegisterTokenUrl(), {
+): Promise<groupGenerateRegisterTokenResponse> => {
+    return serverActionMutatorAuth<groupGenerateRegisterTokenResponse>(getGroupGenerateRegisterTokenUrl(), {
         ...options,
         method: "POST",
         headers: { "Content-Type": "application/json", ...options?.headers },
@@ -284,52 +287,55 @@ export const generateRegisterToken = async (
     });
 };
 
-export type saveByIdAndSeasonResponse200 = {
+export type animeseasonSaveByIdAndSeasonResponse200 = {
     data: AnimeDTO;
     status: 200;
 };
 
-export type saveByIdAndSeasonResponseSuccess = saveByIdAndSeasonResponse200 & {
+export type animeseasonSaveByIdAndSeasonResponseSuccess = animeseasonSaveByIdAndSeasonResponse200 & {
     headers: Headers;
 };
-export type saveByIdAndSeasonResponse = saveByIdAndSeasonResponseSuccess;
+export type animeseasonSaveByIdAndSeasonResponse = animeseasonSaveByIdAndSeasonResponseSuccess;
 
-export const getSaveByIdAndSeasonUrl = () => {
+export const getAnimeseasonSaveByIdAndSeasonUrl = () => {
     return `/api/animeseason/`;
 };
 
-export const saveByIdAndSeason = async (
+export const animeseasonSaveByIdAndSeason = async (
     animeSaveDTO: AnimeSaveDTO,
     options?: RequestInit,
-): Promise<saveByIdAndSeasonResponse> => {
-    return serverActionMutatorAuth<saveByIdAndSeasonResponse>(getSaveByIdAndSeasonUrl(), {
-        ...options,
-        method: "POST",
-        headers: { "Content-Type": "application/json", ...options?.headers },
-        body: JSON.stringify(animeSaveDTO),
-    });
+): Promise<animeseasonSaveByIdAndSeasonResponse> => {
+    return serverActionMutatorAuth<animeseasonSaveByIdAndSeasonResponse>(
+        getAnimeseasonSaveByIdAndSeasonUrl(),
+        {
+            ...options,
+            method: "POST",
+            headers: { "Content-Type": "application/json", ...options?.headers },
+            body: JSON.stringify(animeSaveDTO),
+        },
+    );
 };
 
-export type updatePasswordResponse200 = {
+export type userUpdateProfileImageResponse200 = {
     data: UserDTO;
     status: 200;
 };
 
-export type updatePasswordResponseSuccess = updatePasswordResponse200 & {
+export type userUpdateProfileImageResponseSuccess = userUpdateProfileImageResponse200 & {
     headers: Headers;
 };
-export type updatePasswordResponse = updatePasswordResponseSuccess;
+export type userUpdateProfileImageResponse = userUpdateProfileImageResponseSuccess;
 
-export const getUpdatePasswordUrl = (id: string) => {
+export const getUserUpdateProfileImageUrl = (id: string) => {
     return `/api/user/profile-image/${id}`;
 };
 
-export const updatePassword = async (
+export const userUpdateProfileImage = async (
     id: string,
     updateProfileImageDTO: UpdateProfileImageDTO,
     options?: RequestInit,
-): Promise<updatePasswordResponse> => {
-    return serverActionMutatorAuth<updatePasswordResponse>(getUpdatePasswordUrl(id), {
+): Promise<userUpdateProfileImageResponse> => {
+    return serverActionMutatorAuth<userUpdateProfileImageResponse>(getUserUpdateProfileImageUrl(id), {
         ...options,
         method: "PATCH",
         headers: { "Content-Type": "application/json", ...options?.headers },
@@ -337,26 +343,26 @@ export const updatePassword = async (
     });
 };
 
-export type updatePassword1Response200 = {
+export type userUpdatePasswordResponse200 = {
     data: boolean;
     status: 200;
 };
 
-export type updatePassword1ResponseSuccess = updatePassword1Response200 & {
+export type userUpdatePasswordResponseSuccess = userUpdatePasswordResponse200 & {
     headers: Headers;
 };
-export type updatePassword1Response = updatePassword1ResponseSuccess;
+export type userUpdatePasswordResponse = userUpdatePasswordResponseSuccess;
 
-export const getUpdatePassword1Url = (id: string) => {
+export const getUserUpdatePasswordUrl = (id: string) => {
     return `/api/user/password/${id}`;
 };
 
-export const updatePassword1 = async (
+export const userUpdatePassword = async (
     id: string,
     updatePasswordDTO: UpdatePasswordDTO,
     options?: RequestInit,
-): Promise<updatePassword1Response> => {
-    return serverActionMutatorAuth<updatePassword1Response>(getUpdatePassword1Url(id), {
+): Promise<userUpdatePasswordResponse> => {
+    return serverActionMutatorAuth<userUpdatePasswordResponse>(getUserUpdatePasswordUrl(id), {
         ...options,
         method: "PATCH",
         headers: { "Content-Type": "application/json", ...options?.headers },
@@ -364,229 +370,247 @@ export const updatePassword1 = async (
     });
 };
 
-export type listAllResponse200 = {
+export type watchserviceListAllResponse200 = {
     data: WatchServiceDTO[];
     status: 200;
 };
 
-export type listAllResponseSuccess = listAllResponse200 & {
+export type watchserviceListAllResponseSuccess = watchserviceListAllResponse200 & {
     headers: Headers;
 };
-export type listAllResponse = listAllResponseSuccess;
+export type watchserviceListAllResponse = watchserviceListAllResponseSuccess;
 
-export const getListAllUrl = () => {
+export const getWatchserviceListAllUrl = () => {
     return `/api/watchservices/list`;
 };
 
-export const listAll = async (options?: RequestInit): Promise<listAllResponse> => {
-    return serverActionMutatorAuth<listAllResponse>(getListAllUrl(), {
+export const watchserviceListAll = async (options?: RequestInit): Promise<watchserviceListAllResponse> => {
+    return serverActionMutatorAuth<watchserviceListAllResponse>(getWatchserviceListAllUrl(), {
         ...options,
         method: "GET",
     });
 };
 
-export type getByIdResponse200 = {
+export type userGetByIdResponse200 = {
     data: UserDTO;
     status: 200;
 };
 
-export type getByIdResponseSuccess = getByIdResponse200 & {
+export type userGetByIdResponseSuccess = userGetByIdResponse200 & {
     headers: Headers;
 };
-export type getByIdResponse = getByIdResponseSuccess;
+export type userGetByIdResponse = userGetByIdResponseSuccess;
 
-export const getGetByIdUrl = (id: string) => {
+export const getUserGetByIdUrl = (id: string) => {
     return `/api/user/${id}`;
 };
 
-export const getById = async (id: string, options?: RequestInit): Promise<getByIdResponse> => {
-    return serverActionMutatorAuth<getByIdResponse>(getGetByIdUrl(id), {
+export const userGetById = async (id: string, options?: RequestInit): Promise<userGetByIdResponse> => {
+    return serverActionMutatorAuth<userGetByIdResponse>(getUserGetByIdUrl(id), {
         ...options,
         method: "GET",
     });
 };
 
-export type getAllResponse200 = {
+export type userGetAllResponse200 = {
     data: UserDTO[];
     status: 200;
 };
 
-export type getAllResponseSuccess = getAllResponse200 & {
+export type userGetAllResponseSuccess = userGetAllResponse200 & {
     headers: Headers;
 };
-export type getAllResponse = getAllResponseSuccess;
+export type userGetAllResponse = userGetAllResponseSuccess;
 
-export const getGetAllUrl = () => {
+export const getUserGetAllUrl = () => {
     return `/api/user/all`;
 };
 
-export const getAll = async (options?: RequestInit): Promise<getAllResponse> => {
-    return serverActionMutatorAuth<getAllResponse>(getGetAllUrl(), {
+export const userGetAll = async (options?: RequestInit): Promise<userGetAllResponse> => {
+    return serverActionMutatorAuth<userGetAllResponse>(getUserGetAllUrl(), {
         ...options,
         method: "GET",
     });
 };
 
-export type listAll1Response200 = {
+export type seasonListAllResponse200 = {
     data: SeasonDTO[];
     status: 200;
 };
 
-export type listAll1ResponseSuccess = listAll1Response200 & {
+export type seasonListAllResponseSuccess = seasonListAllResponse200 & {
     headers: Headers;
 };
-export type listAll1Response = listAll1ResponseSuccess;
+export type seasonListAllResponse = seasonListAllResponseSuccess;
 
-export const getListAll1Url = () => {
+export const getSeasonListAllUrl = () => {
     return `/api/seasons/list`;
 };
 
-export const listAll1 = async (options?: RequestInit): Promise<listAll1Response> => {
-    return serverActionMutatorAuth<listAll1Response>(getListAll1Url(), {
+export const seasonListAll = async (options?: RequestInit): Promise<seasonListAllResponse> => {
+    return serverActionMutatorAuth<seasonListAllResponse>(getSeasonListAllUrl(), {
         ...options,
         method: "GET",
     });
 };
 
-export type findBySeasonResponse200 = {
+export type myanimelistFindBySeasonResponse200 = {
     data: AnimeMAL[];
     status: 200;
 };
 
-export type findBySeasonResponseSuccess = findBySeasonResponse200 & {
+export type myanimelistFindBySeasonResponseSuccess = myanimelistFindBySeasonResponse200 & {
     headers: Headers;
 };
-export type findBySeasonResponse = findBySeasonResponseSuccess;
+export type myanimelistFindBySeasonResponse = myanimelistFindBySeasonResponseSuccess;
 
-export const getFindBySeasonUrl = (year: number, season: string) => {
+export const getMyanimelistFindBySeasonUrl = (year: number, season: string) => {
     return `/api/mal/season/${year}/${season}`;
 };
 
-export const findBySeason = async (
+export const myanimelistFindBySeason = async (
     year: number,
     season: string,
     options?: RequestInit,
-): Promise<findBySeasonResponse> => {
-    return serverActionMutatorAuth<findBySeasonResponse>(getFindBySeasonUrl(year, season), {
-        ...options,
-        method: "GET",
-    });
+): Promise<myanimelistFindBySeasonResponse> => {
+    return serverActionMutatorAuth<myanimelistFindBySeasonResponse>(
+        getMyanimelistFindBySeasonUrl(year, season),
+        {
+            ...options,
+            method: "GET",
+        },
+    );
 };
 
-export type findByIdResponse200 = {
+export type myanimelistFindByIdResponse200 = {
     data: AnimeMAL;
     status: 200;
 };
 
-export type findByIdResponseSuccess = findByIdResponse200 & {
+export type myanimelistFindByIdResponseSuccess = myanimelistFindByIdResponse200 & {
     headers: Headers;
 };
-export type findByIdResponse = findByIdResponseSuccess;
+export type myanimelistFindByIdResponse = myanimelistFindByIdResponseSuccess;
 
-export const getFindByIdUrl = (id: number) => {
+export const getMyanimelistFindByIdUrl = (id: number) => {
     return `/api/mal/id/${id}`;
 };
 
-export const findById = async (id: number, options?: RequestInit): Promise<findByIdResponse> => {
-    return serverActionMutatorAuth<findByIdResponse>(getFindByIdUrl(id), {
+export const myanimelistFindById = async (
+    id: number,
+    options?: RequestInit,
+): Promise<myanimelistFindByIdResponse> => {
+    return serverActionMutatorAuth<myanimelistFindByIdResponse>(getMyanimelistFindByIdUrl(id), {
         ...options,
         method: "GET",
     });
 };
 
-export type getGroupsResponse200 = {
+export type groupGetGroupsResponse200 = {
     data: GroupDTO[];
     status: 200;
 };
 
-export type getGroupsResponseSuccess = getGroupsResponse200 & {
+export type groupGetGroupsResponseSuccess = groupGetGroupsResponse200 & {
     headers: Headers;
 };
-export type getGroupsResponse = getGroupsResponseSuccess;
+export type groupGetGroupsResponse = groupGetGroupsResponseSuccess;
 
-export const getGetGroupsUrl = (userId: string) => {
+export const getGroupGetGroupsUrl = (userId: string) => {
     return `/api/groups/list/${userId}`;
 };
 
-export const getGroups = async (userId: string, options?: RequestInit): Promise<getGroupsResponse> => {
-    return serverActionMutatorAuth<getGroupsResponse>(getGetGroupsUrl(userId), {
+export const groupGetGroups = async (
+    userId: string,
+    options?: RequestInit,
+): Promise<groupGetGroupsResponse> => {
+    return serverActionMutatorAuth<groupGetGroupsResponse>(getGroupGetGroupsUrl(userId), {
         ...options,
         method: "GET",
     });
 };
 
-export type getByIdAndSeasonResponse200 = {
+export type animeseasonGetByIdAndSeasonResponse200 = {
     data: AnimeDTO[];
     status: 200;
 };
 
-export type getByIdAndSeasonResponseSuccess = getByIdAndSeasonResponse200 & {
+export type animeseasonGetByIdAndSeasonResponseSuccess = animeseasonGetByIdAndSeasonResponse200 & {
     headers: Headers;
 };
-export type getByIdAndSeasonResponse = getByIdAndSeasonResponseSuccess;
+export type animeseasonGetByIdAndSeasonResponse = animeseasonGetByIdAndSeasonResponseSuccess;
 
-export const getGetByIdAndSeasonUrl = (userId: string, year: number, season: string) => {
+export const getAnimeseasonGetByIdAndSeasonUrl = (userId: string, year: number, season: string) => {
     return `/api/animeseason/${userId}/${year}/${season}`;
 };
 
-export const getByIdAndSeason = async (
+export const animeseasonGetByIdAndSeason = async (
     userId: string,
     year: number,
     season: string,
     options?: RequestInit,
-): Promise<getByIdAndSeasonResponse> => {
-    return serverActionMutatorAuth<getByIdAndSeasonResponse>(getGetByIdAndSeasonUrl(userId, year, season), {
-        ...options,
-        method: "GET",
-    });
+): Promise<animeseasonGetByIdAndSeasonResponse> => {
+    return serverActionMutatorAuth<animeseasonGetByIdAndSeasonResponse>(
+        getAnimeseasonGetByIdAndSeasonUrl(userId, year, season),
+        {
+            ...options,
+            method: "GET",
+        },
+    );
 };
 
-export type getByIdAndSeason1Response200 = {
+export type animeseasonGetByIdAndSeason1Response200 = {
     data: AnimeDTO;
     status: 200;
 };
 
-export type getByIdAndSeason1ResponseSuccess = getByIdAndSeason1Response200 & {
+export type animeseasonGetByIdAndSeason1ResponseSuccess = animeseasonGetByIdAndSeason1Response200 & {
     headers: Headers;
 };
-export type getByIdAndSeason1Response = getByIdAndSeason1ResponseSuccess;
+export type animeseasonGetByIdAndSeason1Response = animeseasonGetByIdAndSeason1ResponseSuccess;
 
-export const getGetByIdAndSeason1Url = (idAnime: number) => {
+export const getAnimeseasonGetByIdAndSeason1Url = (idAnime: number) => {
     return `/api/animeseason/${idAnime}`;
 };
 
-export const getByIdAndSeason1 = async (
+export const animeseasonGetByIdAndSeason1 = async (
     idAnime: number,
     options?: RequestInit,
-): Promise<getByIdAndSeason1Response> => {
-    return serverActionMutatorAuth<getByIdAndSeason1Response>(getGetByIdAndSeason1Url(idAnime), {
-        ...options,
-        method: "GET",
-    });
+): Promise<animeseasonGetByIdAndSeason1Response> => {
+    return serverActionMutatorAuth<animeseasonGetByIdAndSeason1Response>(
+        getAnimeseasonGetByIdAndSeason1Url(idAnime),
+        {
+            ...options,
+            method: "GET",
+        },
+    );
 };
 
-export type deleteAnimeSeasonResponse200 = {
+export type animeseasonDeleteAnimeSeasonResponse200 = {
     data: AnimeDTO;
     status: 200;
 };
 
-export type deleteAnimeSeasonResponseSuccess = deleteAnimeSeasonResponse200 & {
+export type animeseasonDeleteAnimeSeasonResponseSuccess = animeseasonDeleteAnimeSeasonResponse200 & {
     headers: Headers;
 };
-export type deleteAnimeSeasonResponse = deleteAnimeSeasonResponseSuccess;
+export type animeseasonDeleteAnimeSeasonResponse = animeseasonDeleteAnimeSeasonResponseSuccess;
 
-export const getDeleteAnimeSeasonUrl = (uuid: string, year: number, season: string) => {
+export const getAnimeseasonDeleteAnimeSeasonUrl = (uuid: string, year: number, season: string) => {
     return `/api/animeseason/${uuid}/${year}/${season}`;
 };
 
-export const deleteAnimeSeason = async (
+export const animeseasonDeleteAnimeSeason = async (
     uuid: string,
     year: number,
     season: string,
     options?: RequestInit,
-): Promise<deleteAnimeSeasonResponse> => {
-    return serverActionMutatorAuth<deleteAnimeSeasonResponse>(getDeleteAnimeSeasonUrl(uuid, year, season), {
-        ...options,
-        method: "DELETE",
-    });
+): Promise<animeseasonDeleteAnimeSeasonResponse> => {
+    return serverActionMutatorAuth<animeseasonDeleteAnimeSeasonResponse>(
+        getAnimeseasonDeleteAnimeSeasonUrl(uuid, year, season),
+        {
+            ...options,
+            method: "DELETE",
+        },
+    );
 };

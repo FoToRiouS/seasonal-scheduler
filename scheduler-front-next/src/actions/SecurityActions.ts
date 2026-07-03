@@ -1,10 +1,10 @@
 "use server";
 
-import { AuthenticationRequest } from "@/interfaces/AuthenticationRequest";
 import { signIn as signInServer, signOut as signOutServer } from "@/security/authOptions";
 import { SignInResponse } from "@/security/interfaces/SignInResponse";
+import { AuthenticationRequestDTO } from "@/schemas/generated/model";
 
-export const signIn = async (loginRequest: AuthenticationRequest): Promise<SignInResponse> => {
+export const signIn = async (loginRequest: AuthenticationRequestDTO): Promise<SignInResponse> => {
     try {
         const res = await signInServer("user_provider", {
             ...loginRequest,

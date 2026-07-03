@@ -1,8 +1,8 @@
 import { resolveServerAction } from "@/service/BackendService";
-import { SeasonMAL } from "@/interfaces/AnimeMAL";
 import { fetchAnimesForCalendar, fetchAnimesForList } from "@/actions/FetchedAnimeActions";
 import { useQuery } from "@tanstack/react-query";
 import { FetchedAnime } from "@/interfaces/FetchedAnime";
+import { SeasonMAL } from "@/interfaces/SeasonMAL";
 
 export const useFetchAnimesForList = (userId: string | undefined, year: number, season: SeasonMAL) => {
     return useQuery<FetchedAnime[]>({

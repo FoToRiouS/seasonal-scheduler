@@ -20,7 +20,8 @@ export const CardAnimeSchedule = ({
     const [opened, { open, close }] = useDisclosure(false);
 
     const actualSeason = useMemo(
-        () => animeBackend?.animeSeasons.find((as) => as.season.year === year && as.season.season === season),
+        () =>
+            animeBackend?.animeSeasons?.find((as) => as.season.year === year && as.season.season === season),
         [animeBackend, year, season],
     );
 

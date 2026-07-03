@@ -3,12 +3,12 @@ import { useGetUser, useUpdateProfile } from "@/queries/UserQueries";
 import { useForm } from "@mantine/form";
 import { z } from "zod/v4";
 import { zod4Resolver } from "mantine-form-zod-resolver";
-import { UserUpdateProfile } from "@/interfaces/UserUpdateProfile";
 import { useNotifications } from "@/hooks/useNotifications";
 import { useUserSession } from "@/hooks/useUserSession";
 import { useEffect } from "react";
 import { modals } from "@mantine/modals";
 import { ProfileImage } from "@/components/perfil/ProfileImage";
+import { UpdateProfileDTO } from "@/schemas/generated/model";
 
 const schema = z.object({
     name: z.string().min(1, "O nome deve ser preenchido"),
@@ -27,9 +27,9 @@ export const PerfilDataTab = () => {
     const form = useForm<schemaType>({
         mode: "uncontrolled",
         initialValues: {
-            name: user ? user.name : "",
-            email: user ? user.email : "",
-            phone: user ? user.phone : "",
+            name: user?.name ?? "",
+            email: user?.email ?? "",
+            phone: user?.phone ?? "",
         },
         validate: zod4Resolver(schema),
     });
@@ -53,7 +53,7 @@ export const PerfilDataTab = () => {
     };
 
     const handleSubmit = (values: schemaType) => {
-        const payload: UserUpdateProfile = {
+        const payload: UpdateProfileDTO = {
             name: values.name,
             email: values.email,
             phone: values.phone,
